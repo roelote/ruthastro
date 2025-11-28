@@ -1,22 +1,83 @@
+---
+import '../styles/global.css';
+import '@fancyapps/ui/dist/fancybox/fancybox.css';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/autoplay';
+import 'swiper/css/effect-fade';
+import type { YoastSEO } from '../utils/wordpress';
+
+interface Props {
+	title?: string;
+	description?: string;
+	yoastSEO?: YoastSEO | null;
+	favicon?: string;
+	canonical?: string;
+}
+
+const { 
+	title = 'Ruth Amazon Expeditions', 
+	description = 'Explora la selva amazónica con los mejores guías',
+	yoastSEO = null,
+	favicon = '/favicon.svg',
+	canonical
+} = Astro.props;
+
+// Usar datos de Yoast SEO si están disponibles
+const pageTitle = yoastSEO?.title || title;
+const pageDescription = yoastSEO?.description || description;
+const pageCanonical = yoastSEO?.canonical || canonical || Astro.url.href;
+const ogTitle = yoastSEO?.og_title || pageTitle;
+const ogDescription = yoastSEO?.og_description || pageDescription;
+const ogImage = yoastSEO?.og_image;
+const ogType = yoastSEO?.og_type || 'website';
+const ogUrl = yoastSEO?.og_url || Astro.url.href;
+const twitterCard = yoastSEO?.twitter_card || 'summary_large_image';
+const twitterTitle = yoastSEO?.twitter_title || ogTitle;
+const twitterDescription = yoastSEO?.twitter_description || ogDescription;
+const twitterImage = yoastSEO?.twitter_image || ogImage;
+const robotsIndex = yoastSEO?.robots?.index || 'index';
+const robotsFollow = yoastSEO?.robots?.follow || 'follow';
+---
+
 <!doctype html>
-<html lang="en">
+<html lang="es">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		
+		<!-- Favicon -->
+		<link rel="icon" type="image/x-icon" href={favicon} />
+		<link rel="shortcut icon" type="image/x-icon" href={favicon} />
+		
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+		
+		<!-- SEO Meta Tags -->
+		<title>{pageTitle}</title>
+		<meta name="description" content={pageDescription} />
+		<meta name="robots" content={`${robotsIndex}, ${robotsFollow}`} />
+		<link rel="canonical" href={pageCanonical} />
+		
+		<!-- Open Graph / Facebook -->
+		<meta property="og:type" content={ogType} />
+		<meta property="og:url" content={ogUrl} />
+		<meta property="og:title" content={ogTitle} />
+		<meta property="og:description" content={ogDescription} />
+		{ogImage && <meta property="og:image" content={ogImage} />}
+		<meta property="og:locale" content="es_ES" />
+		<meta property="og:site_name" content="Ruth Amazon Expeditions" />
+		
+		<!-- Twitter -->
+		<meta name="twitter:card" content={twitterCard} />
+		<meta name="twitter:url" content={ogUrl} />
+		<meta name="twitter:title" content={twitterTitle} />
+		<meta name="twitter:description" content={twitterDescription} />
+		{twitterImage && <meta name="twitter:image" content={twitterImage} />}
 	</head>
-	<body>
+	<body class="antialiased">
 		<slot />
 	</body>
 </html>
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+

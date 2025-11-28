@@ -1,11 +1,1462 @@
 ---
-import Welcome from '../components/Welcome.astro';
+import '../styles/global.css';
 import Layout from '../layouts/Layout.astro';
+import Header from '../layouts/Header.astro';
+import Footer from '../layouts/Footer.astro';
+import { getPosts, getFeaturedImage, getYoastSEO, getSiteInfo } from '../utils/wordpress';
+import { getTripAdvisorReviews } from '../utils/testimonials';
+import tripadvisorImage from '../assets/tripadvisor_image.png';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+// Obtener los tours (posts) de WordPress
+const tours = await getPosts();
+const featuredTours = tours.slice(0, 10); // Mostrar los primeros 10 tours
+
+// Obtener imágenes destacadas para todos los tours
+const toursWithImages = await Promise.all(
+  featuredTours.map(async (tour) => {
+    const imageUrl = tour.featured_media 
+      ? await getFeaturedImage(tour.featured_media)
+      : 'https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=2068';
+    return { ...tour, imageUrl };
+  })
+);
+
+// Obtener reseñas de TripAdvisor desde WordPress
+const testimonials = await getTripAdvisorReviews();
+
+// Obtener Yoast SEO para la página de inicio
+const yoastSEO = await getYoastSEO('inicio', 'pages'); // Cambiar 'inicio' por el slug de tu página de inicio en WordPress
+
+// Obtener información del sitio y favicon
+const siteInfo = await getSiteInfo();
+const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 ---
 
-<Layout>
-	<Welcome />
+<Layout 
+	title="Ruth Amazon Expeditions - Tours en Pacaya Samiria"
+	description="Descubre la Reserva Nacional Pacaya Samiria con los mejores tours guiados. Expediciones de 3, 4 y 5 días en la selva amazónica peruana."
+	yoastSEO={yoastSEO}
+	favicon={favicon}
+>
+	<Header />
+	
+	<!-- Sección Hero con Carrusel Swiper -->
+	<section class="hero-section relative">
+		<div class="swiper hero-swiper">
+			<div class="swiper-wrapper">
+				<!-- Slide 1 -->
+				<div class="swiper-slide">
+					<div class="relative h-[500px] md:h-[600px] lg:h-[800px] overflow-hidden">
+						<img 
+							src="https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=2068" 
+							alt="Pacaya Samiria" 
+							class="w-full h-full object-cover"
+						/>
+						<div class="absolute inset-0 bg-black/40"></div>
+						<div class="absolute inset-0 flex items-center justify-center">
+							<div class="container text-center text-white px-4">
+								<h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 animate-fade-in">
+									Descubre Pacaya Samiria 2026
+								</h1>
+								<p class="text-base sm:text-lg md:text-xl lg:text-2xl mb-6 md:mb-8 max-w-3xl mx-auto px-4">
+									Vive la aventura amazónica más auténtica en la reserva natural más grande del Perú
+								</p>
+								<a 
+									href="#tours" 
+									class="inline-block bg-[#15803d] hover:bg-[#166534] text-white font-bold px-6 md:px-8 py-3 md:py-4 rounded-lg text-base md:text-lg transition-all duration-300 transform hover:scale-105 shadow-xl"
+								>
+									Explora Nuestros Tours
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Slide 2 -->
+				<div class="swiper-slide">
+					<div class="relative h-[500px] md:h-[600px] lg:h-[800px] overflow-hidden">
+						<img 
+							src="https://images.unsplash.com/photo-1580060839134-75a5edca2e99?q=80&w=2071" 
+							alt="Selva Amazónica" 
+							class="w-full h-full object-cover"
+						/>
+						<div class="absolute inset-0 bg-black/40"></div>
+						<div class="absolute inset-0 flex items-center justify-center">
+							<div class="container text-center text-white px-4">
+								<h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6">
+									Aventuras Inolvidables
+								</h1>
+								<p class="text-base sm:text-lg md:text-xl lg:text-2xl mb-6 md:mb-8 max-w-3xl mx-auto px-4">
+									Explora la biodiversidad única de la Amazonía peruana con guías expertos
+								</p>
+								<a 
+									href="#tours" 
+									class="inline-block bg-[#15803d] hover:bg-[#166534] text-white font-bold px-6 md:px-8 py-3 md:py-4 rounded-lg text-base md:text-lg transition-all duration-300 transform hover:scale-105 shadow-xl"
+								>
+									Ver Tours Disponibles
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Slide 3 -->
+				<div class="swiper-slide">
+					<div class="relative h-[500px] md:h-[600px] lg:h-[800px] overflow-hidden">
+						<img 
+							src="/src/assets/pacayasamiria.png" 
+							alt="Río Amazonas" 
+							class="w-full h-full object-cover"
+						/>
+						<div class="absolute inset-0 bg-black/40"></div>
+						<div class="absolute inset-0 flex items-center justify-center">
+							<div class="container text-center text-white px-4">
+								<h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6">
+									Reserva Natural Pacaya Samiria
+								</h1>
+								<p class="text-base sm:text-lg md:text-xl lg:text-2xl mb-6 md:mb-8 max-w-3xl mx-auto px-4">
+									Navega por los ríos más espectaculares y descubre la fauna silvestre amazónica
+								</p>
+								<a 
+									href="#tours" 
+									class="inline-block bg-[#15803d] hover:bg-[#166534] text-white font-bold px-6 md:px-8 py-3 md:py-4 rounded-lg text-base md:text-lg transition-all duration-300 transform hover:scale-105 shadow-xl"
+								>
+									Reserva Ahora
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<!-- Navegación -->
+			<div class="swiper-button-next"></div>
+			<div class="swiper-button-prev"></div>
+			<div class="swiper-pagination"></div>
+		</div>
+	</section>
+
+	<!-- Sección Sobre Nosotros -->
+	<section class="py-12 md:py-16 lg:py-20 bg-gray-50">
+		<div class="container px-4">
+			<div class="grid lg:grid-cols-2 gap-8 md:gap-10 lg:gap-12 items-center">
+				<!-- Contenido de Texto -->
+				<div class="space-y-4 md:space-y-6">
+					<div class="inline-block">
+						<span class="text-[#15803d] font-semibold text-xs md:text-sm tracking-wider uppercase">Sobre Nosotros</span>
+						<div class="h-0.5 w-16 bg-yellow-400 mt-2"></div>
+					</div>
+					
+					<h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900">
+						Especialistas en Expediciones
+						<span class="text-[#15803d]"> a la Amazonía</span>
+					</h2>
+					
+					<p class="text-base md:text-lg text-gray-700 leading-relaxed">
+						<strong class="text-[#15803d]">Ruth Amazon Expeditions</strong> es una agencia especializada en tours a la Reserva Nacional Pacaya Samiria, reconocida como una de las áreas protegidas más importantes de la Amazonía peruana. Estamos orgullosos de darnos a conocer nacional e internacionalmente a través de la satisfacción de nuestros clientes.
+					</p>
+					
+					<p class="text-base md:text-lg text-gray-700 leading-relaxed">
+						Nuestros guías nativos profesionales te llevarán a explorar los lugares más remotos de la selva, donde podrás observar delfines rosados, anacondas, jaguares, guacamayos y cientos de especies en su hábitat natural.
+					</p>
+					
+					<!-- Estadísticas -->
+					<div class="grid grid-cols-3 gap-3 md:gap-4 pt-4 md:pt-6">
+						<div class="text-center">
+							<div class="text-3xl md:text-4xl font-bold text-[#15803d]">15+</div>
+							<div class="text-gray-600 text-xs md:text-sm mt-1 md:mt-2">Años de Experiencia</div>
+						</div>
+						<div class="text-center">
+							<div class="text-3xl md:text-4xl font-bold text-[#15803d]">100%</div>
+							<div class="text-gray-600 text-xs md:text-sm mt-1 md:mt-2">Turismo Sostenible</div>
+						</div>
+						<div class="text-center">
+							<div class="text-3xl md:text-4xl font-bold text-yellow-500">⭐</div>
+							<div class="text-gray-600 text-xs md:text-sm mt-1 md:mt-2">Mejor Valorados</div>
+						</div>
+					</div>
+					
+					<!-- Botones -->
+					<div class="flex flex-col sm:flex-row gap-3 md:gap-4 pt-4">
+						<a 
+							href="/sobre-nosotros" 
+							class="inline-flex items-center justify-center gap-2 bg-[#15803d] hover:bg-[#166534] text-white font-semibold px-5 md:px-6 py-2.5 md:py-3 rounded-lg transition-all duration-300 text-sm md:text-base"
+						>
+							Conoce Más
+						</a>
+						<a 
+							href="https://wa.me/51965001929" 
+							class="inline-flex items-center justify-center gap-2 border-2 bg-yellow-400 border-yellow-400 text-gray-900 font-semibold px-5 md:px-6 py-2.5 md:py-3 rounded-lg hover:bg-yellow-500 transition-all duration-300 text-sm md:text-base"
+						>
+							<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+								<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+							</svg>
+							Contáctanos
+						</a>
+					</div>
+				</div>
+				
+				<!-- Galería de Imágenes -->
+				<div class="grid grid-cols-2 gap-3 md:gap-4 mt-8 lg:mt-0">
+					<img 
+						src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?q=80&w=2070" 
+						alt="Guía local"
+						class="w-full h-48 md:h-56 lg:h-64 object-cover rounded-lg shadow-md"
+					/>
+					<img 
+						src="https://images.unsplash.com/photo-1551244072-5d12893278ab?q=80&w=2070" 
+						alt="Turistas en la selva"
+						class="w-full h-48 md:h-56 lg:h-64 object-cover rounded-lg shadow-md mt-4 md:mt-6 lg:mt-8"
+					/>
+					<img 
+						src="https://images.unsplash.com/photo-1564760055775-d63b17a55c44?q=80&w=2076" 
+						alt="Delfín rosado"
+						class="w-full h-48 md:h-56 lg:h-64 object-cover rounded-lg shadow-md -mt-4 md:-mt-6 lg:-mt-8"
+					/>
+					<img 
+						src="https://images.unsplash.com/photo-1566024164372-0281f1133aa6?q=80&w=2070" 
+						alt="Atardecer en el río"
+						class="w-full h-48 md:h-56 lg:h-64 object-cover rounded-lg shadow-md"
+					/>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Sección Principales Tours Pacaya Samiria -->
+	<section class="py-12 md:py-16 lg:py-20 bg-linear-to-br from-[#15803d] via-green-700 to-[#166534] relative overflow-hidden">
+		<!-- Patrón de fondo decorativo -->
+		<div class="absolute inset-0 opacity-10">
+			<div class="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+			<div class="absolute bottom-0 right-0 w-96 h-96 bg-yellow-400 rounded-full blur-3xl"></div>
+		</div>
+
+		<div class="container px-4 relative z-10">
+			<!-- Encabezado -->
+			<div class="text-center mb-10 md:mb-14">
+				<div class="inline-block mb-4">
+					<span class="text-yellow-400 font-semibold text-xs md:text-sm tracking-wider uppercase">Nuestros Tours Principales</span>
+					<div class="h-0.5 w-16 bg-yellow-400 mt-2 mx-auto"></div>
+				</div>
+				<h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
+					Principales <span class="text-yellow-400">Tours del Pacaya Samiria</span>
+				</h2>
+				<p class="text-base md:text-lg text-white/90 max-w-3xl mx-auto px-4">
+					Descubre nuestros tours más completos para explorar la reserva más grande del Perú
+				</p>
+			</div>
+
+			<!-- Grid de Tours Principales - 2x2 -->
+			<div class="grid md:grid-cols-2 gap-8 md:gap-10 mx-auto ">
+				<!-- Tour 3 Días -->
+				<article class="group relative bg-white rounded-2xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-2 flex flex-col md:flex-row md:h-[450px]">
+					<!-- Imagen/Carrusel - Izquierda -->
+					<div class="relative md:w-1/2 h-64 md:h-auto overflow-hidden shrink-0">
+						<div class="swiper tour-3days-swiper h-full">
+							<div class="swiper-wrapper">
+								<div class="swiper-slide">
+									<img 
+										src="/src/assets/pacaya3-1.jpg" 
+										alt="Pacaya Samiria - Vista Aérea"
+										class="w-full h-full object-cover"
+									/>
+								</div>
+								<div class="swiper-slide">
+									<video 
+										src="/video/pacaya3dias.mp4" 
+										class="w-full h-full object-cover"
+										autoplay
+										loop
+										muted
+										playsinline
+									></video>
+								</div>
+								<div class="swiper-slide">
+									<img 
+										src="/src/assets/pacaya3-2.jpg" 
+										alt="Camping en la Selva"
+										class="w-full h-full object-cover"
+									/>
+								</div>
+								<div class="swiper-slide">
+									<video 
+										src="/video/pacaya3dias1.mp4" 
+										class="w-full h-full object-cover"
+										autoplay
+										loop
+										muted
+										playsinline
+									></video>
+								</div>
+							</div>
+							<div class="swiper-pagination-3days"></div>
+						</div>
+						<div class="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-transparent pointer-events-none"></div>
+
+						<!-- Badge sobre imagen -->
+						<div class="absolute top-4 left-4 z-20">
+							<span class="bg-yellow-400 text-gray-900 px-3 py-1.5 rounded-full font-bold text-xs shadow-lg flex items-center gap-1.5">
+								<svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+									<path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+								</svg>
+								Popular
+							</span>
+						</div>
+					</div>
+
+					<!-- Contenido - Derecha -->
+					<div class="p-4 md:p-6 flex flex-col justify-between md:w-1/2">
+						<!-- Encabezado -->
+						<div class="mb-3">
+							<h3 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+								Pacaya Samiria 3 Días
+							</h3>
+							<p class="text-gray-600 text-sm md:text-base mb-3">
+								Aventura Express en la Selva Amazónica
+							</p>
+							
+							<!-- Precio -->
+							<div class="inline-flex items-baseline gap-2 bg-green-50 px-4 py-2 rounded-lg">
+								<span class="text-3xl font-bold text-[#15803d]">$450</span>
+								<span class="text-sm text-gray-600">por persona</span>
+							</div>
+						</div>
+
+						<!-- Información y características -->
+						<div class="space-y-3">
+							<!-- Info rápida -->
+							<div class="grid grid-cols-3 gap-3 py-3 border-y border-gray-200">
+								<div class="text-center">
+									<div class="text-2xl font-bold text-[#15803d]">3</div>
+									<div class="text-xs text-gray-600">Días</div>
+								</div>
+								<div class="text-center">
+									<div class="text-2xl font-bold text-[#15803d]">2</div>
+									<div class="text-xs text-gray-600">Noches</div>
+								</div>
+								<div class="text-center">
+									<div class="text-2xl font-bold text-[#15803d]">2-12</div>
+									<div class="text-xs text-gray-600">Personas</div>
+								</div>
+							</div>
+
+							<!-- Highlights -->
+							<ul class="space-y-2">
+								<li class="flex items-center gap-3">
+									<svg class="w-5 h-5 text-[#15803d] shrink-0" fill="currentColor" viewBox="0 0 20 20">
+										<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+									</svg>
+									<span class="text-gray-700">Delfines rosados</span>
+								</li>
+								<li class="flex items-center gap-3">
+									<svg class="w-5 h-5 text-[#15803d] shrink-0" fill="currentColor" viewBox="0 0 20 20">
+										<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+									</svg>
+									<span class="text-gray-700">Camping selvático</span>
+								</li>
+								<li class="flex items-center gap-3">
+									<svg class="w-5 h-5 text-[#15803d] shrink-0" fill="currentColor" viewBox="0 0 20 20">
+										<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+									</svg>
+					<span class="text-gray-700">Guía experto</span>
+				</li>
+			</ul>
+		</div>
+
+		<!-- Botones -->
+		<div class="flex gap-2 mt-4">
+			<a 
+				href="/tour/pacaya-samiria-3-dias"
+				class="flex-1 text-center bg-[#15803d] hover:bg-[#166534] text-white font-semibold px-4 py-2 rounded-lg transition-all text-sm"
+			>
+				Ver Detalle
+			</a>
+			<a 
+				href="https://wa.me/51965001929?text=Tour%20Pacaya%20Samiria%203%20días" 
+				class="flex items-center justify-center bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-lg transition-all"
+				title="Consultar por WhatsApp"
+			>
+				<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+					<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+				</svg>
+			</a>
+		</div>
+	</div>
+</article>				<!-- Tour 4 Días -->
+				<article class="group relative bg-white rounded-2xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-2 flex flex-col md:flex-row md:h-[450px]">
+					<!-- Imagen/Carrusel - Izquierda -->
+					<div class="relative md:w-1/2 h-64 md:h-auto overflow-hidden shrink-0">
+						<div class="swiper tour-4days-swiper h-full">
+							<div class="swiper-wrapper">
+								<div class="swiper-slide">
+									<img 
+										src="https://images.unsplash.com/photo-1580060839134-75a5edca2e99?q=80&w=2071" 
+										alt="Selva Amazónica"
+										class="w-full h-full object-cover"
+									/>
+								</div>
+								<div class="swiper-slide">
+									<img 
+										src="https://images.unsplash.com/photo-1566024164372-0281f1133aa6?q=80&w=2070" 
+										alt="Atardecer en el Río"
+										class="w-full h-full object-cover"
+									/>
+								</div>
+								<div class="swiper-slide">
+									<img 
+										src="https://images.unsplash.com/photo-1621335223658-0ebd89004d51?q=80&w=2070" 
+										alt="Fauna Amazónica"
+										class="w-full h-full object-cover"
+									/>
+								</div>
+								<div class="swiper-slide">
+									<img 
+										src="https://images.unsplash.com/photo-1601296723862-1c4b3c9b6e0a?q=80&w=2070" 
+										alt="Navegación en la Reserva"
+										class="w-full h-full object-cover"
+									/>
+								</div>
+								<div class="swiper-slide">
+									<img 
+										src="https://images.unsplash.com/photo-1583795128727-6ec3642408f8?q=80&w=2074" 
+										alt="Vida Silvestre"
+										class="w-full h-full object-cover"
+									/>
+								</div>
+							</div>
+							<div class="swiper-pagination-4days"></div>
+						</div>
+						<div class="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-transparent pointer-events-none"></div>
+						
+						<!-- Badge sobre imagen -->
+						<div class="absolute top-4 left-4 z-20">
+							<span class="bg-linear-to-r from-[#15803d] to-green-600 text-white px-3 py-1.5 rounded-full font-bold text-xs shadow-lg flex items-center gap-1.5">
+								<svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+									<path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+								</svg>
+								Mejor Valorado
+							</span>
+						</div>
+					</div>
+
+					<!-- Contenido - Derecha -->
+					<div class="p-4 md:p-6 flex flex-col justify-between md:w-1/2">
+						<!-- Encabezado -->
+						<div class="mb-3">
+							<h3 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+								Pacaya Samiria 4 Días
+							</h3>
+							<p class="text-gray-600 text-sm md:text-base mb-3">
+								Expedición Completa en el Corazón de la Amazonía
+							</p>
+							
+							<!-- Precio -->
+							<div class="inline-flex items-baseline gap-2 bg-green-50 px-4 py-2 rounded-lg">
+								<span class="text-3xl font-bold text-[#15803d]">$600</span>
+								<span class="text-sm text-gray-600">por persona</span>
+							</div>
+						</div>
+
+						<!-- Información y características -->
+						<div class="space-y-3">
+							<!-- Info rápida -->
+							<div class="grid grid-cols-3 gap-3 py-3 border-y border-gray-200">
+								<div class="text-center">
+									<div class="text-2xl font-bold text-[#15803d]">4</div>
+									<div class="text-xs text-gray-600">Días</div>
+								</div>
+								<div class="text-center">
+									<div class="text-2xl font-bold text-[#15803d]">3</div>
+									<div class="text-xs text-gray-600">Noches</div>
+								</div>
+								<div class="text-center">
+									<div class="text-2xl font-bold text-[#15803d]">2-10</div>
+									<div class="text-xs text-gray-600">Personas</div>
+								</div>
+							</div>
+
+							<!-- Highlights -->
+							<ul class="space-y-2">
+								<li class="flex items-center gap-3">
+									<svg class="w-5 h-5 text-[#15803d] shrink-0" fill="currentColor" viewBox="0 0 20 20">
+										<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+									</svg>
+									<span class="text-gray-700">Exploración profunda</span>
+								</li>
+								<li class="flex items-center gap-3">
+									<svg class="w-5 h-5 text-[#15803d] shrink-0" fill="currentColor" viewBox="0 0 20 20">
+										<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+									</svg>
+									<span class="text-gray-700">Zonas remotas</span>
+								</li>
+								<li class="flex items-center gap-3">
+									<svg class="w-5 h-5 text-[#15803d] shrink-0" fill="currentColor" viewBox="0 0 20 20">
+										<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+									</svg>
+						<span class="text-gray-700">Todo incluido</span>
+					</li>
+				</ul>
+			</div>
+
+			<!-- Botones -->
+			<div class="flex gap-2 mt-4">
+				<a 
+					href="/tour/pacaya-samiria-4-dias"
+					class="flex-1 text-center bg-[#15803d] hover:bg-[#166534] text-white font-semibold px-4 py-2 rounded-lg transition-all text-sm"
+				>
+					Ver Detalle
+				</a>
+				<a 
+					href="https://wa.me/51965001929?text=Tour%20Pacaya%20Samiria%204%20días" 
+					class="flex items-center justify-center bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-lg transition-all"
+					title="Consultar por WhatsApp"
+				>
+					<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+						<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+					</svg>
+				</a>
+			</div>
+		</div>
+	</article>				<!-- Tour 5 Días -->
+				<article class="group relative bg-white rounded-2xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-2 flex flex-col md:flex-row md:h-[450px]">
+					<!-- Carrusel - Izquierda -->
+					<div class="relative md:w-1/2 h-64 md:h-auto overflow-hidden shrink-0">
+						<div class="swiper tour-5days-swiper h-full">
+							<div class="swiper-wrapper">
+								<div class="swiper-slide">
+									<img 
+										src="https://images.unsplash.com/photo-1621335223658-0ebd89004d51?q=80&w=2070" 
+										alt="Fauna Amazónica"
+										class="w-full h-full object-cover"
+									/>
+								</div>
+								<div class="swiper-slide">
+									<img 
+										src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?q=80&w=2070" 
+										alt="Camping en la Selva"
+										class="w-full h-full object-cover"
+									/>
+								</div>
+								<div class="swiper-slide">
+									<img 
+										src="https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=2068" 
+										alt="Vista Aérea Reserva"
+										class="w-full h-full object-cover"
+									/>
+								</div>
+								<div class="swiper-slide">
+									<img 
+										src="https://images.unsplash.com/photo-1601296723862-1c4b3c9b6e0a?q=80&w=2070" 
+										alt="Navegación Nocturna"
+										class="w-full h-full object-cover"
+									/>
+								</div>
+								<div class="swiper-slide">
+									<img 
+										src="https://images.unsplash.com/photo-1564760055775-d63b17a55c44?q=80&w=2076" 
+										alt="Delfín Rosado"
+										class="w-full h-full object-cover"
+									/>
+								</div>
+							</div>
+							<div class="swiper-pagination-5days"></div>
+						</div>
+						<div class="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-transparent pointer-events-none"></div>
+						
+						<!-- Badge sobre imagen -->
+						<div class="absolute top-4 left-4 z-20">
+							<span class="bg-purple-600 text-white px-3 py-1.5 rounded-full font-bold text-xs shadow-lg flex items-center gap-1.5">
+								<svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+									<path fill-rule="evenodd" d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z" clip-rule="evenodd"/>
+								</svg>
+								Premium
+							</span>
+						</div>
+					</div>
+
+					<!-- Contenido - Derecha -->
+					<div class="p-4 md:p-6 flex flex-col justify-between md:w-1/2">
+						<!-- Encabezado -->
+						<div class="mb-3">
+							<h3 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+								Pacaya Samiria 5 Días
+							</h3>
+							<p class="text-gray-600 text-sm md:text-base mb-3">
+								Inmersión Total en la Selva Virgen
+							</p>
+							
+							<!-- Precio -->
+							<div class="inline-flex items-baseline gap-2 bg-green-50 px-4 py-2 rounded-lg">
+								<span class="text-3xl font-bold text-[#15803d]">$750</span>
+								<span class="text-sm text-gray-600">por persona</span>
+							</div>
+						</div>
+
+						<!-- Información y características -->
+						<div class="space-y-3">
+							<!-- Info rápida -->
+							<div class="grid grid-cols-3 gap-3 py-3 border-y border-gray-200">
+								<div class="text-center">
+									<div class="text-2xl font-bold text-[#15803d]">5</div>
+									<div class="text-xs text-gray-600">Días</div>
+								</div>
+								<div class="text-center">
+									<div class="text-2xl font-bold text-[#15803d]">4</div>
+									<div class="text-xs text-gray-600">Noches</div>
+								</div>
+								<div class="text-center">
+									<div class="text-2xl font-bold text-[#15803d]">2-8</div>
+									<div class="text-xs text-gray-600">Personas</div>
+								</div>
+							</div>
+
+							<!-- Highlights -->
+							<ul class="space-y-2">
+								<li class="flex items-center gap-3">
+									<svg class="w-5 h-5 text-[#15803d] shrink-0" fill="currentColor" viewBox="0 0 20 20">
+										<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+									</svg>
+									<span class="text-gray-700">Zonas más remotas</span>
+								</li>
+								<li class="flex items-center gap-3">
+									<svg class="w-5 h-5 text-[#15803d] shrink-0" fill="currentColor" viewBox="0 0 20 20">
+										<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+									</svg>
+									<span class="text-gray-700">Máxima biodiversidad</span>
+								</li>
+								<li class="flex items-center gap-3">
+									<svg class="w-5 h-5 text-[#15803d] shrink-0" fill="currentColor" viewBox="0 0 20 20">
+										<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+									</svg>
+						<span class="text-gray-700">Guía especializado</span>
+					</li>
+				</ul>
+			</div>
+
+			<!-- Botones -->
+			<div class="flex gap-2 mt-4">
+				<a 
+					href="/tour/pacaya-samiria-5-dias"
+					class="flex-1 text-center bg-[#15803d] hover:bg-[#166534] text-white font-semibold px-4 py-2 rounded-lg transition-all text-sm"
+				>
+					Ver Detalle
+				</a>
+				<a 
+					href="https://wa.me/51965001929?text=Tour%20Pacaya%20Samiria%205%20días" 
+					class="flex items-center justify-center bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-lg transition-all"
+					title="Consultar por WhatsApp"
+				>
+					<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+						<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+					</svg>
+				</a>
+			</div>
+		</div>
+	</article>				<!-- Tour 10 Días -->
+				<article class="group relative bg-white rounded-2xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-2 flex flex-col md:flex-row md:h-[450px]">
+					<!-- Carrusel - Izquierda -->
+					<div class="relative md:w-1/2 h-64 md:h-auto overflow-hidden shrink-0">
+						<div class="swiper tour-10days-swiper h-full">
+							<div class="swiper-wrapper">
+								<div class="swiper-slide">
+									<img 
+										src="https://images.unsplash.com/photo-1580060839134-75a5edca2e99?q=80&w=2071" 
+										alt="Selva Profunda"
+										class="w-full h-full object-cover"
+									/>
+								</div>
+								<div class="swiper-slide">
+									<img 
+										src="https://images.unsplash.com/photo-1566024164372-0281f1133aa6?q=80&w=2070" 
+										alt="Atardecer Amazónico"
+										class="w-full h-full object-cover"
+									/>
+								</div>
+								<div class="swiper-slide">
+									<img 
+										src="https://images.unsplash.com/photo-1583795128727-6ec3642408f8?q=80&w=2074" 
+										alt="Vida Silvestre"
+										class="w-full h-full object-cover"
+									/>
+								</div>
+								<div class="swiper-slide">
+									<img 
+										src="https://images.unsplash.com/photo-1551244072-5d12893278ab?q=80&w=2070" 
+										alt="Expedición en Canoa"
+										class="w-full h-full object-cover"
+									/>
+								</div>
+								<div class="swiper-slide">
+									<img 
+										src="https://images.unsplash.com/photo-1621335223658-0ebd89004d51?q=80&w=2070" 
+										alt="Encuentro con la Naturaleza"
+										class="w-full h-full object-cover"
+									/>
+								</div>
+								<div class="swiper-slide">
+									<img 
+										src="https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=2068" 
+										alt="Vista Aérea Completa"
+										class="w-full h-full object-cover"
+									/>
+								</div>
+							</div>
+							<div class="swiper-pagination-10days"></div>
+						</div>
+						<div class="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-transparent pointer-events-none"></div>
+						
+						<!-- Badge sobre imagen -->
+						<div class="absolute top-4 left-4 z-20">
+							<span class="bg-linear-to-r from-amber-600 to-yellow-600 text-white px-3 py-1.5 rounded-full font-bold text-xs shadow-lg flex items-center gap-1.5">
+								<svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+									<path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+								</svg>
+								Elite
+							</span>
+						</div>
+					</div>
+
+					<!-- Contenido - Derecha -->
+					<div class="p-4 md:p-6 flex flex-col justify-between md:w-1/2">
+						<!-- Encabezado -->
+						<div class="mb-3">
+							<h3 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+								Pacaya Samiria 10 Días
+							</h3>
+							<p class="text-gray-600 text-sm md:text-base mb-3">
+								Expedición Completa y Exclusiva
+							</p>
+							
+							<!-- Precio -->
+							<div class="inline-flex items-baseline gap-2 bg-green-50 px-4 py-2 rounded-lg">
+								<span class="text-3xl font-bold text-[#15803d]">$1,500</span>
+								<span class="text-sm text-gray-600">por persona</span>
+							</div>
+						</div>
+
+						<!-- Información y características -->
+						<div class="space-y-3">
+							<!-- Info rápida -->
+							<div class="grid grid-cols-3 gap-3 py-3 border-y border-gray-200">
+								<div class="text-center">
+									<div class="text-2xl font-bold text-[#15803d]">10</div>
+									<div class="text-xs text-gray-600">Días</div>
+								</div>
+								<div class="text-center">
+									<div class="text-2xl font-bold text-[#15803d]">9</div>
+									<div class="text-xs text-gray-600">Noches</div>
+								</div>
+								<div class="text-center">
+									<div class="text-2xl font-bold text-[#15803d]">2-6</div>
+									<div class="text-xs text-gray-600">Personas</div>
+								</div>
+							</div>
+
+							<!-- Highlights -->
+							<ul class="space-y-2">
+								<li class="flex items-center gap-3">
+									<svg class="w-5 h-5 text-[#15803d] shrink-0" fill="currentColor" viewBox="0 0 20 20">
+										<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+									</svg>
+									<span class="text-gray-700">Toda la reserva</span>
+								</li>
+								<li class="flex items-center gap-3">
+									<svg class="w-5 h-5 text-[#15803d] shrink-0" fill="currentColor" viewBox="0 0 20 20">
+										<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+									</svg>
+									<span class="text-gray-700">Experiencia única</span>
+								</li>
+								<li class="flex items-center gap-3">
+									<svg class="w-5 h-5 text-[#15803d] shrink-0" fill="currentColor" viewBox="0 0 20 20">
+										<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+									</svg>
+									<span class="text-gray-700">Servicio VIP</span>
+								</li>
+							</ul>
+						</div>
+
+						<!-- Botones -->
+						<div class="flex gap-2 mt-4">
+							<a 
+								href="/tour/pacaya-samiria-10-dias"
+								class="flex-1 text-center bg-[#15803d] hover:bg-[#166534] text-white font-semibold px-4 py-2 rounded-lg transition-all text-sm"
+							>
+								Ver Detalle
+							</a>
+							<a 
+								href="https://wa.me/51965001929?text=Tour%20Pacaya%20Samiria%2010%20días" 
+								class="flex items-center justify-center bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-lg transition-all"
+								title="Consultar por WhatsApp"
+							>
+								<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+									<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+								</svg>
+							</a>
+						</div>
+					</div>
+				</article>
+			</div>
+
+			<!-- CTA adicional -->
+			<div class="text-center mt-12">
+				<p class="text-white text-lg mb-4">¿Necesitas ayuda para elegir tu aventura?</p>
+				<a 
+					href="https://wa.me/51965001929" 
+					class="inline-flex items-center gap-3 bg-white hover:bg-gray-100 text-[#15803d] font-semibold px-8 py-4 rounded-lg transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-105"
+				>
+					<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+						<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+					</svg>
+					Consulta con un Experto Local
+				</a>
+			</div>
+		</div>
+	</section>
+
+	<!-- Sección Cabañas y Áreas -->
+	<section class="py-12 md:py-16 lg:py-20 bg-white">
+		<div class="container px-4">
+			<!-- Encabezado -->
+			<div class="text-center mb-10 md:mb-14">
+				<div class="inline-block mb-4">
+					<span class="text-[#15803d] font-semibold text-xs md:text-sm tracking-wider uppercase">Instalaciones</span>
+					<div class="h-0.5 w-16 bg-yellow-400 mt-2 mx-auto"></div>
+				</div>
+				<h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+					Cabañas y <span class="text-[#15803d]">Áreas Naturales</span>
+				</h2>
+				<p class="text-base md:text-lg text-gray-600 max-w-3xl mx-auto">
+					Alojamientos cómodos en armonía con la naturaleza amazónica
+				</p>
+			</div>
+
+			<!-- Grid de Cabañas -->
+			<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-12">
+				<!-- Cabaña Flotante -->
+				<div class="group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500">
+					<div class="relative h-64 overflow-hidden">
+						<img 
+							src="https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=2025" 
+							alt="Cabañas Flotantes"
+							class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+						/>
+						<div class="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent"></div>
+						<div class="absolute bottom-0 left-0 right-0 p-6">
+							<h3 class="text-white font-bold text-xl md:text-2xl mb-2">Cabañas Flotantes</h3>
+							<p class="text-white/90 text-sm">Hospedaje único sobre el río</p>
+						</div>
+					</div>
+					<div class="p-6">
+						<ul class="space-y-2">
+							<li class="flex items-start gap-2 text-sm text-gray-700">
+								<svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+									<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+								</svg>
+								<span>Construcción tradicional amazónica</span>
+							</li>
+							<li class="flex items-start gap-2 text-sm text-gray-700">
+								<svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+									<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+								</svg>
+								<span>Vista panorámica del río</span>
+							</li>
+							<li class="flex items-start gap-2 text-sm text-gray-700">
+								<svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+									<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+								</svg>
+								<span>Mosquiteros incluidos</span>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+				<!-- Campamento -->
+				<div class="group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500">
+					<div class="relative h-64 overflow-hidden">
+						<img 
+							src="https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?q=80&w=2070" 
+							alt="Campamento en la Selva"
+							class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+						/>
+						<div class="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent"></div>
+						<div class="absolute bottom-0 left-0 right-0 p-6">
+							<h3 class="text-white font-bold text-xl md:text-2xl mb-2">Campamento Selvático</h3>
+							<p class="text-white/90 text-sm">Experiencia de inmersión total</p>
+						</div>
+					</div>
+					<div class="p-6">
+						<ul class="space-y-2">
+							<li class="flex items-start gap-2 text-sm text-gray-700">
+								<svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+									<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+								</svg>
+								<span>Carpas profesionales</span>
+							</li>
+							<li class="flex items-start gap-2 text-sm text-gray-700">
+								<svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+									<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+								</svg>
+								<span>Zona de fogata</span>
+							</li>
+							<li class="flex items-start gap-2 text-sm text-gray-700">
+								<svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+									<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+								</svg>
+								<span>Noches bajo las estrellas</span>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+				<!-- Áreas Comunes -->
+				<div class="group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500">
+					<div class="relative h-64 overflow-hidden">
+						<img 
+							src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?q=80&w=2070" 
+							alt="Áreas Comunes"
+							class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+						/>
+						<div class="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent"></div>
+						<div class="absolute bottom-0 left-0 right-0 p-6">
+							<h3 class="text-white font-bold text-xl md:text-2xl mb-2">Áreas Comunes</h3>
+							<p class="text-white/90 text-sm">Espacios de convivencia natural</p>
+						</div>
+					</div>
+					<div class="p-6">
+						<ul class="space-y-2">
+							<li class="flex items-start gap-2 text-sm text-gray-700">
+								<svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+									<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+								</svg>
+								<span>Comedor al aire libre</span>
+							</li>
+							<li class="flex items-start gap-2 text-sm text-gray-700">
+								<svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+									<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+								</svg>
+								<span>Miradores naturales</span>
+							</li>
+							<li class="flex items-start gap-2 text-sm text-gray-700">
+								<svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+									<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+								</svg>
+								<span>Hamacas para descanso</span>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<!-- Banner informativo -->
+			<div class="bg-linear-to-r from-[#15803d] to-green-700 rounded-2xl p-8 md:p-10 text-white text-center">
+				<h3 class="text-2xl md:text-3xl font-bold mb-4">Sostenibilidad y Respeto a la Naturaleza</h3>
+				<p class="text-base md:text-lg max-w-3xl mx-auto mb-6">
+					Todas nuestras instalaciones están diseñadas con materiales locales y técnicas tradicionales, minimizando el impacto ambiental y apoyando a las comunidades locales.
+				</p>
+				<div class="flex flex-wrap justify-center gap-6 md:gap-8">
+					<div class="flex items-center gap-2">
+						<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+							<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+						</svg>
+						<span class="text-sm md:text-base">Energía solar</span>
+					</div>
+					<div class="flex items-center gap-2">
+						<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+							<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+						</svg>
+						<span class="text-sm md:text-base">Cero plásticos</span>
+					</div>
+					<div class="flex items-center gap-2">
+						<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+							<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+						</svg>
+						<span class="text-sm md:text-base">Reciclaje total</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	
+
+	<!-- Sección Tours -->
+	<section id="tours" class="py-12 md:py-16 lg:py-20 bg-linear-to-b from-gray-50 to-white">
+		<div class="container px-4">
+			<div class="text-center mb-10 md:mb-12 lg:mb-16">
+				<h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 md:mb-4">
+					Todos Nuestros <span class="text-[#15803d]">Tours</span>
+				</h2>
+				<p class="text-base md:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto px-4">
+					Descubre todas las experiencias disponibles en Pacaya Samiria
+				</p>
+			</div>
+
+			<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+				{toursWithImages.map((tour) => (
+					<article class="group relative bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500">
+						<a href={`/tour/${tour.slug}`}>
+							<!-- Imagen del Tour -->
+							<div class="relative h-64 md:h-72 lg:h-80 overflow-hidden">
+								<img 
+									src={tour.imageUrl}
+									alt={tour.title.rendered}
+									class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+									loading="lazy"
+								/>
+								<div class="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-transparent"></div>
+								
+							<!-- Badge de Precio -->
+							<div class="absolute top-3 md:top-4 right-3 md:right-4 bg-linear-to-r from-yellow-400 to-yellow-500 text-gray-900 px-3 md:px-4 py-1.5 md:py-2 rounded-full font-bold text-xs md:text-sm shadow-lg">
+									{tour.acf?.precio || 'Consultar'}
+								</div>
+								
+								<!-- Título sobre la imagen -->
+								<div class="absolute bottom-0 left-0 right-0 p-4 md:p-6">
+									<h3 class="text-white font-bold text-lg md:text-xl mb-2 line-clamp-2">
+										{tour.title.rendered}
+									</h3>
+								</div>
+							</div>
+							
+							<!-- Contenido -->
+							<div class="p-4 md:p-6 bg-linear-to-br from-white to-green-50">
+									<div class="text-gray-700 text-xs md:text-sm line-clamp-3 leading-relaxed mb-3 md:mb-4" set:html={tour.excerpt.rendered} />
+									
+									<!-- CTA Button -->
+									<div class="flex items-center justify-between">
+										<span class="inline-flex items-center gap-1 md:gap-2 text-[#15803d] font-semibold px-3 md:px-4 py-1.5 md:py-2 rounded-lg border-2 border-[#15803d] group-hover:bg-[#15803d] group-hover:text-white transition-all duration-300 text-xs md:text-sm">
+											<svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+										</svg>
+										Ver detalles
+									</span>
+									
+									<div class="flex gap-1">
+										<span class="w-2 h-2 rounded-full bg-[#15803d] group-hover:bg-yellow-400 transition-colors"></span>
+										<span class="w-2 h-2 rounded-full bg-yellow-400 group-hover:bg-[#15803d] transition-colors"></span>
+										<span class="w-2 h-2 rounded-full bg-[#15803d] group-hover:bg-yellow-400 transition-colors"></span>
+									</div>
+								</div>
+							</div>
+						</a>
+					</article>
+				))}
+			</div>
+
+			{tours.length > 10 && (
+				<div class="text-center mt-12">
+					<a 
+						href="/tour" 
+						class="inline-block bg-gray-900 hover:bg-gray-800 text-white font-bold px-8 py-4 rounded-lg text-lg transition-all duration-300"
+					>
+						Ver Todos los Tours
+					</a>
+				</div>
+			)}
+		</div>
+	</section>
+
+	<!-- Sección Testimonios -->
+	<section class="py-12 md:py-16 lg:py-20 bg-gray-50">
+		<div class="container px-4">
+			<!-- Encabezado -->
+			<div class="text-center mb-10 md:mb-12">
+			<div class="inline-block mb-4">
+				<span class="text-[#15803d] font-semibold text-xs md:text-sm tracking-wider uppercase">Testimonios</span>
+				<div class="h-0.5 w-16 bg-yellow-400 mt-2 mx-auto"></div>
+			</div>
+			<h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+				Lo Que Dicen Nuestros <span class="text-[#15803d]">Viajeros</span>
+			</h2>
+			<p class="text-base md:text-lg text-gray-600 max-w-2xl mx-auto">
+				Miles de aventureros han confiado en nosotros para explorar la Amazonía
+			</p>
+		</div>		<!-- Carrusel de Testimonios con Swiper -->
+		<div class="swiper testimonials-swiper relative">
+			<div class="swiper-wrapper pb-12">
+				{testimonials.map((testimonial) => (
+					<div class="swiper-slide h-auto">
+						<div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 p-6 h-full flex flex-col relative border border-gray-100">
+							<!-- Logo de la plataforma -->
+							<div class="absolute top-4 right-4 z-10">
+								{testimonial.platform === 'tripadvisor' && (
+									<img src="/src/assets/tripadvisor_image.png" alt="">
+								)}
+								{testimonial.platform === 'google' && (
+									<svg class="w-8 h-8" viewBox="0 0 24 24">
+										<path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+										<path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+										<path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+										<path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+									</svg>
+								)}
+								{testimonial.platform === 'facebook' && (
+									<svg class="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+										<path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+									</svg>
+								)}
+							</div>
+
+					<!-- Círculos de Rating -->
+					<div class="flex gap-1.5 mb-4">
+						{Array.from({ length: 5 }).map((_, i) => (
+							<div class={`w-3 h-3 rounded-full ${i < testimonial.rating ? 'bg-[#15803d]' : 'bg-gray-300'}`}></div>
+						))}
+					</div>
+
+					<!-- Comentario -->
+					<p class="text-gray-700 text-sm leading-relaxed mb-6 grow line-clamp-4">
+						"{testimonial.comment}"
+					</p>
+
+					<!-- Autor -->
+					<div class="flex items-center justify-between pt-3 border-t border-gray-200">
+						<div class="flex items-center gap-3">
+							{testimonial.avatar ? (
+								<img 
+									src={testimonial.avatar} 
+									alt={testimonial.name}
+									class="w-12 h-12 rounded-full object-cover"
+								/>
+							) : (
+								<div class="w-10 h-10 rounded-full bg-[#15803d] flex items-center justify-center text-white font-bold shrink-0">
+									{testimonial.name.charAt(0).toUpperCase()}
+								</div>
+							)}
+							<div>
+								<div class="font-semibold text-gray-900 text-sm">{testimonial.name}</div>
+								{testimonial.location && (
+									<div class="text-xs text-gray-600">{testimonial.location}</div>
+								)}
+							</div>
+						</div>
+						{testimonial.date && (
+							<div class="text-xs text-gray-500">{testimonial.date}</div>
+						)}
+					</div>
+				</div>
+			</div>
+				))}
+			</div>
+
+			<!-- Navegación -->
+			<div class="swiper-button-next-testimonials absolute top-1/2 right-0 -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center text-[#15803d] cursor-pointer hover:bg-[#15803d] hover:text-white transition-all">
+				<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+				</svg>
+			</div>
+			<div class="swiper-button-prev-testimonials absolute top-1/2 left-0 -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center text-[#15803d] cursor-pointer hover:bg-[#15803d] hover:text-white transition-all">
+				<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+				</svg>
+			</div>
+
+			<!-- Paginación -->
+			<div class="swiper-pagination-testimonials mt-8"></div>
+		</div>
+
+		<!-- Enlace a TripAdvisor -->
+		<div class="text-center mt-10">
+				<a 
+					href="https://www.tripadvisor.com/Attraction_Review-g294314-d12865966-Reviews-Ruth_Amazon_Expeditions-Iquitos_Loreto_Region.html" 
+					target="_blank"
+					rel="noopener noreferrer"
+					class="inline-flex items-center gap-3 bg-white hover:bg-gray-50 text-gray-800 font-semibold px-8 py-4 rounded-lg border-2 border-gray-200 transition-all duration-300 shadow-md hover:shadow-lg"
+				>
+					<img src="/src/assets/tripadvisor_image.png" alt="">
+					<span>Ver más en TripAdvisor</span>
+					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+					</svg>
+				</a>
+			</div>
+		</div>
+	</section>
+	
+	<Footer />
 </Layout>
+
+<style>
+	@import 'swiper/css';
+	@import 'swiper/css/navigation';
+	@import 'swiper/css/pagination';
+
+	.swiper-button-next,
+	.swiper-button-prev {
+		color: white;
+	}
+
+	.swiper-pagination-bullet {
+		background: white;
+	}
+
+	.swiper-pagination-bullet-active {
+		background: #15803d;
+	}
+
+	@keyframes fade-in {
+		from {
+			opacity: 0;
+			transform: translateY(20px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	.animate-fade-in {
+		animation: fade-in 1s ease-out;
+	}
+
+	/* Videos en Swiper - sin pointer events para permitir navegación */
+	.swiper-slide video {
+		pointer-events: none;
+	}
+
+	/* Ajustes para cards de tours de 450px */
+	@media (min-width: 768px) {
+		article[class*="md:h-[450px]"] h3 {
+			font-size: 1.5rem !important;
+			line-height: 1.3;
+			margin-bottom: 0.5rem !important;
+		}
+		
+		article[class*="md:h-[450px]"] p {
+			font-size: 0.875rem !important;
+			margin-bottom: 0.5rem !important;
+		}
+		
+		article[class*="md:h-[450px]"] .bg-green-50 {
+			padding: 0.375rem 0.75rem !important;
+		}
+		
+		article[class*="md:h-[450px]"] .bg-green-50 span:first-child {
+			font-size: 1.75rem !important;
+		}
+		
+		article[class*="md:h-[450px]"] .grid > div > div:first-child {
+			font-size: 1.25rem !important;
+		}
+		
+		article[class*="md:h-[450px]"] ul li {
+			gap: 0.5rem !important;
+		}
+		
+		article[class*="md:h-[450px]"] ul li svg {
+			width: 1rem !important;
+			height: 1rem !important;
+		}
+		
+		article[class*="md:h-[450px]"] ul li span {
+			font-size: 0.875rem !important;
+		}
+		
+		article[class*="md:h-[450px]"] button,
+		article[class*="md:h-[450px]"] a[href*="wa.me"] {
+			padding: 0.5rem 1rem !important;
+			font-size: 0.875rem !important;
+		}
+		
+		article[class*="md:h-[450px]"] > div:last-child {
+			padding: 1rem 1.25rem !important;
+		}
+	}
+
+	.line-clamp-2 {
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	.line-clamp-3 {
+		display: -webkit-box;
+		-webkit-line-clamp: 3;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	.line-clamp-4 {
+		display: -webkit-box;
+		-webkit-line-clamp: 4;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	.line-clamp-5 {
+		display: -webkit-box;
+		-webkit-line-clamp: 5;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	.line-clamp-6 {
+		display: -webkit-box;
+		-webkit-line-clamp: 6;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	.testimonials-swiper .swiper-slide {
+		height: auto;
+		display: flex;
+	}
+
+	/* Estilos para carruseles de tours recomendados */
+	.tour-3days-swiper .swiper-pagination-bullet,
+	.tour-4days-swiper .swiper-pagination-bullet {
+		background: white;
+		opacity: 0.5;
+		width: 8px;
+		height: 8px;
+	}
+
+	.tour-3days-swiper .swiper-pagination-bullet-active,
+	.tour-4days-swiper .swiper-pagination-bullet-active {
+		opacity: 1;
+		background: #facc15;
+	}
+
+	.tour-3days-swiper .swiper-pagination,
+	.tour-4days-swiper .swiper-pagination {
+		bottom: 20px !important;
+		z-index: 20;
+	}
+</style>
+
+<script>
+	import Swiper from 'swiper';
+	import { Navigation, Pagination, Autoplay, EffectFade } from 'swiper/modules';
+	import { Fancybox } from '@fancyapps/ui';
+
+	// Inicializar Swiper Hero
+	const swiper = new Swiper('.hero-swiper', {
+		modules: [Navigation, Pagination, Autoplay, EffectFade],
+		loop: true,
+		autoplay: {
+			delay: 5000,
+			disableOnInteraction: false,
+		},
+		navigation: {
+			nextEl: '.swiper-button-next',
+			prevEl: '.swiper-button-prev',
+		},
+		pagination: {
+			el: '.swiper-pagination',
+			clickable: true,
+		},
+		effect: 'fade',
+		fadeEffect: {
+			crossFade: true
+		},
+	});
+
+	// Inicializar Swiper Testimonios
+	const testimonialsSwiper = new Swiper('.testimonials-swiper', {
+		modules: [Navigation, Pagination, Autoplay],
+		loop: true,
+		autoplay: {
+			delay: 7000,
+			disableOnInteraction: false,
+		},
+		navigation: {
+			nextEl: '.swiper-button-next-testimonials',
+			prevEl: '.swiper-button-prev-testimonials',
+		},
+		pagination: {
+			el: '.swiper-pagination-testimonials',
+			clickable: true,
+		},
+		slidesPerView: 1,
+		spaceBetween: 20,
+		breakpoints: {
+			640: {
+				slidesPerView: 2,
+				spaceBetween: 20,
+			},
+			768: {
+				slidesPerView: 3,
+				spaceBetween: 24,
+			},
+			1024: {
+				slidesPerView: 4,
+				spaceBetween: 24,
+			},
+		},
+	});
+
+	// Inicializar Swiper Tour 3 Días
+	const tour3DaysSwiper = new Swiper('.tour-3days-swiper', {
+		modules: [Pagination, Autoplay, EffectFade],
+		loop: true,
+		autoplay: {
+			delay: 4000,
+			disableOnInteraction: false,
+		},
+		pagination: {
+			el: '.swiper-pagination-3days',
+			clickable: true,
+		},
+		effect: 'fade',
+		fadeEffect: {
+			crossFade: true
+		},
+	});
+
+	// Inicializar Swiper Tour 4 Días
+	const tour4DaysSwiper = new Swiper('.tour-4days-swiper', {
+		modules: [Pagination, Autoplay, EffectFade],
+		loop: true,
+		autoplay: {
+			delay: 4000,
+			disableOnInteraction: false,
+		},
+		pagination: {
+			el: '.swiper-pagination-4days',
+			clickable: true,
+		},
+		effect: 'fade',
+		fadeEffect: {
+			crossFade: true
+		},
+	});
+
+	// Inicializar Swiper Tour 5 Días
+	const tour5DaysSwiper = new Swiper('.tour-5days-swiper', {
+		modules: [Pagination, Autoplay, EffectFade],
+		loop: true,
+		autoplay: {
+			delay: 4000,
+			disableOnInteraction: false,
+		},
+		pagination: {
+			el: '.swiper-pagination-5days',
+			clickable: true,
+		},
+		effect: 'fade',
+		fadeEffect: {
+			crossFade: true
+		},
+	});
+
+	// Inicializar Swiper Tour 10 Días
+	const tour10DaysSwiper = new Swiper('.tour-10days-swiper', {
+		modules: [Pagination, Autoplay, EffectFade],
+		loop: true,
+		autoplay: {
+			delay: 4000,
+			disableOnInteraction: false,
+		},
+		pagination: {
+			el: '.swiper-pagination-10days',
+			clickable: true,
+		},
+		effect: 'fade',
+		fadeEffect: {
+			crossFade: true
+		},
+	});
+
+	
+</script>

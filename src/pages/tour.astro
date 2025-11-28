@@ -1,0 +1,80 @@
+---
+import '../styles/global.css';
+import Layout from '../layouts/Layout.astro';
+import Header from '../layouts/Header.astro';
+import Footer from '../layouts/Footer.astro';
+import { getPosts } from '../utils/wordpress';
+
+const posts = await getPosts();
+
+// Formatear la fecha
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('es-ES', { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
+  });
+};
+---
+
+<Layout>
+	<Header />
+	
+	<main class="py-12">
+		<section class="container">
+			<div class="mb-12">
+				<h1 class="text-4xl font-bold mb-4 text-gray-900">Tours</h1>
+				<p class="text-lg text-gray-600">Descubre nuestros tours y aventuras en la Amazonía peruana</p>
+			</div>
+			
+			{posts.length === 0 ? (
+				<div class="text-center py-12">
+					<p class="text-xl text-gray-500">No hay entradas disponibles en este momento.</p>
+				</div>
+			) : (
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+					{posts.map((post) => (
+						<article class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+							<div class="p-6">
+								<h2 class="text-2xl font-semibold mb-3">
+									<a href={`/tour/${post.slug}`} class="text-gray-800 hover:text-blue-600 transition-colors">
+										{post.title.rendered}
+									</a>
+								</h2>
+								
+								<time class="text-sm text-gray-500 block mb-4">
+									{formatDate(post.date)}
+								</time>
+								
+								<div class="text-gray-600 line-clamp-4 mb-4" set:html={post.excerpt.rendered} />
+								
+								<a 
+									href={`/tour/${post.slug}`} 
+									class="inline-block text-blue-600 hover:text-blue-800 font-medium transition-colors"
+								>
+									Leer más →
+								</a>
+							</div>
+						</article>
+					))}
+				</div>
+			)}
+		</section>
+	</main>
+	
+	<Footer />
+</Layout>
+
+<style>
+	.line-clamp-4 {
+		display: -webkit-box;
+		-webkit-line-clamp: 4;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+	
+	.line-clamp-4 :global(p) {
+		margin: 0;
+	}
+</style>

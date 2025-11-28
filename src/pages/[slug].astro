@@ -1,0 +1,361 @@
+---
+import { getPages, getPosts, getFeaturedImage, getYoastSEO, getSiteInfo } from '../utils/wordpress';
+import type { WPPage, WPPost } from '../utils/wordpress';
+import Layout from '../layouts/Layout.astro';
+import Header from '../layouts/Header.astro';
+import Footer from '../layouts/Footer.astro';
+import heroImage from '../assets/pacayasamiria.png';
+import { getTripAdvisorReviews } from '../utils/testimonials';
+import tripadvisorImage from '../assets/tripadvisor_image.png';
+
+export async function getStaticPaths() {
+  const pages = await getPages();
+  const posts = await getPosts();
+  
+  // Todas las rutas en la raíz (igual que WordPress)
+  const allPaths = [
+    ...pages.map(page => ({
+      params: { slug: page.slug },
+      props: { content: page, type: 'page' as const }
+    })),
+    ...posts.map(post => ({
+      params: { slug: post.slug },
+      props: { content: post, type: 'post' as const }
+    }))
+  ];
+  
+  return allPaths;
+}
+
+interface Props {
+  content: WPPage | WPPost;
+  type: 'page' | 'post';
+}
+
+const { content, type } = Astro.props;
+
+// Obtener Yoast SEO y favicon
+const yoastSEO = await getYoastSEO(content.slug, type === 'post' ? 'posts' : 'pages');
+const siteInfo = await getSiteInfo();
+const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
+
+// Si no hay contenido, error 404
+if (!content) {
+  return new Response(null, { status: 404 });
+}
+
+// Preparar datos según el tipo
+let featuredImageUrl: string | null = null;
+let allPosts: WPPost[] = [];
+let toursWithImages: any[] = [];
+let testimonials: any[] = [];
+
+if (type === 'post') {
+  const post = content as WPPost;
+  featuredImageUrl = post.featured_media 
+    ? await getFeaturedImage(post.featured_media)
+    : 'https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=2068';
+  
+  allPosts = await getPosts();
+  
+  // Obtener tours con imágenes
+  toursWithImages = await Promise.all(
+    allPosts.map(async (tour) => {
+      const imageUrl = tour.featured_media
+        ? await getFeaturedImage(tour.featured_media)
+        : 'https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=2068';
+      return { ...tour, imageUrl };
+    })
+  );
+  
+  testimonials = await getTripAdvisorReviews();
+}
+import TourContent from '../components/TourContent.astro';
+---
+
+<Layout 
+  title={content.title.rendered}
+  description={content.excerpt.rendered.replace(/<[^>]*>/g, '').substring(0, 160)}
+  yoastSEO={yoastSEO}
+  favicon={favicon}
+>
+  <Header />
+  
+  {type === 'post' ? (
+    <!-- Diseño para Tours (Posts) -->
+    <TourContent 
+      post={content as WPPost} 
+      featuredImageUrl={featuredImageUrl!}
+      toursWithImages={toursWithImages}
+      testimonials={testimonials}
+    />
+  ) : (
+    <!-- Diseño para Páginas -->
+    <>
+      <section class="relative h-[400px] md:h-[500px] overflow-hidden">
+        <img 
+          src={heroImage.src} 
+          alt={content.title.rendered} 
+          class="w-full h-full object-cover"
+        />
+        <div class="absolute inset-0 bg-linear-to-r from-black/70 via-black/50 to-black/30"></div>
+        <div class="absolute inset-0 flex items-center">
+          <div class="container">
+            <div class="max-w-4xl">
+              <h1 class="text-4xl md:text-6xl font-bold text-white mb-4" set:html={content.title.rendered} />
+              <div class="w-24 h-1 bg-[#fbbf24]"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <main class="py-12 bg-gray-50">
+        <article class="container">
+          <div class="mx-auto bg-white rounded-lg shadow-md p-8 md:p-12">
+            <div class="prose prose-lg max-w-none" set:html={content.content.rendered} />
+          </div>
+        </article>
+      </main>
+    </>
+  )}
+  
+  <Footer />
+</Layout>
+
+<style>
+  .prose {
+    color: #374151;
+  }
+  
+  .prose :global(h2) {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
+    color: #1f2937;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e5e7eb;
+  }
+  
+  .prose :global(h3) {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: #1f2937;
+  }
+  
+  .prose :global(h4) {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: #374151;
+  }
+  
+  .prose :global(p) {
+    margin-bottom: 1.5rem;
+    line-height: 1.8;
+    font-size: 1.125rem;
+  }
+  
+  .prose :global(img) {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.75rem;
+    margin: 2.5rem auto;
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  }
+  
+  .prose :global(a) {
+    color: #2563eb;
+    text-decoration: none;
+    border-bottom: 2px solid #93c5fd;
+    transition: all 0.2s;
+  }
+  
+  .prose :global(a:hover) {
+    color: #1d4ed8;
+    border-bottom-color: #1d4ed8;
+  }
+  
+  .prose :global(ul),
+  .prose :global(ol) {
+    margin-bottom: 1.5rem;
+    padding-left: 2rem;
+  }
+  
+  .prose :global(li) {
+    margin-bottom: 0.75rem;
+    line-height: 1.75;
+  }
+  
+  .prose :global(blockquote) {
+    border-left: 4px solid #3b82f6;
+    padding-left: 1.5rem;
+    margin: 2rem 0;
+    font-style: italic;
+    color: #6b7280;
+    background-color: #f9fafb;
+    padding: 1rem 1.5rem;
+    border-radius: 0.5rem;
+  }
+  
+  .prose :global(iframe) {
+    max-width: 100%;
+    margin: 2.5rem 0;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  }
+  
+  .prose :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2rem 0;
+  }
+  
+  .prose :global(th),
+  .prose :global(td) {
+    border: 1px solid #e5e7eb;
+    padding: 0.75rem 1rem;
+    text-align: left;
+  }
+  
+  .prose :global(th) {
+    background-color: #f3f4f6;
+    font-weight: 600;
+    color: #1f2937;
+  }
+
+  /* WordPress Columns */
+  .prose :global(.wp-block-columns) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin: 2rem 0;
+  }
+
+  .prose :global(.wp-block-column) {
+    flex: 1;
+    min-width: 0;
+  }
+
+  @media (max-width: 768px) {
+    .prose :global(.wp-block-columns) {
+      flex-direction: column;
+    }
+    
+    .prose :global(.wp-block-column) {
+      width: 100%;
+    }
+  }
+
+  @media (min-width: 769px) {
+    .prose :global(.wp-block-column) {
+      flex-basis: calc(50% - 1rem);
+    }
+  }
+
+  /* WordPress Gallery con Fancybox */
+  .prose :global(.wp-block-gallery) {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 2.5rem 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .prose :global(.wp-block-gallery figure),
+  .prose :global(.wp-block-gallery li) {
+    margin: 0;
+    position: relative;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    aspect-ratio: 1;
+  }
+
+  .prose :global(.wp-block-gallery img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+    margin: 0;
+  }
+
+  .prose :global(.wp-block-gallery a) {
+    display: block;
+    height: 100%;
+    border: none;
+  }
+
+  .prose :global(.wp-block-gallery img:hover) {
+    transform: scale(1.05);
+  }
+
+  @media (max-width: 640px) {
+    .prose :global(.wp-block-gallery) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 641px) and (max-width: 1024px) {
+    .prose :global(.wp-block-gallery) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (min-width: 1025px) {
+    .prose :global(.wp-block-gallery) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>
+
+<script>
+  import { Fancybox } from '@fancyapps/ui';
+
+  // Inicializar Fancybox para galerías de WordPress
+  document.addEventListener('DOMContentLoaded', () => {
+    const galleries = document.querySelectorAll('.wp-block-gallery');
+    
+    galleries.forEach((gallery) => {
+      const images = gallery.querySelectorAll('img');
+      
+      images.forEach((img) => {
+        const link = img.closest('a');
+        const figure = img.closest('figure') || img.closest('li');
+        
+        if (link) {
+          // Si ya tiene un enlace, añadir atributo data-fancybox
+          link.setAttribute('data-fancybox', 'gallery');
+          link.setAttribute('data-caption', img.alt || '');
+        } else if (figure) {
+          // Si no tiene enlace, crear uno
+          const newLink = document.createElement('a');
+          newLink.href = img.src;
+          newLink.setAttribute('data-fancybox', 'gallery');
+          newLink.setAttribute('data-caption', img.alt || '');
+          
+          img.parentNode?.insertBefore(newLink, img);
+          newLink.appendChild(img);
+        }
+      });
+    });
+
+    // Inicializar Fancybox
+    Fancybox.bind('[data-fancybox="gallery"]', {
+      Thumbs: {
+        autoStart: true,
+      },
+      Toolbar: {
+        display: {
+          left: [],
+          middle: [],
+          right: ["close"],
+        },
+      },
+    });
+  });
+</script>

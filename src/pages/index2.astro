@@ -1,0 +1,599 @@
+---
+import '../styles/global.css';
+import Layout from '../layouts/Layout.astro';
+import Footer from '../layouts/Footer.astro';
+import { getPosts, getFeaturedImage } from '../utils/wordpress';
+import { getTripAdvisorReviews } from '../utils/testimonials';
+import tripadvisorImage from '../assets/tripadvisor_image.png';
+import logoRuth from '../assets/logoruth.png';
+import heroImage from '../assets/pacayasamiria.png';
+
+// Obtener los tours (posts) de WordPress
+const tours = await getPosts();
+const featuredTours = tours.slice(0, 10); // Mostrar los primeros 10 tours
+
+// Obtener imágenes destacadas para todos los tours
+const toursWithImages = await Promise.all(
+  featuredTours.map(async (tour) => {
+    const imageUrl = tour.featured_media 
+      ? await getFeaturedImage(tour.featured_media)
+      : 'https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=2068';
+    return { ...tour, imageUrl };
+  })
+);
+
+// Obtener reseñas de TripAdvisor desde WordPress
+const testimonials = await getTripAdvisorReviews();
+---
+
+<Layout>
+	<!-- Sidebar Menu -->
+	<div id="sidebar-menu-overlay" class="fixed inset-0 bg-black/50 z-50 hidden transition-opacity duration-300"></div>
+	<div id="sidebar-menu" class="fixed top-0 right-0 h-full w-80 md:w-96 bg-white shadow-2xl z-50 transform translate-x-full transition-transform duration-300">
+		<div class="flex flex-col h-full">
+			<!-- Header del sidebar -->
+			<div class="bg-[#15803d] text-white px-6 py-5 flex items-center justify-between">
+				<h3 class="font-bold text-xl">Menu</h3>
+				<button id="sidebar-menu-close" class="text-white hover:text-yellow-400 transition-colors">
+					<svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+					</svg>
+				</button>
+			</div>
+
+			<!-- Contenido del menú -->
+			<nav class="flex-1 overflow-y-auto p-6">
+				<div class="space-y-6">
+					<div>
+						<h4 class="font-bold text-lg text-gray-900 mb-3 border-b-2 border-[#15803d] pb-2">Tour Packages</h4>
+						<ul class="space-y-2 pl-2">
+							<li><a href="#tours" class="sidebar-link text-gray-700 hover:text-[#15803d] transition-colors block py-1">Peru Tours</a></li>
+							<li><a href="#tours" class="sidebar-link text-gray-700 hover:text-[#15803d] transition-colors block py-1">Treks</a></li>
+						</ul>
+					</div>
+
+					<div>
+						<h4 class="font-bold text-lg text-gray-900 mb-3 border-b-2 border-[#15803d] pb-2">Destinations</h4>
+						<ul class="grid grid-cols-2 gap-2 pl-2">
+							<li><a href="#" class="sidebar-link text-gray-700 hover:text-[#15803d] transition-colors block py-1 text-sm">Pacaya Samiria</a></li>
+							<li><a href="#" class="sidebar-link text-gray-700 hover:text-[#15803d] transition-colors block py-1 text-sm">Iquitos</a></li>
+							<li><a href="#" class="sidebar-link text-gray-700 hover:text-[#15803d] transition-colors block py-1 text-sm">Amazon Rainforest</a></li>
+							<li><a href="#" class="sidebar-link text-gray-700 hover:text-[#15803d] transition-colors block py-1 text-sm">Nauta</a></li>
+							<li><a href="#" class="sidebar-link text-gray-700 hover:text-[#15803d] transition-colors block py-1 text-sm">Yurimaguas</a></li>
+							<li><a href="#" class="sidebar-link text-gray-700 hover:text-[#15803d] transition-colors block py-1 text-sm">Tarapoto</a></li>
+						</ul>
+					</div>
+
+					<div>
+						<h4 class="font-bold text-lg text-gray-900 mb-3 border-b-2 border-[#15803d] pb-2">Travel Categories</h4>
+						<ul class="space-y-2 pl-2">
+							<li><a href="#" class="sidebar-link text-gray-700 hover:text-[#15803d] transition-colors block py-1">Adventure Tours</a></li>
+							<li><a href="#" class="sidebar-link text-gray-700 hover:text-[#15803d] transition-colors block py-1">Wildlife Watching</a></li>
+							<li><a href="#" class="sidebar-link text-gray-700 hover:text-[#15803d] transition-colors block py-1">River Cruises</a></li>
+							<li><a href="#" class="sidebar-link text-gray-700 hover:text-[#15803d] transition-colors block py-1">Camping Tours</a></li>
+						</ul>
+					</div>
+				</div>
+			</nav>
+
+			<!-- Footer del sidebar -->
+			<div class="border-t border-gray-200 p-6 bg-gray-50">
+				<a 
+					href="https://wa.me/51965001929" 
+					class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition-all duration-300"
+				>
+					<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+						<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+					</svg>
+					Contact via WhatsApp
+				</a>
+			</div>
+		</div>
+	</div>
+
+	<!-- Sección Hero con imagen única -->
+	<section class="hero-section relative h-[600px] md:h-[700px] lg:h-[800px]">
+		<!-- Header sobre hero -->
+		<div class="absolute top-0 left-0 right-0 z-40">
+			<div class="container mx-auto px-4 md:px-6 py-4 md:py-6">
+				<div class="flex items-center justify-between">
+					<!-- Logo izquierdo -->
+					<div class="flex items-center">
+						<img 
+							src={logoRuth.src} 
+							alt="Ruth Amazon Expeditions" 
+							class="h-16 md:h-20 lg:h-24 xl:h-28 w-auto"
+						/>
+					</div>
+
+					<!-- Controles derechos -->
+					<div class="flex items-center gap-2 md:gap-3">
+						<!-- WhatsApp -->
+						<a 
+							href="https://wa.me/51965001929" 
+							class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg transition-all duration-300 shadow-lg flex items-center gap-1.5 text-xs md:text-sm font-semibold"
+						>
+							<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+								<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+							</svg>
+							<span class="hidden sm:inline">+51 965 001 929</span>
+						</a>
+
+						<span class="text-white/60 hidden sm:inline">|</span>
+
+						<!-- Teléfono -->
+						<a 
+							href="tel:+18172304971" 
+							class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg transition-all duration-300 shadow-lg flex items-center gap-1.5 text-xs md:text-sm font-semibold"
+						>
+							<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+							</svg>
+							<span class="hidden sm:inline">+1 817 230 4971</span>
+						</a>
+
+						<span class="text-white/60 hidden sm:inline">|</span>
+
+						<!-- Email -->
+						<a 
+							href="mailto:info@ruthamazonexp.com" 
+							class="bg-orange-600 hover:bg-orange-700 text-white px-3 py-2 rounded-lg transition-all duration-300 shadow-lg flex items-center gap-1.5 text-xs md:text-sm font-semibold"
+						>
+							<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+							</svg>
+							<span class="hidden lg:inline">info@ruthamazonexp.com</span>
+						</a>
+
+						<span class="text-white/60 hidden sm:inline">|</span>
+
+						<!-- Botón menú -->
+						<button 
+							id="sidebar-menu-button"
+							class="bg-gray-800 hover:bg-gray-900 text-white px-3 py-2 rounded-lg transition-all duration-300 shadow-lg flex items-center gap-1.5 text-xs md:text-sm font-semibold"
+							aria-label="Abrir menú"
+						>
+							<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+							</svg>
+							<span class="hidden md:inline">MENU</span>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Imagen de fondo -->
+		<div class="relative w-full h-full overflow-hidden">
+			<img 
+				src={heroImage.src}
+				alt="Pacaya Samiria" 
+				class="w-full h-full object-cover"
+			/>
+			<div class="absolute inset-0 bg-black/40"></div>
+			
+			<!-- Refrán en la parte izquierda -->
+			<div class="absolute left-4 md:left-8 lg:left-12 top-1/2 -translate-y-1/2 z-30 max-w-xs md:max-w-md lg:max-w-lg">
+				<div class="bg-black/60 backdrop-blur-sm p-6 md:p-8 rounded-lg">
+					<p class="text-white text-xl md:text-2xl lg:text-3xl font-light italic leading-relaxed mb-4">
+						"Donde los ríos susurran historias ancestrales y la selva guarda secretos milenarios"
+					</p>
+					<p class="text-yellow-400 text-sm md:text-base font-semibold">
+						— Reserva Nacional Pacaya Samiria
+					</p>
+					<a 
+						href="#tours" 
+						class="inline-block mt-6 bg-[#15803d] hover:bg-[#166534] text-white font-bold px-6 md:px-8 py-3 md:py-4 rounded-lg text-base md:text-lg transition-all duration-300 transform hover:scale-105 shadow-xl"
+					>
+						Explora Nuestros Tours
+					</a>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Sección Sobre Nosotros -->
+	<section class="py-12 md:py-16 lg:py-20 bg-gray-50">
+		<div class="container px-4">
+			<div class="grid lg:grid-cols-2 gap-8 md:gap-10 lg:gap-12 items-center">
+				<!-- Contenido de Texto -->
+				<div class="space-y-4 md:space-y-6">
+					<div class="inline-block">
+						<span class="text-[#15803d] font-semibold text-xs md:text-sm tracking-wider uppercase">Sobre Nosotros</span>
+						<div class="h-0.5 w-16 bg-yellow-400 mt-2"></div>
+					</div>
+					
+					<h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900">
+						Especialistas en Expediciones
+						<span class="text-[#15803d]"> a la Amazonía</span>
+					</h2>
+					
+					<p class="text-base md:text-lg text-gray-700 leading-relaxed">
+						<strong class="text-[#15803d]">Ruth Amazon Expeditions</strong> es una agencia especializada en tours a la Reserva Nacional Pacaya Samiria, reconocida como una de las áreas protegidas más importantes de la Amazonía peruana. Estamos orgullosos de darnos a conocer nacional e internacionalmente a través de la satisfacción de nuestros clientes.
+					</p>
+					
+					<p class="text-base md:text-lg text-gray-700 leading-relaxed">
+						Nuestros guías nativos profesionales te llevarán a explorar los lugares más remotos de la selva, donde podrás observar delfines rosados, anacondas, jaguares, guacamayos y cientos de especies en su hábitat natural.
+					</p>
+					
+					<!-- Estadísticas -->
+					<div class="grid grid-cols-3 gap-3 md:gap-4 pt-4 md:pt-6">
+						<div class="text-center">
+							<div class="text-3xl md:text-4xl font-bold text-[#15803d]">15+</div>
+							<div class="text-gray-600 text-xs md:text-sm mt-1 md:mt-2">Años de Experiencia</div>
+						</div>
+						<div class="text-center">
+							<div class="text-3xl md:text-4xl font-bold text-[#15803d]">100%</div>
+							<div class="text-gray-600 text-xs md:text-sm mt-1 md:mt-2">Turismo Sostenible</div>
+						</div>
+						<div class="text-center">
+							<div class="text-3xl md:text-4xl font-bold text-yellow-500">⭐</div>
+							<div class="text-gray-600 text-xs md:text-sm mt-1 md:mt-2">Mejor Valorados</div>
+						</div>
+					</div>
+					
+					<!-- Botones -->
+					<div class="flex flex-col sm:flex-row gap-3 md:gap-4 pt-4">
+						<a 
+							href="/sobre-nosotros" 
+							class="inline-flex items-center justify-center gap-2 bg-[#15803d] hover:bg-[#166534] text-white font-semibold px-5 md:px-6 py-2.5 md:py-3 rounded-lg transition-all duration-300 text-sm md:text-base"
+						>
+							Conoce Más
+						</a>
+						<a 
+							href="https://wa.me/51965001929" 
+							class="inline-flex items-center justify-center gap-2 border-2 bg-yellow-400 border-yellow-400 text-gray-900 font-semibold px-5 md:px-6 py-2.5 md:py-3 rounded-lg hover:bg-yellow-500 transition-all duration-300 text-sm md:text-base"
+						>
+							<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+								<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+							</svg>
+							Contáctanos
+						</a>
+					</div>
+				</div>
+				
+				<!-- Galería de Imágenes -->
+				<div class="grid grid-cols-2 gap-3 md:gap-4 mt-8 lg:mt-0">
+					<img 
+						src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?q=80&w=2070" 
+						alt="Guía local"
+						class="w-full h-48 md:h-56 lg:h-64 object-cover rounded-lg shadow-md"
+					/>
+					<img 
+						src="https://images.unsplash.com/photo-1551244072-5d12893278ab?q=80&w=2070" 
+						alt="Turistas en la selva"
+						class="w-full h-48 md:h-56 lg:h-64 object-cover rounded-lg shadow-md mt-4 md:mt-6 lg:mt-8"
+					/>
+					<img 
+						src="https://images.unsplash.com/photo-1564760055775-d63b17a55c44?q=80&w=2076" 
+						alt="Delfín rosado"
+						class="w-full h-48 md:h-56 lg:h-64 object-cover rounded-lg shadow-md -mt-4 md:-mt-6 lg:-mt-8"
+					/>
+					<img 
+						src="https://images.unsplash.com/photo-1566024164372-0281f1133aa6?q=80&w=2070" 
+						alt="Atardecer en el río"
+						class="w-full h-48 md:h-56 lg:h-64 object-cover rounded-lg shadow-md"
+					/>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Sección Tours -->
+	<section id="tours" class="py-12 md:py-16 lg:py-20 bg-linear-to-b from-gray-50 to-white">
+		<div class="container px-4">
+			<div class="text-center mb-10 md:mb-12 lg:mb-16">
+				<h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 md:mb-4">
+					Nuestros <span class="text-[#15803d]">Tours Exclusivos</span>
+				</h2>
+				<p class="text-base md:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto px-4">
+					Descubre las mejores experiencias en Pacaya Samiria con tours diseñados para todos los aventureros
+				</p>
+			</div>
+
+			<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+				{toursWithImages.map((tour) => (
+					<article class="group relative bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500">
+						<a href={`/tour/${tour.slug}`}>
+							<!-- Imagen del Tour -->
+							<div class="relative h-64 md:h-72 lg:h-80 overflow-hidden">
+								<img 
+									src={tour.imageUrl}
+									alt={tour.title.rendered}
+									class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+									loading="lazy"
+								/>
+								<div class="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-transparent"></div>
+								
+							<!-- Badge de Precio -->
+							<div class="absolute top-3 md:top-4 right-3 md:right-4 bg-linear-to-r from-yellow-400 to-yellow-500 text-gray-900 px-3 md:px-4 py-1.5 md:py-2 rounded-full font-bold text-xs md:text-sm shadow-lg">
+									{tour.acf?.precio || 'Consultar'}
+								</div>
+								
+								<!-- Título sobre la imagen -->
+								<div class="absolute bottom-0 left-0 right-0 p-4 md:p-6">
+									<h3 class="text-white font-bold text-lg md:text-xl mb-2 line-clamp-2">
+										{tour.title.rendered}
+									</h3>
+								</div>
+							</div>
+							
+							<!-- Contenido -->
+							<div class="p-4 md:p-6 bg-linear-to-br from-white to-green-50">
+									<div class="text-gray-700 text-xs md:text-sm line-clamp-3 leading-relaxed mb-3 md:mb-4" set:html={tour.excerpt.rendered} />
+									
+									<!-- CTA Button -->
+									<div class="flex items-center justify-between">
+										<span class="inline-flex items-center gap-1 md:gap-2 text-[#15803d] font-semibold px-3 md:px-4 py-1.5 md:py-2 rounded-lg border-2 border-[#15803d] group-hover:bg-[#15803d] group-hover:text-white transition-all duration-300 text-xs md:text-sm">
+											<svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+										</svg>
+										Ver detalles
+									</span>
+									
+									<div class="flex gap-1">
+										<span class="w-2 h-2 rounded-full bg-[#15803d] group-hover:bg-yellow-400 transition-colors"></span>
+										<span class="w-2 h-2 rounded-full bg-yellow-400 group-hover:bg-[#15803d] transition-colors"></span>
+										<span class="w-2 h-2 rounded-full bg-[#15803d] group-hover:bg-yellow-400 transition-colors"></span>
+									</div>
+								</div>
+							</div>
+						</a>
+					</article>
+				))}
+			</div>
+
+			{tours.length > 10 && (
+				<div class="text-center mt-12">
+					<a 
+						href="/tour" 
+						class="inline-block bg-gray-900 hover:bg-gray-800 text-white font-bold px-8 py-4 rounded-lg text-lg transition-all duration-300"
+					>
+						Ver Todos los Tours
+					</a>
+				</div>
+			)}
+		</div>
+	</section>
+
+	<!-- Sección Testimonios -->
+	<section class="py-12 md:py-16 lg:py-20 bg-gray-50">
+		<div class="container px-4">
+			<!-- Encabezado -->
+			<div class="text-center mb-10 md:mb-12">
+			<div class="inline-block mb-4">
+				<span class="text-[#15803d] font-semibold text-xs md:text-sm tracking-wider uppercase">Testimonios</span>
+				<div class="h-0.5 w-16 bg-yellow-400 mt-2 mx-auto"></div>
+			</div>
+			<h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+				Lo Que Dicen Nuestros <span class="text-[#15803d]">Viajeros</span>
+			</h2>
+			<p class="text-base md:text-lg text-gray-600 max-w-2xl mx-auto">
+				Miles de aventureros han confiado en nosotros para explorar la Amazonía
+			</p>
+		</div>		<!-- Carrusel de Testimonios con Swiper -->
+		<div class="swiper testimonials-swiper relative">
+			<div class="swiper-wrapper pb-12">
+				{testimonials.map((testimonial) => (
+					<div class="swiper-slide h-auto">
+						<div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 p-6 h-full flex flex-col relative border border-gray-100">
+							<!-- Logo de la plataforma -->
+							<div class="absolute top-4 right-4 z-10">
+								{testimonial.platform === 'tripadvisor' && (
+									<img src="/src/assets/tripadvisor_image.png" alt="">
+								)}
+								{testimonial.platform === 'google' && (
+									<svg class="w-8 h-8" viewBox="0 0 24 24">
+										<path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+										<path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+										<path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+										<path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+									</svg>
+								)}
+								{testimonial.platform === 'facebook' && (
+									<svg class="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+										<path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+									</svg>
+								)}
+							</div>
+
+					<!-- Círculos de Rating -->
+					<div class="flex gap-1.5 mb-4">
+						{Array.from({ length: 5 }).map((_, i) => (
+							<div class={`w-3 h-3 rounded-full ${i < testimonial.rating ? 'bg-[#15803d]' : 'bg-gray-300'}`}></div>
+						))}
+					</div>
+
+					<!-- Comentario -->
+					<p class="text-gray-700 text-sm leading-relaxed mb-6 grow line-clamp-4">
+						"{testimonial.comment}"
+					</p>
+
+					<!-- Autor -->
+					<div class="flex items-center justify-between pt-3 border-t border-gray-200">
+						<div class="flex items-center gap-3">
+							{testimonial.avatar ? (
+								<img 
+									src={testimonial.avatar} 
+									alt={testimonial.name}
+									class="w-12 h-12 rounded-full object-cover"
+								/>
+							) : (
+								<div class="w-10 h-10 rounded-full bg-[#15803d] flex items-center justify-center text-white font-bold shrink-0">
+									{testimonial.name.charAt(0).toUpperCase()}
+								</div>
+							)}
+							<div>
+								<div class="font-semibold text-gray-900 text-sm">{testimonial.name}</div>
+								{testimonial.location && (
+									<div class="text-xs text-gray-600">{testimonial.location}</div>
+								)}
+							</div>
+						</div>
+						{testimonial.date && (
+							<div class="text-xs text-gray-500">{testimonial.date}</div>
+						)}
+					</div>
+				</div>
+			</div>
+				))}
+			</div>
+
+			<!-- Navegación -->
+			<div class="swiper-button-next-testimonials absolute top-1/2 right-0 -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center text-[#15803d] cursor-pointer hover:bg-[#15803d] hover:text-white transition-all">
+				<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+				</svg>
+			</div>
+			<div class="swiper-button-prev-testimonials absolute top-1/2 left-0 -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center text-[#15803d] cursor-pointer hover:bg-[#15803d] hover:text-white transition-all">
+				<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+				</svg>
+			</div>
+
+			<!-- Paginación -->
+			<div class="swiper-pagination-testimonials mt-8"></div>
+		</div>
+
+		<!-- Enlace a TripAdvisor -->
+		<div class="text-center mt-10">
+				<a 
+					href="https://www.tripadvisor.com/Attraction_Review-g294314-d12865966-Reviews-Ruth_Amazon_Expeditions-Iquitos_Loreto_Region.html" 
+					target="_blank"
+					rel="noopener noreferrer"
+					class="inline-flex items-center gap-3 bg-white hover:bg-gray-50 text-gray-800 font-semibold px-8 py-4 rounded-lg border-2 border-gray-200 transition-all duration-300 shadow-md hover:shadow-lg"
+				>
+					<img src="/src/assets/tripadvisor_image.png" alt="">
+					<span>Ver más en TripAdvisor</span>
+					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+					</svg>
+				</a>
+			</div>
+		</div>
+	</section>
+	
+	<Footer />
+</Layout>
+
+<style>
+	@import 'swiper/css';
+	@import 'swiper/css/navigation';
+	@import 'swiper/css/pagination';
+
+	.swiper-button-next,
+	.swiper-button-prev {
+		color: white;
+	}
+
+	.swiper-pagination-bullet {
+		background: white;
+	}
+
+	.swiper-pagination-bullet-active {
+		background: #15803d;
+	}
+
+	@keyframes fade-in {
+		from {
+			opacity: 0;
+			transform: translateY(20px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	.animate-fade-in {
+		animation: fade-in 1s ease-out;
+	}
+
+	.line-clamp-2 {
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	.line-clamp-3 {
+		display: -webkit-box;
+		-webkit-line-clamp: 3;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	.line-clamp-4 {
+		display: -webkit-box;
+		-webkit-line-clamp: 4;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	.testimonials-swiper .swiper-slide {
+		height: auto;
+		display: flex;
+	}
+</style>
+
+<script>
+	import Swiper from 'swiper';
+	import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+
+	// Funciones del sidebar menu
+	function openSidebarMenu() {
+		const menu = document.getElementById('sidebar-menu');
+		const overlay = document.getElementById('sidebar-menu-overlay');
+		if (menu && overlay) {
+			overlay.classList.remove('hidden');
+			setTimeout(() => {
+				menu.classList.remove('translate-x-full');
+				overlay.classList.add('opacity-100');
+			}, 10);
+		}
+	}
+
+	function closeSidebarMenu() {
+		const menu = document.getElementById('sidebar-menu');
+		const overlay = document.getElementById('sidebar-menu-overlay');
+		if (menu && overlay) {
+			menu.classList.add('translate-x-full');
+			overlay.classList.remove('opacity-100');
+			setTimeout(() => {
+				overlay.classList.add('hidden');
+			}, 300);
+		}
+	}
+
+	// Event listeners para el sidebar
+	document.addEventListener('DOMContentLoaded', () => {
+		const menuButton = document.getElementById('sidebar-menu-button');
+		const closeButton = document.getElementById('sidebar-menu-close');
+		const overlay = document.getElementById('sidebar-menu-overlay');
+		const menuLinks = document.querySelectorAll('#sidebar-menu a');
+
+		if (menuButton) {
+			menuButton.addEventListener('click', openSidebarMenu);
+		}
+
+		if (closeButton) {
+			closeButton.addEventListener('click', closeSidebarMenu);
+		}
+
+		if (overlay) {
+			overlay.addEventListener('click', closeSidebarMenu);
+		}
+
+		// Cerrar menú al hacer clic en un enlace
+		menuLinks.forEach(link => {
+			link.addEventListener('click', closeSidebarMenu);
+		});
+
+		// Cerrar con tecla ESC
+		document.addEventListener('keydown', (e) => {
+			if (e.key === 'Escape') {
+				closeSidebarMenu();
+			}
+		});
+	});
+</script>
