@@ -1,3 +1,7 @@
+// Configuración de WordPress API
+const WORDPRESS_API_URL = import.meta.env.PUBLIC_WORDPRESS_API_URL || 'http://web.ruth/wp-json/wp/v2';
+const WORDPRESS_BASE_URL = import.meta.env.PUBLIC_WORDPRESS_BASE_URL || 'http://web.ruth';
+
 // Tipos para los testimonios
 export interface Testimonial {
   name: string;
@@ -13,7 +17,7 @@ export interface Testimonial {
 // Función para obtener las reseñas de TripAdvisor desde WordPress
 export async function getTripAdvisorReviews(): Promise<Testimonial[]> {
   try {
-    const response = await fetch('http://web.ruth/wp-json/ruth-amazon/v1/tripadvisor-widget?id=1');
+    const response = await fetch(`${WORDPRESS_BASE_URL}/wp-json/ruth-amazon/v1/tripadvisor-widget?id=1`);
     
     if (!response.ok) {
       console.warn('No se pudieron cargar las reseñas de TripAdvisor');
@@ -46,7 +50,7 @@ export async function getTripAdvisorReviews(): Promise<Testimonial[]> {
 // Función legacy para obtener el HTML del widget (deprecated)
 export async function getTripAdvisorWidget(): Promise<string> {
   try {
-    const response = await fetch('http://web.ruth/wp-json/ruth-amazon/v1/tripadvisor-widget?id=1');
+    const response = await fetch(`${WORDPRESS_BASE_URL}/wp-json/ruth-amazon/v1/tripadvisor-widget?id=1`);
     
     if (!response.ok) {
       return '';
@@ -62,7 +66,7 @@ export async function getTripAdvisorWidget(): Promise<string> {
 // Función para obtener testimonios desde WordPress (alternativa)
 export async function getTestimonials(): Promise<Testimonial[]> {
   try {
-    const response = await fetch('http://web.ruth/wp-json/wp/v2/testimonials');
+    const response = await fetch(`${WORDPRESS_API_URL}/testimonials`);
     
     if (!response.ok) {
       console.warn('No se pudieron cargar testimonios desde WordPress');
