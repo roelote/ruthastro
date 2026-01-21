@@ -12,7 +12,7 @@
   "dependencies": {
     "@fancyapps/ui": "^6.1.6",
     "@tailwindcss/vite": "^4.1.17",
-    "astro": "^5.16.0",
+    "astro": "^5.16.12",
     "swiper": "^12.0.3",
     "tailwindcss": "^4.1.17"
   }
