@@ -1,4 +1,4 @@
----
+﻿---
 import '../styles/global.css';
 import Layout from '../layouts/Layout.astro';
 import Header from '../layouts/Header.astro';
@@ -16,7 +16,39 @@ import tripadvisorLogo from '../assets/tripadvisor_image.png';
 
 // Obtener los tours (posts) de WordPress
 const tours = await getPosts();
-const featuredTours = tours.slice(0, 10); // Mostrar los primeros 10 tours
+
+// URLs a excluir de la lista general de tours (usadas en sección Principales Tours Pacaya Samiria)
+const excludedSlugs = [
+  'pacaya-samiria-mistico-3-dias-2-noches',
+  'pacaya-samiria-selva-autentica-4-dias-3-noches',
+  'selva-pacaya-samiria-5-dias',
+  'pacaya-samiria-selva-virgen-10-dias-9-noches'
+];
+
+// Filtrar tours excluyendo los slugs específicos
+const filteredTours = tours.filter(tour => !excludedSlugs.includes(tour.slug));
+const featuredTours = filteredTours.slice(0, 9); // Mostrar los primeros 9 tours
+
+// Obtener tours específicos de Pacaya Samiria con sus precios ACF
+const pacaya3dias = tours.find(tour => tour.slug === 'pacaya-samiria-mistico-3-dias-2-noches');
+const pacaya4dias = tours.find(tour => tour.slug === 'pacaya-samiria-selva-autentica-4-dias-3-noches');
+const pacaya5dias = tours.find(tour => tour.slug === 'selva-pacaya-samiria-5-dias');
+const pacaya10dias = tours.find(tour => tour.slug === 'pacaya-samiria-selva-virgen-10-dias-9-noches');
+
+// Función para procesar precios y separar el texto "por persona"
+const procesarPrecio = (precio) => {
+  if (!precio) return { monto: 'Consultar', porPersona: null };
+  const partes = precio.split(/\s+(por\s+persona)/i);
+  return {
+    monto: partes[0],
+    porPersona: partes[1]
+  };
+};
+
+const precio3dias = procesarPrecio(pacaya3dias?.acf?.precio);
+const precio4dias = procesarPrecio(pacaya4dias?.acf?.precio);
+const precio5dias = procesarPrecio(pacaya5dias?.acf?.precio);
+const precio10dias = procesarPrecio(pacaya10dias?.acf?.precio);
 
 // Obtener imágenes destacadas para todos los tours
 const toursWithImages = await Promise.all(
@@ -147,10 +179,17 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 			</div>
 			
 			<!-- Navegación -->
-			<div class="swiper-button-next"></div>
-			<div class="swiper-button-prev"></div>
-			<div class="swiper-pagination"></div>
+		<div class="hero-button-next">
+			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-6 h-6">
+				<path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+			</svg>
 		</div>
+		<div class="hero-button-prev">
+			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-6 h-6">
+				<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+			</svg>
+		</div>
+		<div class="hero-pagination"></div>
 	</section>
 
 	<!-- Sección Sobre Nosotros -->
@@ -216,7 +255,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 				<!-- Galería de Imágenes -->
 				<div class="grid grid-cols-2 gap-3 md:gap-4 mt-8 lg:mt-0">
 					<img 
-						src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?q=80&w=2070" 
+						src="/src/assets/equiporuth2.webp" 
 						alt="Guía local"
 						class="w-full h-48 md:h-56 lg:h-64 object-cover rounded-lg shadow-md"
 						loading="lazy"
@@ -224,7 +263,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 						height="600"
 					/>
 					<img 
-						src="https://images.unsplash.com/photo-1551244072-5d12893278ab?q=80&w=2070" 
+						src="/src/assets/equiporuth4.webp" 
 						alt="Turistas en la selva"
 						class="w-full h-48 md:h-56 lg:h-64 object-cover rounded-lg shadow-md mt-4 md:mt-6 lg:mt-8"
 						loading="lazy"
@@ -232,7 +271,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 						height="600"
 					/>
 					<img 
-						src="https://images.unsplash.com/photo-1564760055775-d63b17a55c44?q=80&w=2076" 
+						src="/src/assets/equipo2.png" 
 						alt="Delfín rosado"
 						class="w-full h-48 md:h-56 lg:h-64 object-cover rounded-lg shadow-md -mt-4 md:-mt-6 lg:-mt-8"
 						loading="lazy"
@@ -240,7 +279,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 						height="600"
 					/>
 					<img 
-						src="https://images.unsplash.com/photo-1566024164372-0281f1133aa6?q=80&w=2070" 
+						src="/src/assets/equipo3.png" 
 						alt="Atardecer en el río"
 						class="w-full h-48 md:h-56 lg:h-64 object-cover rounded-lg shadow-md"
 						loading="lazy"
@@ -352,14 +391,14 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 										
 										<!-- Precio -->
 										<div class="inline-flex items-baseline gap-2 bg-green-50 px-4 py-2 rounded-lg">
-											<span class="text-3xl font-bold text-[#15803d]">S/.1000.00 </span>
-											<span class="text-sm text-gray-600">por persona</span>
-										</div>
+						<span class="text-3xl font-bold text-[#15803d]">{precio3dias.monto}</span>
+						{precio3dias.porPersona && <span class="text-xs text-gray-500 ml-1">{precio3dias.porPersona}</span>}
 									</div>
+								</div>
 
-									<!-- Información y características -->
-									<div class="space-y-3">
-										<!-- Info rápida -->
+								<!-- Información y características -->
+								<div class="space-y-3">
+									<!-- Info rápida -->
 										<div class="grid grid-cols-3 gap-3 py-3 border-y border-gray-200">
 											<div class="text-center">
 												<div class="text-2xl font-bold text-[#15803d]">3</div>
@@ -401,7 +440,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 					<!-- Botones -->
 					<div class="flex gap-2 mt-4">
 						<a 
-							href="/pacaya-samiria-3-dias"
+							href="/pacaya-samiria-mistico-3-dias-2-noches/"
 							class="flex-1 text-center bg-[#15803d] hover:bg-[#166534] text-white font-semibold px-4 py-2 rounded-lg transition-all text-sm"
 						>
 							Ver Detalle
@@ -425,7 +464,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 							<div class="swiper-wrapper">
 								<div class="swiper-slide">
 									<img 
-										src="https://images.unsplash.com/photo-1580060839134-75a5edca2e99?q=80&w=2071" 
+										src="/src/assets/selva-autentica-3.jpeg" 
 										alt="Selva Amazónica"
 										class="w-full h-full object-cover"
 										loading="lazy"
@@ -435,7 +474,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 								</div>
 								<div class="swiper-slide">
 									<img 
-										src="https://images.unsplash.com/photo-1566024164372-0281f1133aa6?q=80&w=2070" 
+										src="/src/assets/selva-autentica-2.jpeg" 
 										alt="Atardecer en el Río"
 										class="w-full h-full object-cover"
 										loading="lazy"
@@ -445,7 +484,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 								</div>
 								<div class="swiper-slide">
 									<img 
-										src="https://images.unsplash.com/photo-1621335223658-0ebd89004d51?q=80&w=2070" 
+										src="/src/assets/selva-autentica-1.jpeg" 
 										alt="Fauna Amazónica"
 										class="w-full h-full object-cover"
 										loading="lazy"
@@ -453,26 +492,8 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 										height="600"
 									/>
 								</div>
-								<div class="swiper-slide">
-									<img 
-										src="https://images.unsplash.com/photo-1601296723862-1c4b3c9b6e0a?q=80&w=2070" 
-										alt="Navegación en la Reserva"
-										class="w-full h-full object-cover"
-										loading="lazy"
-										width="800"
-										height="600"
-									/>
-								</div>
-								<div class="swiper-slide">
-									<img 
-										src="https://images.unsplash.com/photo-1583795128727-6ec3642408f8?q=80&w=2074" 
-										alt="Vida Silvestre"
-										class="w-full h-full object-cover"
-										loading="lazy"
-										width="800"
-										height="600"
-									/>
-						</div>
+								
+								
 					</div>
 				</div>
 				
@@ -500,8 +521,8 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 							
 							<!-- Precio -->
 							<div class="inline-flex items-baseline gap-2 bg-green-50 px-4 py-2 rounded-lg">
-								<span class="text-3xl font-bold text-[#15803d]">$600</span>
-								<span class="text-sm text-gray-600">por persona</span>
+				<span class="text-3xl font-bold text-[#15803d]">{precio4dias.monto}</span>
+				{precio4dias.porPersona && <span class="text-xs text-gray-500 ml-1">{precio4dias.porPersona}</span>}
 							</div>
 						</div>
 
@@ -549,7 +570,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 			<!-- Botones -->
 			<div class="flex gap-2 mt-4">
 				<a 
-					href="/pacaya-samiria-4-dias"
+					href="/pacaya-samiria-selva-autentica-4-dias-3-noches/"
 					class="flex-1 text-center bg-[#15803d] hover:bg-[#166534] text-white font-semibold px-4 py-2 rounded-lg transition-all text-sm"
 				>
 					Ver Detalle
@@ -573,7 +594,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 							<div class="swiper-wrapper">
 								<div class="swiper-slide">
 									<img 
-										src="https://images.unsplash.com/photo-1621335223658-0ebd89004d51?q=80&w=2070" 
+										src="/src/assets/pacaya-samiria41.webp" 
 										alt="Fauna Amazónica"
 										class="w-full h-full object-cover"
 										loading="lazy"
@@ -583,7 +604,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 								</div>
 								<div class="swiper-slide">
 									<img 
-										src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?q=80&w=2070" 
+										src="/src/assets/pacaya-samiria42.jpeg" 
 										alt="Camping en la Selva"
 										class="w-full h-full object-cover"
 										loading="lazy"
@@ -593,7 +614,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 								</div>
 								<div class="swiper-slide">
 									<img 
-										src="https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=2068" 
+										src="/src/assets/pacaya-sarmiria5d.jpeg" 
 										alt="Vista Aérea Reserva"
 										class="w-full h-full object-cover"
 										loading="lazy"
@@ -603,7 +624,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 								</div>
 								<div class="swiper-slide">
 									<img 
-										src="https://images.unsplash.com/photo-1601296723862-1c4b3c9b6e0a?q=80&w=2070" 
+										src="/src/assets/pacaya-sarmiria43.jpeg" 
 										alt="Navegación Nocturna"
 										class="w-full h-full object-cover"
 										loading="lazy"
@@ -611,16 +632,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 										height="600"
 									/>
 								</div>
-								<div class="swiper-slide">
-									<img 
-										src="https://images.unsplash.com/photo-1564760055775-d63b17a55c44?q=80&w=2076" 
-										alt="Delfín Rosado"
-										class="w-full h-full object-cover"
-										loading="lazy"
-										width="800"
-										height="600"
-									/>
-						</div>
+								
 					</div>
 				</div>
 				
@@ -648,8 +660,8 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 							
 							<!-- Precio -->
 							<div class="inline-flex items-baseline gap-2 bg-green-50 px-4 py-2 rounded-lg">
-								<span class="text-3xl font-bold text-[#15803d]">$750</span>
-								<span class="text-sm text-gray-600">por persona</span>
+				<span class="text-3xl font-bold text-[#15803d]">{precio5dias.monto}</span>
+				{precio5dias.porPersona && <span class="text-xs text-gray-500 ml-1">{precio5dias.porPersona}</span>}
 							</div>
 						</div>
 
@@ -697,7 +709,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 			<!-- Botones -->
 			<div class="flex gap-2 mt-4">
 				<a 
-					href="/pacaya-samiria-5-dias"
+					href="/selva-pacaya-samiria-5-dias/"
 					class="flex-1 text-center bg-[#15803d] hover:bg-[#166534] text-white font-semibold px-4 py-2 rounded-lg transition-all text-sm"
 				>
 					Ver Detalle
@@ -721,7 +733,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 							<div class="swiper-wrapper">
 								<div class="swiper-slide">
 									<img 
-										src="https://images.unsplash.com/photo-1580060839134-75a5edca2e99?q=80&w=2071" 
+										src="/src/assets/pacaya-samiria-selva-virgen-1.jpeg" 
 										alt="Selva Profunda"
 										class="w-full h-full object-cover"
 										loading="lazy"
@@ -731,7 +743,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 								</div>
 								<div class="swiper-slide">
 									<img 
-										src="https://images.unsplash.com/photo-1566024164372-0281f1133aa6?q=80&w=2070" 
+										src="/src/assets/pacaya-samiria-selva-virgen-3.jpeg" 
 										alt="Atardecer Amazónico"
 										class="w-full h-full object-cover"
 										loading="lazy"
@@ -741,7 +753,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 								</div>
 								<div class="swiper-slide">
 									<img 
-										src="https://images.unsplash.com/photo-1583795128727-6ec3642408f8?q=80&w=2074" 
+										src="/src/assets/pacaya-samiria-selva-virgen-4.jpeg" 
 										alt="Vida Silvestre"
 										class="w-full h-full object-cover"
 										loading="lazy"
@@ -751,7 +763,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 								</div>
 								<div class="swiper-slide">
 									<img 
-										src="https://images.unsplash.com/photo-1551244072-5d12893278ab?q=80&w=2070" 
+										src="/src/assets/pacaya-samiria-selva-virgen-5.jpeg" 
 										alt="Expedición en Canoa"
 										class="w-full h-full object-cover"
 										loading="lazy"
@@ -759,26 +771,8 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 										height="600"
 									/>
 								</div>
-								<div class="swiper-slide">
-									<img 
-										src="https://images.unsplash.com/photo-1621335223658-0ebd89004d51?q=80&w=2070" 
-										alt="Encuentro con la Naturaleza"
-										class="w-full h-full object-cover"
-										loading="lazy"
-										width="800"
-										height="600"
-									/>
-								</div>
-								<div class="swiper-slide">
-									<img 
-										src="https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=2068" 
-										alt="Vista Aérea Completa"
-										class="w-full h-full object-cover"
-										loading="lazy"
-										width="800"
-										height="600"
-									/>
-						</div>
+								
+								
 					</div>
 				</div>
 				
@@ -806,8 +800,8 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 							
 							<!-- Precio -->
 							<div class="inline-flex items-baseline gap-2 bg-green-50 px-4 py-2 rounded-lg">
-								<span class="text-3xl font-bold text-[#15803d]">$1,500</span>
-								<span class="text-sm text-gray-600">por persona</span>
+				<span class="text-3xl font-bold text-[#15803d]">{precio10dias.monto}</span>
+				{precio10dias.porPersona && <span class="text-xs text-gray-500 ml-1">{precio10dias.porPersona}</span>}
 							</div>
 						</div>
 
@@ -855,7 +849,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 						<!-- Botones -->
 						<div class="flex gap-2 mt-4">
 							<a 
-								href="/pacaya-samiria-10-dias"
+								href="/pacaya-samiria-selva-virgen-10-dias-9-noches/"
 								class="flex-1 text-center bg-[#15803d] hover:bg-[#166534] text-white font-semibold px-4 py-2 rounded-lg transition-all text-sm"
 							>
 								Ver Detalle
@@ -1081,7 +1075,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 				{toursWithImages.map((tour) => (
 					<article class="group relative bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500">
 						<a href={`/${tour.slug}`}>
-							<!-- Imagen del Tour -->
+						
 							<div class="relative h-64 md:h-72 lg:h-80 overflow-hidden">
 								<img 
 									src={tour.imageUrl}
@@ -1091,17 +1085,15 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 									width="800"
 									height="600"
 								/>
-									class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-									loading="lazy"
-								/>
+									
 								<div class="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-transparent"></div>
 								
-							<!-- Badge de Precio -->
+						
 							<div class="absolute top-3 md:top-4 right-3 md:right-4 bg-linear-to-r from-yellow-400 to-yellow-500 text-gray-900 px-3 md:px-4 py-1.5 md:py-2 rounded-full font-bold text-xs md:text-sm shadow-lg">
 									{tour.acf?.precio || 'Consultar'}
 								</div>
 								
-								<!-- Título sobre la imagen -->
+							
 								<div class="absolute bottom-0 left-0 right-0 p-4 md:p-6">
 									<h3 class="text-white font-bold text-lg md:text-xl mb-2 line-clamp-2">
 										{tour.title.rendered}
@@ -1109,11 +1101,11 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 								</div>
 							</div>
 							
-							<!-- Contenido -->
+						
 							<div class="p-4 md:p-6 bg-linear-to-br from-white to-green-50">
 									<div class="text-gray-700 text-xs md:text-sm line-clamp-3 leading-relaxed mb-3 md:mb-4" set:html={tour.excerpt.rendered} />
 									
-									<!-- CTA Button -->
+								
 									<div class="flex items-center justify-between">
 										<span class="inline-flex items-center gap-1 md:gap-2 text-[#15803d] font-semibold px-3 md:px-4 py-1.5 md:py-2 rounded-lg border-2 border-[#15803d] group-hover:bg-[#15803d] group-hover:text-white transition-all duration-300 text-xs md:text-sm">
 											<svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1275,17 +1267,100 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 	@import 'swiper/css/navigation';
 	@import 'swiper/css/pagination';
 
-	.swiper-button-next,
-	.swiper-button-prev {
-		color: white;
+	/* Contenedor del Hero Swiper */
+	.hero-swiper {
+		position: relative;
+		width: 100%;
+		height: 100%;
 	}
 
-	.swiper-pagination-bullet {
-		background: white;
+	/* Estilos personalizados para las flechas del Hero */
+	.hero-button-next,
+	.hero-button-prev {
+		position: absolute;
+		top: 50%;
+		transform: translateY(-50%);
+		z-index: 10;
+		width: 50px;
+		height: 50px;
+		background: rgba(255, 255, 255, 0.9);
+		border-radius: 50%;
+		color: #15803d;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+		transition: all 0.3s ease;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
 	}
 
-	.swiper-pagination-bullet-active {
+	.hero-button-next {
+		right: 20px;
+	}
+
+	.hero-button-prev {
+		left: 20px;
+	}
+
+	.hero-button-next:hover,
+	.hero-button-prev:hover {
 		background: #15803d;
+		color: white;
+		transform: translateY(-50%) scale(1.1);
+		box-shadow: 0 6px 20px rgba(21, 128, 61, 0.4);
+	}
+
+	.hero-button-next svg,
+	.hero-button-prev svg {
+		pointer-events: none;
+	}
+
+	/* Ajustes responsivos para las flechas */
+	@media (max-width: 768px) {
+		.hero-button-next,
+		.hero-button-prev {
+			width: 40px;
+			height: 40px;
+		}
+
+		.hero-button-next {
+			right: 10px;
+		}
+
+		.hero-button-prev {
+			left: 10px;
+		}
+		
+		.hero-button-next svg,
+		.hero-button-prev svg {
+			width: 20px;
+			height: 20px;
+		}
+	}
+
+	/* Estilos para la paginación del Hero */
+	.hero-pagination {
+		position: absolute;
+		bottom: 20px !important;
+		left: 0;
+		right: 0;
+		text-align: center;
+		z-index: 10;
+	}
+
+	.hero-pagination .swiper-pagination-bullet {
+		background: white;
+		opacity: 0.6;
+		width: 12px;
+		height: 12px;
+		transition: all 0.3s ease;
+	}
+
+	.hero-pagination .swiper-pagination-bullet-active {
+		background: #15803d;
+		opacity: 1;
+		width: 32px;
+		border-radius: 6px;
 	}
 
 	@keyframes fade-in {
@@ -1449,11 +1524,11 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 			disableOnInteraction: false,
 		},
 		navigation: {
-			nextEl: '.swiper-button-next',
-			prevEl: '.swiper-button-prev',
+			nextEl: '.hero-button-next',
+			prevEl: '.hero-button-prev',
 		},
 		pagination: {
-			el: '.swiper-pagination',
+			el: '.hero-pagination',
 			clickable: true,
 		},
 		effect: 'fade',
