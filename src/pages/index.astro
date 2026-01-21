@@ -14,6 +14,23 @@ import pacaya31 from '../assets/pacaya3-1.jpg';
 import pacaya32 from '../assets/pacaya3-2.jpg';
 import tripadvisorLogo from '../assets/tripadvisor_image.png';
 
+// Imágenes de sección Sobre Nosotros y Cabañas
+import equipoRuth2 from '../assets/equiporuth2.webp';
+import equipoRuth4 from '../assets/equiporuth4.webp';
+import equipo2 from '../assets/equipo2.png';
+import equipo3 from '../assets/equipo3.png';
+import selvaAutentica1 from '../assets/selva-autentica-1.jpeg';
+import selvaAutentica2 from '../assets/selva-autentica-2.jpeg';
+import selvaAutentica3 from '../assets/selva-autentica-3.jpeg';
+import pacayaSamiria41 from '../assets/pacaya-samiria41.webp';
+import pacayaSamiria42 from '../assets/pacaya-samiria42.jpeg';
+import pacayaSarmiria5d from '../assets/pacaya-sarmiria5d.jpeg';
+import pacayaSarmiria43 from '../assets/pacaya-sarmiria43.jpeg';
+import pacayaSamiriaSelvaVirgen1 from '../assets/pacaya-samiria-selva-virgen-1.jpeg';
+import pacayaSamiriaSelvaVirgen3 from '../assets/pacaya-samiria-selva-virgen-3.jpeg';
+import pacayaSamiriaSelvaVirgen4 from '../assets/pacaya-samiria-selva-virgen-4.jpeg';
+import pacayaSamiriaSelvaVirgen5 from '../assets/pacaya-samiria-selva-virgen-5.jpeg';
+
 // Obtener los tours (posts) de WordPress
 const tours = await getPosts();
 
@@ -255,7 +272,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 				<!-- Galería de Imágenes -->
 				<div class="grid grid-cols-2 gap-3 md:gap-4 mt-8 lg:mt-0">
 					<img 
-						src="/src/assets/equiporuth2.webp" 
+						src={equipoRuth2.src} 
 						alt="Guía local"
 						class="w-full h-48 md:h-56 lg:h-64 object-cover rounded-lg shadow-md"
 						loading="lazy"
@@ -263,7 +280,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 						height="600"
 					/>
 					<img 
-						src="/src/assets/equiporuth4.webp" 
+						src={equipoRuth4.src} 
 						alt="Turistas en la selva"
 						class="w-full h-48 md:h-56 lg:h-64 object-cover rounded-lg shadow-md mt-4 md:mt-6 lg:mt-8"
 						loading="lazy"
@@ -271,7 +288,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 						height="600"
 					/>
 					<img 
-						src="/src/assets/equipo2.png" 
+						src={equipo2.src} 
 						alt="Delfín rosado"
 						class="w-full h-48 md:h-56 lg:h-64 object-cover rounded-lg shadow-md -mt-4 md:-mt-6 lg:-mt-8"
 						loading="lazy"
@@ -279,7 +296,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 						height="600"
 					/>
 					<img 
-						src="/src/assets/equipo3.png" 
+						src={equipo3.src} 
 						alt="Atardecer en el río"
 						class="w-full h-48 md:h-56 lg:h-64 object-cover rounded-lg shadow-md"
 						loading="lazy"
@@ -464,7 +481,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 							<div class="swiper-wrapper">
 								<div class="swiper-slide">
 									<img 
-										src="/src/assets/selva-autentica-3.jpeg" 
+										src={selvaAutentica3.src} 
 										alt="Selva Amazónica"
 										class="w-full h-full object-cover"
 										loading="lazy"
@@ -474,7 +491,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 								</div>
 								<div class="swiper-slide">
 									<img 
-										src="/src/assets/selva-autentica-2.jpeg" 
+										src={selvaAutentica2.src} 
 										alt="Atardecer en el Río"
 										class="w-full h-full object-cover"
 										loading="lazy"
@@ -484,7 +501,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 								</div>
 								<div class="swiper-slide">
 									<img 
-										src="/src/assets/selva-autentica-1.jpeg" 
+										src={selvaAutentica1.src} 
 										alt="Fauna Amazónica"
 										class="w-full h-full object-cover"
 										loading="lazy"
@@ -594,7 +611,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 							<div class="swiper-wrapper">
 								<div class="swiper-slide">
 									<img 
-										src="/src/assets/pacaya-samiria41.webp" 
+										src={pacayaSamiria41.src} 
 										alt="Fauna Amazónica"
 										class="w-full h-full object-cover"
 										loading="lazy"
@@ -604,7 +621,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 								</div>
 								<div class="swiper-slide">
 									<img 
-										src="/src/assets/pacaya-samiria42.jpeg" 
+										src={pacayaSamiria42.src} 
 										alt="Camping en la Selva"
 										class="w-full h-full object-cover"
 										loading="lazy"
@@ -614,7 +631,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 								</div>
 								<div class="swiper-slide">
 									<img 
-										src="/src/assets/pacaya-sarmiria5d.jpeg" 
+										src={pacayaSarmiria5d.src} 
 										alt="Vista Aérea Reserva"
 										class="w-full h-full object-cover"
 										loading="lazy"
@@ -624,7 +641,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 								</div>
 								<div class="swiper-slide">
 									<img 
-										src="/src/assets/pacaya-sarmiria43.jpeg" 
+										src={pacayaSarmiria43.src} 
 										alt="Navegación Nocturna"
 										class="w-full h-full object-cover"
 										loading="lazy"
@@ -733,7 +750,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 							<div class="swiper-wrapper">
 								<div class="swiper-slide">
 									<img 
-										src="/src/assets/pacaya-samiria-selva-virgen-1.jpeg" 
+										src={pacayaSamiriaSelvaVirgen1.src} 
 										alt="Selva Profunda"
 										class="w-full h-full object-cover"
 										loading="lazy"
@@ -743,7 +760,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 								</div>
 								<div class="swiper-slide">
 									<img 
-										src="/src/assets/pacaya-samiria-selva-virgen-3.jpeg" 
+										src={pacayaSamiriaSelvaVirgen3.src} 
 										alt="Atardecer Amazónico"
 										class="w-full h-full object-cover"
 										loading="lazy"
@@ -753,7 +770,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 								</div>
 								<div class="swiper-slide">
 									<img 
-										src="/src/assets/pacaya-samiria-selva-virgen-4.jpeg" 
+										src={pacayaSamiriaSelvaVirgen4.src} 
 										alt="Vida Silvestre"
 										class="w-full h-full object-cover"
 										loading="lazy"
@@ -763,7 +780,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 								</div>
 								<div class="swiper-slide">
 									<img 
-										src="/src/assets/pacaya-samiria-selva-virgen-5.jpeg" 
+										src={pacayaSamiriaSelvaVirgen5.src} 
 										alt="Expedición en Canoa"
 										class="w-full h-full object-cover"
 										loading="lazy"
