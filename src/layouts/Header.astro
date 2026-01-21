@@ -39,12 +39,15 @@ const organizeMenu = (items: any[]): MenuItem[] => {
   const itemsMap = new Map<number, MenuItem>();
   const rootItems: MenuItem[] = [];
 
+  // Obtener la URL base del CMS desde variables de entorno
+  const cmsBaseUrl = import.meta.env.PUBLIC_WORDPRESS_BASE_URL || '';
+
   // Crear el mapa de items
   items.forEach(item => {
     itemsMap.set(item.ID, {
       ID: item.ID,
       title: decodeHtmlEntities(item.title),
-      url: item.url.replace('http://web.ruth', ''),
+      url: item.url.replace(cmsBaseUrl, ''),
       menu_item_parent: item.menu_item_parent,
       children: []
     });
