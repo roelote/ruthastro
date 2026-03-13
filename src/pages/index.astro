@@ -30,6 +30,9 @@ import pacayaSamiriaSelvaVirgen1 from '../assets/pacaya-samiria-selva-virgen-1.j
 import pacayaSamiriaSelvaVirgen3 from '../assets/pacaya-samiria-selva-virgen-3.jpeg';
 import pacayaSamiriaSelvaVirgen4 from '../assets/pacaya-samiria-selva-virgen-4.jpeg';
 import pacayaSamiriaSelvaVirgen5 from '../assets/pacaya-samiria-selva-virgen-5.jpeg';
+import imgCabanias from '../assets/cabanias.jpeg';
+import imgComida from '../assets/comida.jpeg';
+import imgTransporte from '../assets/transporte.jpeg';
 
 // Obtener los tours (posts) de WordPress
 const tours = await getPosts();
@@ -94,7 +97,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 	yoastSEO={yoastSEO}
 	favicon={favicon}
 >
-	<Header />
+	<Header lang="es" />
 	
 	<!-- Sección Hero con Carrusel Swiper -->
 	<section class="hero-section relative">
@@ -901,31 +904,31 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 		</div>
 	</section>
 
-	<!-- Sección Cabañas y Áreas -->
+	<!-- Sección Qué Incluye el Tour -->
 	<section class="py-12 md:py-16 lg:py-20 bg-white">
 		<div class="container px-4">
 			<!-- Encabezado -->
 			<div class="text-center mb-10 md:mb-14">
 				<div class="inline-block mb-4">
-					<span class="text-[#15803d] font-semibold text-xs md:text-sm tracking-wider uppercase">Instalaciones</span>
+					<span class="text-[#15803d] font-semibold text-xs md:text-sm tracking-wider uppercase">Tour Pacaya Samiria</span>
 					<div class="h-0.5 w-16 bg-yellow-400 mt-2 mx-auto"></div>
 				</div>
 				<h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-					Cabañas y <span class="text-[#15803d]">Áreas Naturales</span>
+					¿Qué <span class="text-[#15803d]">Incluye el Tour?</span>
 				</h2>
 				<p class="text-base md:text-lg text-gray-600 max-w-3xl mx-auto">
-					Alojamientos cómodos en armonía con la naturaleza amazónica
+					Todo lo que necesitas para vivir la experiencia Pacaya Samiria está incluido
 				</p>
 			</div>
 
-			<!-- Grid de Cabañas -->
+			<!-- Grid Qué Incluye -->
 			<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-12">
-				<!-- Cabaña Flotante -->
+				<!-- Transporte -->
 				<div class="group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500">
 					<div class="relative h-64 overflow-hidden">
 						<img 
-							src="https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=2025" 
-							alt="Cabañas Flotantes"
+							src={imgTransporte.src}
+							alt="Transporte en lancha por el Pacaya Samiria"
 							class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
 							loading="lazy"
 							width="800"
@@ -933,8 +936,85 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 						/>
 						<div class="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent"></div>
 						<div class="absolute bottom-0 left-0 right-0 p-6">
-							<h3 class="text-white font-bold text-xl md:text-2xl mb-2">Cabañas Flotantes</h3>
-							<p class="text-white/90 text-sm">Hospedaje único sobre el río</p>
+							<h3 class="text-white font-bold text-xl md:text-2xl mb-2">Transporte</h3>
+							<p class="text-white/90 text-sm">Movilización</p>
+						</div>
+					</div>
+					<div class="p-6">
+						<ul class="space-y-2">
+							<li class="flex items-start gap-2 text-sm text-gray-700">
+								<svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+									<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+								</svg>
+								<span>Lancha por el río</span>
+							</li>
+							<li class="flex items-start gap-2 text-sm text-gray-700">
+								<svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+									<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+								</svg>
+								<span>Traslados desde Iquitos incluidos</span>
+							</li>
+							<li class="flex items-start gap-2 text-sm text-gray-700">
+								<svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+									<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+								</svg>
+								<span>Canoas para recorridos internos</span>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+				<!-- Comida -->
+				<div class="group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500">
+					<div class="relative h-64 overflow-hidden">
+						<img 
+							src={imgComida.src}
+							alt="Comida típica amazónica en el tour"
+							class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+							loading="lazy"
+							width="800"
+							height="600"
+						/>
+						<div class="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent"></div>
+						<div class="absolute bottom-0 left-0 right-0 p-6">
+							<h3 class="text-white font-bold text-xl md:text-2xl mb-2">Alimentación</h3>
+							<p class="text-white/90 text-sm">Gastronomía amazónica auténtica</p>
+						</div>
+					</div>
+					<div class="p-6">
+						<ul class="space-y-2">
+							
+							<li class="flex items-start gap-2 text-sm text-gray-700">
+								<svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+									<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+								</svg>
+								<span>Platos típicos de la Amazonía</span>
+							</li>
+							<li class="flex items-start gap-2 text-sm text-gray-700">
+								<svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+									<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+								</svg>
+								<span>Agua filtrada disponibles</span>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+				<!-- Cabañas -->
+				<div class="group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500">
+					<div class="relative h-64 overflow-hidden">
+						<img 
+							src={imgCabanias.src}
+							alt="Cabañas en Pacaya Samiria"
+							class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+							loading="lazy"
+							width="800"
+							height="600"
+						/>
+						<div class="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent"></div>
+						<div class="absolute bottom-0 left-0 right-0 p-6">
+							<h3 class="text-white font-bold text-xl md:text-2xl mb-2">Cabañas</h3>
+							<p class="text-white/90 text-sm">Hospedaje en plena selva amazónica</p>
 						</div>
 					</div>
 					<div class="p-6">
@@ -949,95 +1029,13 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 								<svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
 									<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
 								</svg>
-								<span>Vista panorámica del río</span>
+								<span>Mosquiteros</span>
 							</li>
 							<li class="flex items-start gap-2 text-sm text-gray-700">
 								<svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
 									<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
 								</svg>
-								<span>Mosquiteros incluidos</span>
-							</li>
-						</ul>
-					</div>
-				</div>
-
-				<!-- Campamento -->
-				<div class="group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500">
-					<div class="relative h-64 overflow-hidden">
-						<img 
-							src="https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?q=80&w=2070" 
-							alt="Campamento en la Selva"
-							class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-							loading="lazy"
-							width="800"
-							height="600"
-						/>
-						<div class="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent"></div>
-						<div class="absolute bottom-0 left-0 right-0 p-6">
-							<h3 class="text-white font-bold text-xl md:text-2xl mb-2">Campamento Selvático</h3>
-							<p class="text-white/90 text-sm">Experiencia de inmersión total</p>
-						</div>
-					</div>
-					<div class="p-6">
-						<ul class="space-y-2">
-							<li class="flex items-start gap-2 text-sm text-gray-700">
-								<svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-									<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-								</svg>
-								<span>Carpas profesionales</span>
-							</li>
-							<li class="flex items-start gap-2 text-sm text-gray-700">
-								<svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-									<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-								</svg>
-								<span>Zona de fogata</span>
-							</li>
-							<li class="flex items-start gap-2 text-sm text-gray-700">
-								<svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-									<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-								</svg>
-								<span>Noches bajo las estrellas</span>
-							</li>
-						</ul>
-					</div>
-				</div>
-
-				<!-- Áreas Comunes -->
-				<div class="group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500">
-					<div class="relative h-64 overflow-hidden">
-						<img 
-							src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?q=80&w=2070" 
-							alt="Áreas Comunes"
-							class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-							loading="lazy"
-							width="800"
-							height="600"
-						/>
-						<div class="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent"></div>
-						<div class="absolute bottom-0 left-0 right-0 p-6">
-							<h3 class="text-white font-bold text-xl md:text-2xl mb-2">Áreas Comunes</h3>
-							<p class="text-white/90 text-sm">Espacios de convivencia natural</p>
-						</div>
-					</div>
-					<div class="p-6">
-						<ul class="space-y-2">
-							<li class="flex items-start gap-2 text-sm text-gray-700">
-								<svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-									<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-								</svg>
-								<span>Comedor al aire libre</span>
-							</li>
-							<li class="flex items-start gap-2 text-sm text-gray-700">
-								<svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-									<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-								</svg>
-								<span>Miradores naturales</span>
-							</li>
-							<li class="flex items-start gap-2 text-sm text-gray-700">
-								<svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-									<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-								</svg>
-								<span>Hamacas para descanso</span>
+								<span>Vista al río y sonidos de la selva</span>
 							</li>
 						</ul>
 					</div>
@@ -1177,68 +1175,60 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 				{testimonials.map((testimonial) => (
 					<div class="swiper-slide h-auto">
 						<div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 p-6 h-full flex flex-col relative border border-gray-100">
-							<!-- Logo de la plataforma -->
-							<div class="absolute top-4 right-4 z-10">
-								{testimonial.platform === 'tripadvisor' && (
-									<img src={tripadvisorLogo.src} alt="TripAdvisor" loading="lazy" width={tripadvisorLogo.width} height={tripadvisorLogo.height} />
-								)}
-								{testimonial.platform === 'google' && (
-									<svg class="w-8 h-8" viewBox="0 0 24 24">
-										<path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-										<path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-										<path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-										<path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-									</svg>
-								)}
-								{testimonial.platform === 'facebook' && (
-									<svg class="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
-										<path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-									</svg>
-								)}
-							</div>
 
-					<!-- Círculos de Rating -->
-					<div class="flex gap-1.5 mb-4">
-						{Array.from({ length: 5 }).map((_, i) => (
-							<div class={`w-3 h-3 rounded-full ${i < testimonial.rating ? 'bg-[#15803d]' : 'bg-gray-300'}`}></div>
-						))}
-					</div>
-
-					<!-- Comentario -->
-					<p class="text-gray-700 text-sm leading-relaxed mb-6 grow line-clamp-4">
-						"{testimonial.comment}"
-					</p>
-
-					<!-- Autor -->
-					<div class="flex items-center justify-between pt-3 border-t border-gray-200">
-						<div class="flex items-center gap-3">
-							{testimonial.avatar ? (
-								<img 
-									src={testimonial.avatar} 
-									alt={testimonial.name}
-									class="w-12 h-12 rounded-full object-cover"
-									loading="lazy"
-									width="48"
-									height="48"
-								/>
-							) : (
-								<div class="w-10 h-10 rounded-full bg-[#15803d] flex items-center justify-center text-white font-bold shrink-0">
-									{testimonial.name.charAt(0).toUpperCase()}
+							<!-- Cabecera: rating + logo TripAdvisor -->
+							<div class="flex items-center justify-between mb-3">
+								<div class="flex gap-1">
+									{Array.from({ length: 5 }).map((_, i) => (
+										<svg class={`w-4 h-4 ${i < testimonial.rating ? 'text-[#00aa6c]' : 'text-gray-300'}`} fill="currentColor" viewBox="0 0 20 20">
+											<path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+										</svg>
+									))}
 								</div>
+								<img src={tripadvisorLogo.src} alt="TripAdvisor" loading="lazy" width={tripadvisorLogo.width} height={tripadvisorLogo.height} class="h-6 w-auto opacity-80" />
+							</div>
+
+							<!-- Título de la reseña -->
+							{testimonial.title && (
+								<h4 class="font-semibold text-gray-900 text-sm mb-2 line-clamp-1">{testimonial.title}</h4>
 							)}
-							<div>
-								<div class="font-semibold text-gray-900 text-sm">{testimonial.name}</div>
-								{testimonial.location && (
-									<div class="text-xs text-gray-600">{testimonial.location}</div>
+
+							<!-- Comentario -->
+							<p class="text-gray-600 text-sm leading-relaxed mb-5 grow line-clamp-5">
+								"{testimonial.comment}"
+							</p>
+
+							<!-- Autor + fecha -->
+							<div class="flex items-center justify-between pt-3 border-t border-gray-100">
+								<div class="flex items-center gap-3">
+									{testimonial.avatar ? (
+										<img
+											src={testimonial.avatar}
+											alt={testimonial.name}
+											class="w-10 h-10 rounded-full object-cover"
+											loading="lazy"
+											width="40"
+											height="40"
+										/>
+									) : (
+										<div class="w-10 h-10 rounded-full bg-[#00aa6c] flex items-center justify-center text-white font-bold text-sm shrink-0">
+											{testimonial.name.charAt(0).toUpperCase()}
+										</div>
+									)}
+									<div>
+										<div class="font-semibold text-gray-900 text-sm">{testimonial.name}</div>
+										{testimonial.date && (
+											<div class="text-xs text-gray-400">{testimonial.date}</div>
+										)}
+									</div>
+								</div>
+								{testimonial.url && (
+									<a href={testimonial.url} target="_blank" rel="noopener noreferrer" class="text-xs text-[#00aa6c] hover:underline shrink-0">Ver reseña</a>
 								)}
 							</div>
+
 						</div>
-						{testimonial.date && (
-							<div class="text-xs text-gray-500">{testimonial.date}</div>
-						)}
 					</div>
-				</div>
-			</div>
 				))}
 			</div>
 

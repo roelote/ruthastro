@@ -1,0 +1,116 @@
+---
+import { getPages, getPosts, getFeaturedImage, getYoastSEO, getSiteInfo } from '../../utils/wordpress';
+import type { WPPage, WPPost } from '../../utils/wordpress';
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../layouts/Header.astro';
+import Footer from '../../layouts/Footer.astro';
+import heroImage from '../../assets/pacayasamiria.png';
+import { getTripAdvisorReviews } from '../../utils/testimonials';
+
+export async function getStaticPaths() {
+  const pages = await getPages('en');
+  const posts = await getPosts('en');
+
+  const allPaths = [
+    ...pages.map(page => ({
+      params: { slug: page.slug },
+      props: { content: page, type: 'page' as const }
+    })),
+    ...posts.map(post => ({
+      params: { slug: post.slug },
+      props: { content: post, type: 'post' as const }
+    }))
+  ];
+
+  return allPaths;
+}
+
+interface Props {
+  content: WPPage | WPPost;
+  type: 'page' | 'post';
+}
+
+const { content, type } = Astro.props;
+
+const yoastSEO = await getYoastSEO(content.slug, type === 'post' ? 'posts' : 'pages');
+const siteInfo = await getSiteInfo();
+const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
+
+if (!content) {
+  return new Response(null, { status: 404 });
+}
+
+let featuredImageUrl: string | null = null;
+let allPosts: WPPost[] = [];
+let toursWithImages: any[] = [];
+let testimonials: any[] = [];
+
+if (type === 'post') {
+  const post = content as WPPost;
+  featuredImageUrl = post.featured_media
+    ? await getFeaturedImage(post.featured_media)
+    : 'https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=2068';
+
+  allPosts = await getPosts('en');
+
+  toursWithImages = await Promise.all(
+    allPosts.map(async (tour) => {
+      const imageUrl = tour.featured_media
+        ? await getFeaturedImage(tour.featured_media)
+        : 'https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=2068';
+      return { ...tour, imageUrl };
+    })
+  );
+
+  testimonials = await getTripAdvisorReviews(2);
+}
+
+import TourContent from '../../components/TourContent.astro';
+---
+
+<Layout
+  title={content.title.rendered}
+  description={content.excerpt.rendered.replace(/<[^>]*>/g, '').substring(0, 160)}
+  yoastSEO={yoastSEO}
+  favicon={favicon}
+>
+  <Header lang="en" />
+
+  {type === 'post' ? (
+    <TourContent
+      post={content as WPPost}
+      featuredImageUrl={featuredImageUrl!}
+      toursWithImages={toursWithImages}
+      testimonials={testimonials}
+    />
+  ) : (
+    <>
+      <section class="relative h-[400px] md:h-[500px] overflow-hidden">
+        <img
+          src={heroImage.src}
+          alt={content.title.rendered}
+          class="w-full h-full object-cover"
+        />
+        <div class="absolute inset-0 bg-linear-to-r from-black/70 via-black/50 to-black/30"></div>
+        <div class="absolute inset-0 flex items-center">
+          <div class="container">
+            <div class="max-w-4xl">
+              <h1 class="text-4xl md:text-6xl font-bold text-white mb-4" set:html={content.title.rendered} />
+              <div class="w-24 h-1 bg-[#fbbf24]"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <main class="py-12 bg-gray-50">
+        <article class="container">
+          <div class="mx-auto bg-white rounded-lg shadow-md p-8 md:p-12">
+            <div class="prose prose-lg max-w-none" set:html={content.content.rendered} />
+          </div>
+        </article>
+      </main>
+    </>
+  )}
+
+  <Footer />
+</Layout>

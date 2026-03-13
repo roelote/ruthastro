@@ -14,6 +14,8 @@ interface Props {
 	yoastSEO?: YoastSEO | null;
 	favicon?: string;
 	canonical?: string;
+	lang?: string;
+	hreflangLinks?: Array<{ lang: string; url: string }>;
 }
 
 const { 
@@ -21,8 +23,23 @@ const {
 	description = 'Explora la selva amazónica con los mejores guías',
 	yoastSEO = null,
 	favicon = '/favicon.svg',
-	canonical
+	canonical,
+	lang = 'es',
+	hreflangLinks,
 } = Astro.props;
+
+// ── hreflang (multiidioma) ──
+const siteUrl = (Astro.site?.toString() || '').replace(/\/$/, '');
+const currentPath = Astro.url.pathname;
+const computedHreflang = hreflangLinks ?? (() => {
+	const esPath = lang === 'en' ? (currentPath.replace(/^\/en/, '') || '/') : currentPath;
+	const enPath = lang === 'en' ? currentPath : '/en' + currentPath;
+	return [
+		{ lang: 'es', url: `${siteUrl}${esPath}` },
+		{ lang: 'en', url: `${siteUrl}${enPath}` },
+		{ lang: 'x-default', url: `${siteUrl}${esPath}` },
+	];
+})();
 
 // Usar datos de Yoast SEO si están disponibles
 const pageTitle = yoastSEO?.title || title;
@@ -42,7 +59,7 @@ const robotsFollow = yoastSEO?.robots?.follow || 'follow';
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang={lang}>
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -58,6 +75,11 @@ const robotsFollow = yoastSEO?.robots?.follow || 'follow';
 		<meta name="description" content={pageDescription} />
 		<meta name="robots" content={`${robotsIndex}, ${robotsFollow}`} />
 		<link rel="canonical" href={pageCanonical} />
+		
+		<!-- hreflang multiidioma -->
+		{computedHreflang.map(h => (
+			<link rel="alternate" hreflang={h.lang} href={h.url} />
+		))}
 		
 		<!-- Open Graph / Facebook -->
 		<meta property="og:type" content={ogType} />

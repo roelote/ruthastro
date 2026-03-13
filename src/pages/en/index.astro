@@ -1,0 +1,883 @@
+---
+import '../../styles/global.css';
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../layouts/Header.astro';
+import Footer from '../../layouts/Footer.astro';
+import { getPosts, getFeaturedImage, getYoastSEO, getSiteInfo } from '../../utils/wordpress';
+import { getTripAdvisorReviews } from '../../utils/testimonials';
+
+// Local images
+import pacayaPortada from '../../assets/pacaya-samiria-portada.webp';
+import delfinesRosados from '../../assets/delfines-rosados-ruth.webp';
+import pacayaBoat from '../../assets/pacaya-samiria-boat.webp';
+import pacaya31 from '../../assets/pacaya3-1.jpg';
+import pacaya32 from '../../assets/pacaya3-2.jpg';
+import tripadvisorLogo from '../../assets/tripadvisor_image.png';
+import equipoRuth2 from '../../assets/equiporuth2.webp';
+import equipoRuth4 from '../../assets/equiporuth4.webp';
+import equipo2 from '../../assets/equipo2.png';
+import equipo3 from '../../assets/equipo3.png';
+import selvaAutentica1 from '../../assets/selva-autentica-1.jpeg';
+import selvaAutentica2 from '../../assets/selva-autentica-2.jpeg';
+import selvaAutentica3 from '../../assets/selva-autentica-3.jpeg';
+import pacayaSamiria41 from '../../assets/pacaya-samiria41.webp';
+import pacayaSamiria42 from '../../assets/pacaya-samiria42.jpeg';
+import pacayaSarmiria5d from '../../assets/pacaya-sarmiria5d.jpeg';
+import pacayaSarmiria43 from '../../assets/pacaya-sarmiria43.jpeg';
+import pacayaSamiriaSelvaVirgen1 from '../../assets/pacaya-samiria-selva-virgen-1.jpeg';
+import pacayaSamiriaSelvaVirgen3 from '../../assets/pacaya-samiria-selva-virgen-3.jpeg';
+import pacayaSamiriaSelvaVirgen4 from '../../assets/pacaya-samiria-selva-virgen-4.jpeg';
+import pacayaSamiriaSelvaVirgen5 from '../../assets/pacaya-samiria-selva-virgen-5.jpeg';
+
+// Get tours in English from WordPress (WPML ?lang=en)
+const tours = await getPosts('en');
+
+const excludedSlugs = [
+  'pacaya-samiria-mistico-3-dias-2-noches',
+  'pacaya-samiria-selva-autentica-4-dias-3-noches',
+  'selva-pacaya-samiria-5-dias',
+  'pacaya-samiria-selva-virgen-10-dias-9-noches'
+];
+
+const filteredTours = tours.filter(tour => !excludedSlugs.includes(tour.slug));
+const featuredTours = filteredTours.slice(0, 9);
+
+const pacaya3dias = tours.find(tour => tour.slug === 'pacaya-samiria-mistico-3-dias-2-noches');
+const pacaya4dias = tours.find(tour => tour.slug === 'pacaya-samiria-selva-autentica-4-dias-3-noches');
+const pacaya5dias = tours.find(tour => tour.slug === 'selva-pacaya-samiria-5-dias');
+const pacaya10dias = tours.find(tour => tour.slug === 'pacaya-samiria-selva-virgen-10-dias-9-noches');
+
+const procesarPrecio = (precio: any) => {
+  if (!precio) return { monto: 'Contact us', porPersona: null };
+  const partes = precio.split(/\s+(per\s+person|por\s+persona)/i);
+  return { monto: partes[0], porPersona: partes[1] };
+};
+
+const precio3dias  = procesarPrecio(pacaya3dias?.acf?.precio);
+const precio4dias  = procesarPrecio(pacaya4dias?.acf?.precio);
+const precio5dias  = procesarPrecio(pacaya5dias?.acf?.precio);
+const precio10dias = procesarPrecio(pacaya10dias?.acf?.precio);
+
+const toursWithImages = await Promise.all(
+  featuredTours.map(async (tour) => {
+    const imageUrl = tour.featured_media
+      ? await getFeaturedImage(tour.featured_media)
+      : 'https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=2068';
+    return { ...tour, imageUrl };
+  })
+);
+
+const testimonials = await getTripAdvisorReviews(1);
+
+const yoastSEO = await getYoastSEO('home', 'pages');
+const siteInfo = await getSiteInfo();
+const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
+---
+
+<Layout
+  title="Ruth Amazon Expeditions - Pacaya Samiria Tours"
+  description="Discover the Pacaya Samiria National Reserve with the best guided tours. 3, 4, 5 and 10 day expeditions in the Peruvian Amazon jungle."
+  yoastSEO={yoastSEO}
+  favicon={favicon}
+  lang="en"
+>
+  <Header lang="en" />
+
+  <!-- Hero Section with Swiper Carousel -->
+  <section class="hero-section relative">
+    <div class="swiper hero-swiper">
+      <div class="swiper-wrapper">
+        <!-- Slide 1 -->
+        <div class="swiper-slide">
+          <div class="relative h-[500px] md:h-[600px] lg:h-[800px] overflow-hidden">
+            <img
+              src={pacayaPortada.src}
+              alt="Pacaya Samiria"
+              class="w-full h-full object-cover"
+              loading="eager"
+              fetchpriority="high"
+              width={pacayaPortada.width}
+              height={pacayaPortada.height}
+            />
+            <div class="absolute inset-0 bg-black/40"></div>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="container text-center text-white px-4">
+                <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 animate-fade-in">
+                  Discover Pacaya Samiria 2026
+                </h1>
+                <p class="text-base sm:text-lg md:text-xl lg:text-2xl mb-6 md:mb-8 max-w-3xl mx-auto px-4">
+                  Experience the most authentic Amazon adventure in the largest natural reserve of Peru
+                </p>
+                <a
+                  href="#tours"
+                  class="inline-block bg-[#15803d] hover:bg-[#166534] text-white font-bold px-6 md:px-8 py-3 md:py-4 rounded-lg text-base md:text-lg transition-all duration-300 transform hover:scale-105 shadow-xl"
+                >
+                  Explore Our Tours
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 2 -->
+        <div class="swiper-slide">
+          <div class="relative h-[500px] md:h-[600px] lg:h-[800px] overflow-hidden">
+            <img
+              src={delfinesRosados.src}
+              alt="Amazon Jungle"
+              class="w-full h-full object-cover"
+              loading="lazy"
+              width={delfinesRosados.width}
+              height={delfinesRosados.height}
+            />
+            <div class="absolute inset-0 bg-black/40"></div>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="container text-center text-white px-4">
+                <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6">
+                  Unforgettable Adventures
+                </h1>
+                <p class="text-base sm:text-lg md:text-xl lg:text-2xl mb-6 md:mb-8 max-w-3xl mx-auto px-4">
+                  Explore the unique biodiversity of the Peruvian Amazon with expert guides
+                </p>
+                <a
+                  href="#tours"
+                  class="inline-block bg-[#15803d] hover:bg-[#166534] text-white font-bold px-6 md:px-8 py-3 md:py-4 rounded-lg text-base md:text-lg transition-all duration-300 transform hover:scale-105 shadow-xl"
+                >
+                  View Available Tours
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="swiper-slide">
+          <div class="relative h-[500px] md:h-[600px] lg:h-[800px] overflow-hidden">
+            <img
+              src={pacayaBoat.src}
+              alt="Amazon River"
+              class="w-full h-full object-cover"
+              loading="lazy"
+              width={pacayaBoat.width}
+              height={pacayaBoat.height}
+            />
+            <div class="absolute inset-0 bg-black/40"></div>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="container text-center text-white px-4">
+                <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6">
+                  Pacaya Samiria Natural Reserve
+                </h1>
+                <p class="text-base sm:text-lg md:text-xl lg:text-2xl mb-6 md:mb-8 max-w-3xl mx-auto px-4">
+                  Navigate the most spectacular rivers and discover the Amazonian wildlife
+                </p>
+                <a
+                  href="#tours"
+                  class="inline-block bg-[#15803d] hover:bg-[#166534] text-white font-bold px-6 md:px-8 py-3 md:py-4 rounded-lg text-base md:text-lg transition-all duration-300 transform hover:scale-105 shadow-xl"
+                >
+                  Book Now
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <div class="hero-button-next">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+        </svg>
+      </div>
+      <div class="hero-button-prev">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+        </svg>
+      </div>
+      <div class="hero-pagination"></div>
+    </div>
+  </section>
+
+  <!-- About Us Section -->
+  <section class="py-12 md:py-16 lg:py-20 bg-gray-50">
+    <div class="container px-4">
+      <div class="grid lg:grid-cols-2 gap-8 md:gap-10 lg:gap-12 items-center">
+        <!-- Text Content -->
+        <div class="space-y-4 md:space-y-6">
+          <div class="inline-block">
+            <span class="text-[#15803d] font-semibold text-xs md:text-sm tracking-wider uppercase">About Us</span>
+            <div class="h-0.5 w-16 bg-yellow-400 mt-2"></div>
+          </div>
+
+          <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900">
+            Amazon Expedition
+            <span class="text-[#15803d]"> Specialists</span>
+          </h2>
+
+          <p class="text-base md:text-lg text-gray-700 leading-relaxed">
+            <strong class="text-[#15803d]">Ruth Amazon Expeditions</strong> is an agency specialized in tours to the Pacaya Samiria National Reserve, recognized as one of the most important protected areas in the Peruvian Amazon. We are proud to be known nationally and internationally through the satisfaction of our clients.
+          </p>
+
+          <p class="text-base md:text-lg text-gray-700 leading-relaxed">
+            Our professional native guides will take you to explore the most remote corners of the jungle, where you can observe pink dolphins, anacondas, jaguars, macaws, and hundreds of species in their natural habitat.
+          </p>
+
+          <!-- Stats -->
+          <div class="grid grid-cols-3 gap-3 md:gap-4 pt-4 md:pt-6">
+            <div class="text-center">
+              <div class="text-3xl md:text-4xl font-bold text-[#15803d]">15+</div>
+              <div class="text-gray-600 text-xs md:text-sm mt-1 md:mt-2">Years of Experience</div>
+            </div>
+            <div class="text-center">
+              <div class="text-3xl md:text-4xl font-bold text-[#15803d]">100%</div>
+              <div class="text-gray-600 text-xs md:text-sm mt-1 md:mt-2">Sustainable Tourism</div>
+            </div>
+            <div class="text-center">
+              <div class="text-3xl md:text-4xl font-bold text-yellow-500">⭐</div>
+              <div class="text-gray-600 text-xs md:text-sm mt-1 md:mt-2">Top Rated</div>
+            </div>
+          </div>
+
+          <!-- Buttons -->
+          <div class="flex flex-col sm:flex-row gap-3 md:gap-4 pt-4">
+            <a
+              href="/en/about-us"
+              class="inline-flex items-center justify-center gap-2 bg-[#15803d] hover:bg-[#166534] text-white font-semibold px-5 md:px-6 py-2.5 md:py-3 rounded-lg transition-all duration-300 text-sm md:text-base"
+            >
+              Learn More
+            </a>
+            <a
+              href="https://wa.me/51965001929"
+              class="inline-flex items-center justify-center gap-2 border-2 bg-yellow-400 border-yellow-400 text-gray-900 font-semibold px-5 md:px-6 py-2.5 md:py-3 rounded-lg hover:bg-yellow-500 transition-all duration-300 text-sm md:text-base"
+            >
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+              </svg>
+              Contact Us
+            </a>
+          </div>
+        </div>
+
+        <!-- Image Gallery -->
+        <div class="grid grid-cols-2 gap-3 md:gap-4 mt-8 lg:mt-0">
+          <img src={equipoRuth2.src} alt="Local guide" class="w-full h-48 md:h-56 lg:h-64 object-cover rounded-lg shadow-md" loading="lazy" width="800" height="600" />
+          <img src={equipoRuth4.src} alt="Tourists in the jungle" class="w-full h-48 md:h-56 lg:h-64 object-cover rounded-lg shadow-md mt-4 md:mt-6 lg:mt-8" loading="lazy" width="800" height="600" />
+          <img src={equipo2.src} alt="Pink dolphin" class="w-full h-48 md:h-56 lg:h-64 object-cover rounded-lg shadow-md -mt-4 md:-mt-6 lg:-mt-8" loading="lazy" width="800" height="600" />
+          <img src={equipo3.src} alt="Sunset on the river" class="w-full h-48 md:h-56 lg:h-64 object-cover rounded-lg shadow-md" loading="lazy" width="800" height="600" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Pacaya Samiria Tours Section -->
+  <section class="py-12 md:py-16 lg:py-20 bg-linear-to-br from-[#15803d] via-green-700 to-[#166534] relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+      <div class="absolute bottom-0 right-0 w-96 h-96 bg-yellow-400 rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="container px-4 relative z-10">
+      <div class="text-center mb-10 md:mb-14">
+        <div class="inline-block mb-4">
+          <span class="text-yellow-400 font-semibold text-xs md:text-sm tracking-wider uppercase">Our Main Tours</span>
+          <div class="h-0.5 w-16 bg-yellow-400 mt-2 mx-auto"></div>
+        </div>
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
+          Main <span class="text-yellow-400">Pacaya Samiria Tours</span>
+        </h2>
+        <p class="text-base md:text-lg text-white/90 max-w-3xl mx-auto px-4">
+          Discover our most complete tours to explore the largest reserve in Peru
+        </p>
+      </div>
+
+      <!-- 2x2 Tour Grid -->
+      <div class="grid md:grid-cols-2 gap-8 md:gap-10 mx-auto">
+        <!-- 3-Day Tour -->
+        <article class="group relative bg-white rounded-2xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-2 flex flex-col md:flex-row md:h-[450px]">
+          <div class="relative md:w-1/2 h-64 md:h-auto overflow-hidden shrink-0">
+            <div class="swiper tour-3days-swiper h-full">
+              <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                  <img src={pacaya31.src} alt="Pacaya Samiria - Aerial View" class="w-full h-full object-cover" loading="lazy" width={pacaya31.width} height={pacaya31.height} />
+                </div>
+                <div class="swiper-slide">
+                  <video src="/video/pacaya3dias.mp4" class="w-full h-full object-cover" autoplay loop muted playsinline preload="none"></video>
+                </div>
+                <div class="swiper-slide">
+                  <img src={pacaya32.src} alt="Jungle Camping" class="w-full h-full object-cover" loading="lazy" width={pacaya32.width} height={pacaya32.height} />
+                </div>
+                <div class="swiper-slide">
+                  <video src="/video/pacaya3dias1.mp4" class="w-full h-full object-cover" autoplay loop muted playsinline preload="none"></video>
+                </div>
+              </div>
+            </div>
+            <div class="swiper-pagination-3days mt-2"></div>
+            <div class="absolute top-4 left-4 z-20">
+              <span class="bg-yellow-400 text-gray-900 px-3 py-1.5 rounded-full font-bold text-xs shadow-lg flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                Popular
+              </span>
+            </div>
+          </div>
+          <div class="p-4 md:p-6 flex flex-col justify-between md:w-1/2">
+            <div class="mb-3">
+              <h3 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Pacaya Samiria 3 Days</h3>
+              <p class="text-gray-600 text-sm md:text-base mb-3">Express Adventure in the Amazon Jungle</p>
+              <div class="inline-flex items-baseline gap-2 bg-green-50 px-4 py-2 rounded-lg">
+                <span class="text-3xl font-bold text-[#15803d]">{precio3dias.monto}</span>
+                {precio3dias.porPersona && <span class="text-xs text-gray-500 ml-1">{precio3dias.porPersona}</span>}
+              </div>
+            </div>
+            <div class="space-y-3">
+              <div class="grid grid-cols-3 gap-3 py-3 border-y border-gray-200">
+                <div class="text-center"><div class="text-2xl font-bold text-[#15803d]">3</div><div class="text-xs text-gray-600">Days</div></div>
+                <div class="text-center"><div class="text-2xl font-bold text-[#15803d]">2</div><div class="text-xs text-gray-600">Nights</div></div>
+                <div class="text-center"><div class="text-2xl font-bold text-[#15803d]">2-12</div><div class="text-xs text-gray-600">People</div></div>
+              </div>
+              <ul class="space-y-2">
+                <li class="flex items-center gap-3"><svg class="w-5 h-5 text-[#15803d] shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg><span class="text-gray-700">Pink dolphins</span></li>
+                <li class="flex items-center gap-3"><svg class="w-5 h-5 text-[#15803d] shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg><span class="text-gray-700">Camping</span></li>
+                <li class="flex items-center gap-3"><svg class="w-5 h-5 text-[#15803d] shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg><span class="text-gray-700">Expert guide</span></li>
+              </ul>
+            </div>
+            <div class="flex gap-2 mt-4">
+              <a href="/en/pacaya-samiria-mistico-3-dias-2-noches/" class="flex-1 text-center bg-[#15803d] hover:bg-[#166534] text-white font-semibold px-4 py-2 rounded-lg transition-all text-sm">See Details</a>
+              <a href="https://wa.me/51965001929?text=Tour%20Pacaya%20Samiria%203%20days" class="flex items-center justify-center bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-lg transition-all" title="Ask on WhatsApp">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <!-- 4-Day Tour -->
+        <article class="group relative bg-white rounded-2xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-2 flex flex-col md:flex-row md:h-[450px]">
+          <div class="relative md:w-1/2 h-64 md:h-auto overflow-hidden shrink-0">
+            <div class="swiper tour-4days-swiper h-full">
+              <div class="swiper-wrapper">
+                <div class="swiper-slide"><img src={selvaAutentica3.src} alt="Amazon Jungle" class="w-full h-full object-cover" loading="lazy" width="800" height="600" /></div>
+                <div class="swiper-slide"><img src={selvaAutentica2.src} alt="River Sunset" class="w-full h-full object-cover" loading="lazy" width="800" height="600" /></div>
+                <div class="swiper-slide"><img src={selvaAutentica1.src} alt="Amazon Wildlife" class="w-full h-full object-cover" loading="lazy" width="800" height="600" /></div>
+              </div>
+            </div>
+            <div class="swiper-pagination-4days mt-2"></div>
+            <div class="absolute top-4 left-4 z-20">
+              <span class="bg-linear-to-r from-[#15803d] to-green-600 text-white px-3 py-1.5 rounded-full font-bold text-xs shadow-lg flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                Top Rated
+              </span>
+            </div>
+          </div>
+          <div class="p-4 md:p-6 flex flex-col justify-between md:w-1/2">
+            <div class="mb-3">
+              <h3 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Pacaya Samiria 4 Days</h3>
+              <p class="text-gray-600 text-sm md:text-base mb-3">Complete Expedition in the Heart of the Amazon</p>
+              <div class="inline-flex items-baseline gap-2 bg-green-50 px-4 py-2 rounded-lg">
+                <span class="text-3xl font-bold text-[#15803d]">{precio4dias.monto}</span>
+                {precio4dias.porPersona && <span class="text-xs text-gray-500 ml-1">{precio4dias.porPersona}</span>}
+              </div>
+            </div>
+            <div class="space-y-3">
+              <div class="grid grid-cols-3 gap-3 py-3 border-y border-gray-200">
+                <div class="text-center"><div class="text-2xl font-bold text-[#15803d]">4</div><div class="text-xs text-gray-600">Days</div></div>
+                <div class="text-center"><div class="text-2xl font-bold text-[#15803d]">3</div><div class="text-xs text-gray-600">Nights</div></div>
+                <div class="text-center"><div class="text-2xl font-bold text-[#15803d]">2-10</div><div class="text-xs text-gray-600">People</div></div>
+              </div>
+              <ul class="space-y-2">
+                <li class="flex items-center gap-3"><svg class="w-5 h-5 text-[#15803d] shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg><span class="text-gray-700">Deep exploration</span></li>
+                <li class="flex items-center gap-3"><svg class="w-5 h-5 text-[#15803d] shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg><span class="text-gray-700">Remote areas</span></li>
+                <li class="flex items-center gap-3"><svg class="w-5 h-5 text-[#15803d] shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg><span class="text-gray-700">All inclusive</span></li>
+              </ul>
+            </div>
+            <div class="flex gap-2 mt-4">
+              <a href="/en/pacaya-samiria-selva-autentica-4-dias-3-noches/" class="flex-1 text-center bg-[#15803d] hover:bg-[#166534] text-white font-semibold px-4 py-2 rounded-lg transition-all text-sm">See Details</a>
+              <a href="https://wa.me/51965001929?text=Tour%20Pacaya%20Samiria%204%20days" class="flex items-center justify-center bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-lg transition-all" title="Ask on WhatsApp">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <!-- 5-Day Tour -->
+        <article class="group relative bg-white rounded-2xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-2 flex flex-col md:flex-row md:h-[450px]">
+          <div class="relative md:w-1/2 h-64 md:h-auto overflow-hidden shrink-0">
+            <div class="swiper tour-5days-swiper h-full">
+              <div class="swiper-wrapper">
+                <div class="swiper-slide"><img src={pacayaSamiria41.src} alt="Amazon Wildlife" class="w-full h-full object-cover" loading="lazy" width="800" height="600" /></div>
+                <div class="swiper-slide"><img src={pacayaSamiria42.src} alt="Jungle Camping" class="w-full h-full object-cover" loading="lazy" width="800" height="600" /></div>
+                <div class="swiper-slide"><img src={pacayaSarmiria5d.src} alt="Aerial View Reserve" class="w-full h-full object-cover" loading="lazy" width="800" height="600" /></div>
+                <div class="swiper-slide"><img src={pacayaSarmiria43.src} alt="Night Navigation" class="w-full h-full object-cover" loading="lazy" width="800" height="600" /></div>
+              </div>
+            </div>
+            <div class="swiper-pagination-5days mt-2"></div>
+            <div class="absolute top-4 left-4 z-20">
+              <span class="bg-purple-600 text-white px-3 py-1.5 rounded-full font-bold text-xs shadow-lg flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z" clip-rule="evenodd"/></svg>
+                Premium
+              </span>
+            </div>
+          </div>
+          <div class="p-4 md:p-6 flex flex-col justify-between md:w-1/2">
+            <div class="mb-3">
+              <h3 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Pacaya Samiria 5 Days</h3>
+              <p class="text-gray-600 text-sm md:text-base mb-3">Total Immersion in the Virgin Jungle</p>
+              <div class="inline-flex items-baseline gap-2 bg-green-50 px-4 py-2 rounded-lg">
+                <span class="text-3xl font-bold text-[#15803d]">{precio5dias.monto}</span>
+                {precio5dias.porPersona && <span class="text-xs text-gray-500 ml-1">{precio5dias.porPersona}</span>}
+              </div>
+            </div>
+            <div class="space-y-3">
+              <div class="grid grid-cols-3 gap-3 py-3 border-y border-gray-200">
+                <div class="text-center"><div class="text-2xl font-bold text-[#15803d]">5</div><div class="text-xs text-gray-600">Days</div></div>
+                <div class="text-center"><div class="text-2xl font-bold text-[#15803d]">4</div><div class="text-xs text-gray-600">Nights</div></div>
+                <div class="text-center"><div class="text-2xl font-bold text-[#15803d]">2-8</div><div class="text-xs text-gray-600">People</div></div>
+              </div>
+              <ul class="space-y-2">
+                <li class="flex items-center gap-3"><svg class="w-5 h-5 text-[#15803d] shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg><span class="text-gray-700">Most remote areas</span></li>
+                <li class="flex items-center gap-3"><svg class="w-5 h-5 text-[#15803d] shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg><span class="text-gray-700">Maximum biodiversity</span></li>
+                <li class="flex items-center gap-3"><svg class="w-5 h-5 text-[#15803d] shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg><span class="text-gray-700">Specialized guide</span></li>
+              </ul>
+            </div>
+            <div class="flex gap-2 mt-4">
+              <a href="/en/selva-pacaya-samiria-5-dias/" class="flex-1 text-center bg-[#15803d] hover:bg-[#166534] text-white font-semibold px-4 py-2 rounded-lg transition-all text-sm">See Details</a>
+              <a href="https://wa.me/51965001929?text=Tour%20Pacaya%20Samiria%205%20days" class="flex items-center justify-center bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-lg transition-all" title="Ask on WhatsApp">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <!-- 10-Day Tour -->
+        <article class="group relative bg-white rounded-2xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-2 flex flex-col md:flex-row md:h-[450px]">
+          <div class="relative md:w-1/2 h-64 md:h-auto overflow-hidden shrink-0">
+            <div class="swiper tour-10days-swiper h-full">
+              <div class="swiper-wrapper">
+                <div class="swiper-slide"><img src={pacayaSamiriaSelvaVirgen1.src} alt="Deep Jungle" class="w-full h-full object-cover" loading="lazy" width="800" height="600" /></div>
+                <div class="swiper-slide"><img src={pacayaSamiriaSelvaVirgen3.src} alt="Amazon Sunset" class="w-full h-full object-cover" loading="lazy" width="800" height="600" /></div>
+                <div class="swiper-slide"><img src={pacayaSamiriaSelvaVirgen4.src} alt="Wildlife" class="w-full h-full object-cover" loading="lazy" width="800" height="600" /></div>
+                <div class="swiper-slide"><img src={pacayaSamiriaSelvaVirgen5.src} alt="Canoe Expedition" class="w-full h-full object-cover" loading="lazy" width="800" height="600" /></div>
+              </div>
+            </div>
+            <div class="swiper-pagination-10days mt-2"></div>
+            <div class="absolute top-4 left-4 z-20">
+              <span class="bg-linear-to-r from-amber-600 to-yellow-600 text-white px-3 py-1.5 rounded-full font-bold text-xs shadow-lg flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                Elite
+              </span>
+            </div>
+          </div>
+          <div class="p-4 md:p-6 flex flex-col justify-between md:w-1/2">
+            <div class="mb-3">
+              <h3 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Pacaya Samiria 10 Days</h3>
+              <p class="text-gray-600 text-sm md:text-base mb-3">Complete & Exclusive Expedition</p>
+              <div class="inline-flex items-baseline gap-2 bg-green-50 px-4 py-2 rounded-lg">
+                <span class="text-3xl font-bold text-[#15803d]">{precio10dias.monto}</span>
+                {precio10dias.porPersona && <span class="text-xs text-gray-500 ml-1">{precio10dias.porPersona}</span>}
+              </div>
+            </div>
+            <div class="space-y-3">
+              <div class="grid grid-cols-3 gap-3 py-3 border-y border-gray-200">
+                <div class="text-center"><div class="text-2xl font-bold text-[#15803d]">10</div><div class="text-xs text-gray-600">Days</div></div>
+                <div class="text-center"><div class="text-2xl font-bold text-[#15803d]">9</div><div class="text-xs text-gray-600">Nights</div></div>
+                <div class="text-center"><div class="text-2xl font-bold text-[#15803d]">2-6</div><div class="text-xs text-gray-600">People</div></div>
+              </div>
+              <ul class="space-y-2">
+                <li class="flex items-center gap-3"><svg class="w-5 h-5 text-[#15803d] shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg><span class="text-gray-700">The entire reserve</span></li>
+                <li class="flex items-center gap-3"><svg class="w-5 h-5 text-[#15803d] shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg><span class="text-gray-700">Unique experience</span></li>
+                <li class="flex items-center gap-3"><svg class="w-5 h-5 text-[#15803d] shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg><span class="text-gray-700">VIP Service</span></li>
+              </ul>
+            </div>
+            <div class="flex gap-2 mt-4">
+              <a href="/en/pacaya-samiria-selva-virgen-10-dias-9-noches/" class="flex-1 text-center bg-[#15803d] hover:bg-[#166534] text-white font-semibold px-4 py-2 rounded-lg transition-all text-sm">See Details</a>
+              <a href="https://wa.me/51965001929?text=Tour%20Pacaya%20Samiria%2010%20days" class="flex items-center justify-center bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-lg transition-all" title="Ask on WhatsApp">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+              </a>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- CTA -->
+      <div class="text-center mt-12">
+        <p class="text-white text-lg mb-4">Need help choosing your adventure?</p>
+        <a
+          href="https://wa.me/51965001929"
+          class="inline-flex items-center gap-3 bg-white hover:bg-gray-100 text-[#15803d] font-semibold px-8 py-4 rounded-lg transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-105"
+        >
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+          Talk to a Local Expert
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cabins & Natural Areas Section -->
+  <section class="py-12 md:py-16 lg:py-20 bg-white">
+    <div class="container px-4">
+      <div class="text-center mb-10 md:mb-14">
+        <div class="inline-block mb-4">
+          <span class="text-[#15803d] font-semibold text-xs md:text-sm tracking-wider uppercase">Facilities</span>
+          <div class="h-0.5 w-16 bg-yellow-400 mt-2 mx-auto"></div>
+        </div>
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+          Cabins & <span class="text-[#15803d]">Natural Areas</span>
+        </h2>
+        <p class="text-base md:text-lg text-gray-600 max-w-3xl mx-auto">
+          Comfortable accommodations in harmony with Amazon nature
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-12">
+        <!-- Floating Cabins -->
+        <div class="group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500">
+          <div class="relative h-64 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=2025" alt="Floating Cabins" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" width="800" height="600" />
+            <div class="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent"></div>
+            <div class="absolute bottom-0 left-0 right-0 p-6">
+              <h3 class="text-white font-bold text-xl md:text-2xl mb-2">Floating Cabins</h3>
+              <p class="text-white/90 text-sm">Unique lodging on the river</p>
+            </div>
+          </div>
+          <div class="p-6">
+            <ul class="space-y-2">
+              <li class="flex items-start gap-2 text-sm text-gray-700"><svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg><span>Traditional Amazonian construction</span></li>
+              <li class="flex items-start gap-2 text-sm text-gray-700"><svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg><span>Panoramic river view</span></li>
+              <li class="flex items-start gap-2 text-sm text-gray-700"><svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg><span>Mosquito nets included</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Jungle Camp -->
+        <div class="group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500">
+          <div class="relative h-64 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?q=80&w=2070" alt="Jungle Camp" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" width="800" height="600" />
+            <div class="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent"></div>
+            <div class="absolute bottom-0 left-0 right-0 p-6">
+              <h3 class="text-white font-bold text-xl md:text-2xl mb-2">Jungle Camp</h3>
+              <p class="text-white/90 text-sm">Total immersion experience</p>
+            </div>
+          </div>
+          <div class="p-6">
+            <ul class="space-y-2">
+              <li class="flex items-start gap-2 text-sm text-gray-700"><svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg><span>Professional tents</span></li>
+              <li class="flex items-start gap-2 text-sm text-gray-700"><svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg><span>Campfire area</span></li>
+              <li class="flex items-start gap-2 text-sm text-gray-700"><svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg><span>Nights under the stars</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Common Areas -->
+        <div class="group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500">
+          <div class="relative h-64 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?q=80&w=2070" alt="Common Areas" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" width="800" height="600" />
+            <div class="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent"></div>
+            <div class="absolute bottom-0 left-0 right-0 p-6">
+              <h3 class="text-white font-bold text-xl md:text-2xl mb-2">Common Areas</h3>
+              <p class="text-white/90 text-sm">Natural social spaces</p>
+            </div>
+          </div>
+          <div class="p-6">
+            <ul class="space-y-2">
+              <li class="flex items-start gap-2 text-sm text-gray-700"><svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg><span>Open-air dining room</span></li>
+              <li class="flex items-start gap-2 text-sm text-gray-700"><svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg><span>Natural viewpoints</span></li>
+              <li class="flex items-start gap-2 text-sm text-gray-700"><svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg><span>Hammocks for relaxation</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sustainability banner -->
+      <div class="bg-linear-to-r from-[#15803d] to-green-700 rounded-2xl p-8 md:p-10 text-white text-center">
+        <h3 class="text-2xl md:text-3xl font-bold mb-4">Sustainability & Respect for Nature</h3>
+        <p class="text-base md:text-lg max-w-3xl mx-auto mb-6">
+          All our facilities are designed with local materials and traditional techniques, minimizing environmental impact and supporting local communities.
+        </p>
+        <div class="flex flex-wrap justify-center gap-6 md:gap-8">
+          <div class="flex items-center gap-2"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg><span class="text-sm md:text-base">Solar energy</span></div>
+          <div class="flex items-center gap-2"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg><span class="text-sm md:text-base">Zero plastics</span></div>
+          <div class="flex items-center gap-2"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg><span class="text-sm md:text-base">Total recycling</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- All Tours Section -->
+  <section id="tours" class="py-12 md:py-16 lg:py-20 bg-linear-to-b from-gray-50 to-white">
+    <div class="container px-4">
+      <div class="text-center mb-10 md:mb-12 lg:mb-16">
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 md:mb-4">
+          All Our <span class="text-[#15803d]">Tours</span>
+        </h2>
+        <p class="text-base md:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto px-4">
+          Discover all available experiences in Pacaya Samiria
+        </p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        {toursWithImages.map((tour) => (
+          <article class="group relative bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500">
+            <a href={`/en/${tour.slug}/`}>
+              <div class="relative h-64 md:h-72 lg:h-80 overflow-hidden">
+                <img
+                  src={tour.imageUrl}
+                  alt={tour.title.rendered}
+                  class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  loading="lazy"
+                  width="800"
+                  height="600"
+                />
+                <div class="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-transparent"></div>
+                <div class="absolute top-3 md:top-4 right-3 md:right-4 bg-linear-to-r from-yellow-400 to-yellow-500 text-gray-900 px-3 md:px-4 py-1.5 md:py-2 rounded-full font-bold text-xs md:text-sm shadow-lg">
+                  {tour.acf?.precio || 'Contact us'}
+                </div>
+                <div class="absolute bottom-0 left-0 right-0 p-4 md:p-6">
+                  <h3 class="text-white font-bold text-lg md:text-xl mb-2 line-clamp-2" set:html={tour.title.rendered} />
+                </div>
+              </div>
+              <div class="p-4 md:p-6 bg-linear-to-br from-white to-green-50">
+                <div class="text-gray-700 text-xs md:text-sm line-clamp-3 leading-relaxed mb-3 md:mb-4" set:html={tour.excerpt.rendered} />
+                <div class="flex items-center justify-between">
+                  <span class="inline-flex items-center gap-1 md:gap-2 text-[#15803d] font-semibold px-3 md:px-4 py-1.5 md:py-2 rounded-lg border-2 border-[#15803d] group-hover:bg-[#15803d] group-hover:text-white transition-all duration-300 text-xs md:text-sm">
+                    <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                    View details
+                  </span>
+                  <div class="flex gap-1">
+                    <span class="w-2 h-2 rounded-full bg-[#15803d] group-hover:bg-yellow-400 transition-colors"></span>
+                    <span class="w-2 h-2 rounded-full bg-yellow-400 group-hover:bg-[#15803d] transition-colors"></span>
+                    <span class="w-2 h-2 rounded-full bg-[#15803d] group-hover:bg-yellow-400 transition-colors"></span>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </article>
+        ))}
+      </div>
+
+      {tours.length > 10 && (
+        <div class="text-center mt-12">
+          <a href="/en/tours/" class="inline-block bg-gray-900 hover:bg-gray-800 text-white font-bold px-8 py-4 rounded-lg text-lg transition-all duration-300">
+            View All Tours
+          </a>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="py-12 md:py-16 lg:py-20 bg-gray-50">
+    <div class="container px-4">
+      <div class="text-center mb-10 md:mb-12">
+        <div class="inline-block mb-4">
+          <span class="text-[#15803d] font-semibold text-xs md:text-sm tracking-wider uppercase">Testimonials</span>
+          <div class="h-0.5 w-16 bg-yellow-400 mt-2 mx-auto"></div>
+        </div>
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+          What Our <span class="text-[#15803d]">Travelers Say</span>
+        </h2>
+        <p class="text-base md:text-lg text-gray-600 max-w-2xl mx-auto">
+          Thousands of adventurers have trusted us to explore the Amazon
+        </p>
+      </div>
+
+      <div class="swiper testimonials-swiper relative">
+        <div class="swiper-wrapper pb-12">
+          {testimonials.map((testimonial) => (
+            <div class="swiper-slide h-auto">
+              <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 p-6 h-full flex flex-col relative border border-gray-100">
+                <div class="flex items-center justify-between mb-3">
+                  <div class="flex gap-1">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <svg class={`w-4 h-4 ${i < testimonial.rating ? 'text-[#00aa6c]' : 'text-gray-300'}`} fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                      </svg>
+                    ))}
+                  </div>
+                  <img src={tripadvisorLogo.src} alt="TripAdvisor" loading="lazy" width={tripadvisorLogo.width} height={tripadvisorLogo.height} class="h-6 w-auto opacity-80" />
+                </div>
+                {testimonial.title && (
+                  <h4 class="font-semibold text-gray-900 text-sm mb-2 line-clamp-1">{testimonial.title}</h4>
+                )}
+                <p class="text-gray-600 text-sm leading-relaxed mb-5 grow line-clamp-5">
+                  "{testimonial.comment}"
+                </p>
+                <div class="flex items-center justify-between pt-3 border-t border-gray-100">
+                  <div class="flex items-center gap-3">
+                    {testimonial.avatar ? (
+                      <img src={testimonial.avatar} alt={testimonial.name} class="w-10 h-10 rounded-full object-cover" loading="lazy" width="40" height="40" />
+                    ) : (
+                      <div class="w-10 h-10 rounded-full bg-[#00aa6c] flex items-center justify-center text-white font-bold text-sm shrink-0">
+                        {testimonial.name.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                    <div>
+                      <div class="font-semibold text-gray-900 text-sm">{testimonial.name}</div>
+                      {testimonial.date && <div class="text-xs text-gray-400">{testimonial.date}</div>}
+                    </div>
+                  </div>
+                  {testimonial.url && (
+                    <a href={testimonial.url} target="_blank" rel="noopener noreferrer" class="text-xs text-[#00aa6c] hover:underline shrink-0">See review</a>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div class="swiper-button-next-testimonials absolute top-1/2 right-0 -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center text-[#15803d] cursor-pointer hover:bg-[#15803d] hover:text-white transition-all">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </div>
+        <div class="swiper-button-prev-testimonials absolute top-1/2 left-0 -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center text-[#15803d] cursor-pointer hover:bg-[#15803d] hover:text-white transition-all">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+        </div>
+        <div class="swiper-pagination-testimonials mt-8"></div>
+      </div>
+
+      <div class="text-center mt-10">
+        <a
+          href="https://www.tripadvisor.com/Attraction_Review-g294314-d12865966-Reviews-Ruth_Amazon_Expeditions-Iquitos_Loreto_Region.html"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-3 bg-white hover:bg-gray-50 text-gray-800 font-semibold px-8 py-4 rounded-lg border-2 border-gray-200 transition-all duration-300 shadow-md hover:shadow-lg"
+        >
+          <img src={tripadvisorLogo.src} alt="TripAdvisor" loading="lazy" width={tripadvisorLogo.width} height={tripadvisorLogo.height} />
+          <span>See more on TripAdvisor</span>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+</Layout>
+
+<style>
+  @import 'swiper/css';
+  @import 'swiper/css/navigation';
+  @import 'swiper/css/pagination';
+
+  .hero-swiper { position: relative; width: 100%; height: 100%; }
+
+  .hero-button-next, .hero-button-prev {
+    position: absolute; top: 50%; transform: translateY(-50%); z-index: 10;
+    width: 50px; height: 50px; background: rgba(255,255,255,0.9); border-radius: 50%;
+    color: #15803d; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; cursor: pointer;
+  }
+  .hero-button-next { right: 20px; }
+  .hero-button-prev { left: 20px; }
+  .hero-button-next:hover, .hero-button-prev:hover {
+    background: #15803d; color: white; transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 6px 20px rgba(21,128,61,0.4);
+  }
+  .hero-button-next svg, .hero-button-prev svg { pointer-events: none; }
+
+  @media (max-width: 768px) {
+    .hero-button-next, .hero-button-prev { width: 40px; height: 40px; }
+    .hero-button-next { right: 10px; }
+    .hero-button-prev { left: 10px; }
+    .hero-button-next svg, .hero-button-prev svg { width: 20px; height: 20px; }
+  }
+
+  .hero-pagination { position: absolute; bottom: 20px !important; left: 0; right: 0; text-align: center; z-index: 10; }
+  .hero-pagination .swiper-pagination-bullet { background: white; opacity: 0.6; width: 12px; height: 12px; transition: all 0.3s ease; }
+  .hero-pagination .swiper-pagination-bullet-active { background: #15803d; opacity: 1; width: 32px; border-radius: 6px; }
+
+  @keyframes fade-in { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .animate-fade-in { animation: fade-in 1s ease-out; }
+
+  .swiper-slide video { pointer-events: none; }
+
+  @media (min-width: 768px) {
+    article[class*="md:h-[450px]"] h3 { font-size: 1.5rem !important; line-height: 1.3; margin-bottom: 0.5rem !important; }
+    article[class*="md:h-[450px]"] p { font-size: 0.875rem !important; margin-bottom: 0.5rem !important; }
+    article[class*="md:h-[450px]"] .bg-green-50 { padding: 0.375rem 0.75rem !important; }
+    article[class*="md:h-[450px]"] .bg-green-50 span:first-child { font-size: 1.75rem !important; }
+    article[class*="md:h-[450px]"] .grid > div > div:first-child { font-size: 1.25rem !important; }
+    article[class*="md:h-[450px]"] ul li { gap: 0.5rem !important; }
+    article[class*="md:h-[450px]"] ul li svg { width: 1rem !important; height: 1rem !important; }
+    article[class*="md:h-[450px]"] ul li span { font-size: 0.875rem !important; }
+    article[class*="md:h-[450px]"] > div:last-child { padding: 1rem 1.25rem !important; }
+  }
+
+  .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .line-clamp-5 { display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
+
+  .testimonials-swiper .swiper-slide { height: auto; display: flex; }
+
+  .swiper-pagination-3days, .swiper-pagination-4days, .swiper-pagination-5days, .swiper-pagination-10days {
+    position: relative !important; text-align: center; padding: 8px 0;
+    --swiper-pagination-bullet-inactive-color: #15803d; --swiper-pagination-bullet-inactive-opacity: 0.4;
+    --swiper-pagination-color: #15803d; --swiper-pagination-bullet-size: 10px; --swiper-pagination-bullet-horizontal-gap: 4px;
+  }
+  .swiper-pagination-3days .swiper-pagination-bullet,
+  .swiper-pagination-4days .swiper-pagination-bullet,
+  .swiper-pagination-5days .swiper-pagination-bullet,
+  .swiper-pagination-10days .swiper-pagination-bullet {
+    background: #15803d; opacity: 0.4; width: 10px; height: 10px; margin: 0 4px; transition: all 0.3s ease;
+  }
+  .swiper-pagination-3days .swiper-pagination-bullet-active,
+  .swiper-pagination-4days .swiper-pagination-bullet-active,
+  .swiper-pagination-5days .swiper-pagination-bullet-active,
+  .swiper-pagination-10days .swiper-pagination-bullet-active {
+    opacity: 1; background: #15803d; width: 28px; border-radius: 5px;
+  }
+</style>
+
+<script>
+  import Swiper from 'swiper';
+  import { Navigation, Pagination, Autoplay, EffectFade } from 'swiper/modules';
+
+  new Swiper('.hero-swiper', {
+    modules: [Navigation, Pagination, Autoplay, EffectFade],
+    loop: true,
+    autoplay: { delay: 5000, disableOnInteraction: false },
+    navigation: { nextEl: '.hero-button-next', prevEl: '.hero-button-prev' },
+    pagination: { el: '.hero-pagination', clickable: true },
+    effect: 'fade',
+    fadeEffect: { crossFade: true },
+  });
+
+  new Swiper('.testimonials-swiper', {
+    modules: [Navigation, Pagination, Autoplay],
+    loop: true,
+    autoplay: { delay: 7000, disableOnInteraction: false },
+    navigation: { nextEl: '.swiper-button-next-testimonials', prevEl: '.swiper-button-prev-testimonials' },
+    pagination: { el: '.swiper-pagination-testimonials', clickable: true },
+    slidesPerView: 1,
+    spaceBetween: 20,
+    breakpoints: {
+      640: { slidesPerView: 2, spaceBetween: 20 },
+      768: { slidesPerView: 3, spaceBetween: 24 },
+      1024: { slidesPerView: 4, spaceBetween: 24 },
+    },
+  });
+
+  new Swiper('.tour-3days-swiper', {
+    modules: [Pagination, Autoplay, EffectFade],
+    loop: true, autoplay: { delay: 4000, disableOnInteraction: false },
+    pagination: { el: '.swiper-pagination-3days', clickable: true },
+    effect: 'fade', fadeEffect: { crossFade: true },
+  });
+
+  new Swiper('.tour-4days-swiper', {
+    modules: [Pagination, Autoplay, EffectFade],
+    loop: true, autoplay: { delay: 4000, disableOnInteraction: false },
+    pagination: { el: '.swiper-pagination-4days', clickable: true },
+    effect: 'fade', fadeEffect: { crossFade: true },
+  });
+
+  new Swiper('.tour-5days-swiper', {
+    modules: [Pagination, Autoplay, EffectFade],
+    loop: true, autoplay: { delay: 4000, disableOnInteraction: false },
+    pagination: { el: '.swiper-pagination-5days', clickable: true },
+    effect: 'fade', fadeEffect: { crossFade: true },
+  });
+
+  new Swiper('.tour-10days-swiper', {
+    modules: [Pagination, Autoplay, EffectFade],
+    loop: true, autoplay: { delay: 4000, disableOnInteraction: false },
+    pagination: { el: '.swiper-pagination-10days', clickable: true },
+    effect: 'fade', fadeEffect: { crossFade: true },
+  });
+</script>

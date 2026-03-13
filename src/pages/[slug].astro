@@ -67,7 +67,7 @@ if (type === 'post') {
     })
   );
   
-  testimonials = await getTripAdvisorReviews();
+  testimonials = await getTripAdvisorReviews(2);
 }
 import TourContent from '../components/TourContent.astro';
 ---
@@ -78,7 +78,7 @@ import TourContent from '../components/TourContent.astro';
   yoastSEO={yoastSEO}
   favicon={favicon}
 >
-  <Header />
+  <Header lang="es" />
   
   {type === 'post' ? (
     <!-- Diseño para Tours (Posts) -->

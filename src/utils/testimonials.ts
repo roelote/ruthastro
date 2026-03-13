@@ -1,5 +1,4 @@
 // Configuración de WordPress API
-const WORDPRESS_API_URL = import.meta.env.PUBLIC_WORDPRESS_API_URL || 'http://web.ruth/wp-json/wp/v2';
 const WORDPRESS_BASE_URL = import.meta.env.PUBLIC_WORDPRESS_BASE_URL || 'http://web.ruth';
 
 // Tipos para los testimonios
@@ -7,6 +6,7 @@ export interface Testimonial {
   name: string;
   rating: number;
   date: string;
+  title?: string;
   comment: string;
   avatar?: string;
   location?: string;
@@ -15,9 +15,9 @@ export interface Testimonial {
 }
 
 // Función para obtener las reseñas de TripAdvisor desde WordPress
-export async function getTripAdvisorReviews(): Promise<Testimonial[]> {
+export async function getTripAdvisorReviews(tid: number = 1): Promise<Testimonial[]> {
   try {
-    const response = await fetch(`${WORDPRESS_BASE_URL}/wp-json/ruth-amazon/v1/tripadvisor-widget?id=1`);
+    const response = await fetch(`${WORDPRESS_BASE_URL}/wp-json/headless/v1/tripadvisor/reviews?tid=${tid}`);
     
     if (!response.ok) {
       console.warn('No se pudieron cargar las reseñas de TripAdvisor');
@@ -26,20 +26,21 @@ export async function getTripAdvisorReviews(): Promise<Testimonial[]> {
     
     const data = await response.json();
     
-    // Si hay reseñas estructuradas, usarlas
-    if (data.reviews && data.reviews.length > 0) {
-      return data.reviews.map((review: any) => ({
-        name: review.name,
-        rating: review.rating,
+    // Estructura: { success: true, data: { items: [...] } }
+    const items = data?.data?.items;
+    if (Array.isArray(items) && items.length > 0) {
+      return items.map((review: any) => ({
+        name: review.author,
+        rating: Number(review.rating),
         date: review.date,
-        comment: review.comment,
-        avatar: review.avatar,
-        platform: review.platform || 'tripadvisor',
-        url: review.url
+        title: review.title || undefined,
+        comment: review.body_full || review.body,
+        avatar: review.avatar || undefined,
+        platform: 'tripadvisor' as const,
+        url: review.ta_url || undefined
       }));
     }
     
-    // Fallback
     return getFallbackTestimonials();
   } catch (error) {
     console.error('Error al cargar reseñas de TripAdvisor:', error);
@@ -47,41 +48,7 @@ export async function getTripAdvisorReviews(): Promise<Testimonial[]> {
   }
 }
 
-// Función legacy para obtener el HTML del widget (deprecated)
-export async function getTripAdvisorWidget(): Promise<string> {
-  try {
-    const response = await fetch(`${WORDPRESS_BASE_URL}/wp-json/ruth-amazon/v1/tripadvisor-widget?id=1`);
-    
-    if (!response.ok) {
-      return '';
-    }
-    
-    const data = await response.json();
-    return data.html || '';
-  } catch (error) {
-    return '';
-  }
-}
-
-// Función para obtener testimonios desde WordPress (alternativa)
-export async function getTestimonials(): Promise<Testimonial[]> {
-  try {
-    const response = await fetch(`${WORDPRESS_API_URL}/testimonials`);
-    
-    if (!response.ok) {
-      console.warn('No se pudieron cargar testimonios desde WordPress');
-      return getFallbackTestimonials();
-    }
-    
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error al cargar testimonios:', error);
-    return getFallbackTestimonials();
-  }
-}
-
-// Testimonios de respaldo (hardcoded) si no se pueden cargar desde WordPress
+// Testimonios de respaldo si no se pueden cargar desde WordPress
 function getFallbackTestimonials(): Testimonial[] {
   return [
     {
@@ -114,7 +81,7 @@ function getFallbackTestimonials(): Testimonial[] {
       date: '2024-08-12',
       comment: 'Un voyage extraordinaire! Les paysages sont à couper le souffle et l\'équipe est très attentionnée. J\'ai particulièrement aimé la navigation nocturne pour observer les caïmans.',
       location: 'France',
-      platform: 'google'
+      platform: 'tripadvisor'
     },
     {
       name: 'Carlos Mendoza',

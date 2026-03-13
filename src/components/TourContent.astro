@@ -1044,7 +1044,8 @@ const { post, featuredImageUrl, toursWithImages, testimonials } = Astro.props;
         
         try {
           const CF7_FORM_ID = 'b32fc06';
-          const response = await fetch(`http://web.ruth/wp-json/contact-form-7/v1/contact-forms/${CF7_FORM_ID}/feedback`, {
+          const wpBaseUrl = import.meta.env.PUBLIC_WORDPRESS_BASE_URL;
+          const response = await fetch(`${wpBaseUrl}/wp-json/contact-form-7/v1/contact-forms/${CF7_FORM_ID}/feedback`, {
             method: 'POST',
             body: formData,
           });

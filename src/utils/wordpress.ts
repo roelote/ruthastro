@@ -1,6 +1,9 @@
 const WORDPRESS_API_URL = import.meta.env.PUBLIC_WORDPRESS_API_URL || 'http://web.ruth/wp-json/wp/v2';
 const WORDPRESS_BASE_URL = import.meta.env.PUBLIC_WORDPRESS_BASE_URL || 'http://web.ruth';
 
+export type Lang = 'es' | 'en';
+export const DEFAULT_LANG: Lang = 'es';
+
 export interface WPPage {
   id: number;
   title: {
@@ -107,12 +110,35 @@ export interface WPSiteInfo {
   };
 }
 
+export interface WPLanguage {
+  code: string;
+  name: string;
+  display: string;
+  active: boolean;
+  url: string;
+  flag_url: string;
+}
+
+/**
+ * Obtener idiomas activos desde WPML
+ */
+export async function getLanguages(): Promise<WPLanguage[]> {
+  try {
+    const response = await fetch(`${WORDPRESS_BASE_URL}/wp-json/headless/v1/languages`);
+    if (!response.ok) return [];
+    const data = await response.json();
+    return data.languages || [];
+  } catch {
+    return [];
+  }
+}
+
 /**
  * Obtener todas las páginas de WordPress
  */
-export async function getPages(): Promise<WPPage[]> {
+export async function getPages(lang: Lang = DEFAULT_LANG): Promise<WPPage[]> {
   try {
-    const response = await fetch(`${WORDPRESS_API_URL}/pages?per_page=100`);
+    const response = await fetch(`${WORDPRESS_API_URL}/pages?per_page=100&lang=${lang}`);
     if (!response.ok) {
       throw new Error(`Error fetching pages: ${response.status}`);
     }
@@ -126,9 +152,9 @@ export async function getPages(): Promise<WPPage[]> {
 /**
  * Obtener una página específica por slug
  */
-export async function getPageBySlug(slug: string): Promise<WPPage | null> {
+export async function getPageBySlug(slug: string, lang: Lang = DEFAULT_LANG): Promise<WPPage | null> {
   try {
-    const response = await fetch(`${WORDPRESS_API_URL}/pages?slug=${slug}`);
+    const response = await fetch(`${WORDPRESS_API_URL}/pages?slug=${slug}&lang=${lang}`);
     if (!response.ok) {
       throw new Error(`Error fetching page: ${response.status}`);
     }
@@ -143,9 +169,9 @@ export async function getPageBySlug(slug: string): Promise<WPPage | null> {
 /**
  * Obtener todas las entradas (posts) de WordPress
  */
-export async function getPosts(): Promise<WPPost[]> {
+export async function getPosts(lang: Lang = DEFAULT_LANG): Promise<WPPost[]> {
   try {
-    const response = await fetch(`${WORDPRESS_API_URL}/posts?per_page=100`);
+    const response = await fetch(`${WORDPRESS_API_URL}/posts?per_page=100&lang=${lang}`);
     if (!response.ok) {
       throw new Error(`Error fetching posts: ${response.status}`);
     }
@@ -159,9 +185,9 @@ export async function getPosts(): Promise<WPPost[]> {
 /**
  * Obtener una entrada específica por slug
  */
-export async function getPostBySlug(slug: string): Promise<WPPost | null> {
+export async function getPostBySlug(slug: string, lang: Lang = DEFAULT_LANG): Promise<WPPost | null> {
   try {
-    const response = await fetch(`${WORDPRESS_API_URL}/posts?slug=${slug}`);
+    const response = await fetch(`${WORDPRESS_API_URL}/posts?slug=${slug}&lang=${lang}`);
     if (!response.ok) {
       throw new Error(`Error fetching post: ${response.status}`);
     }
@@ -198,17 +224,33 @@ export async function getFeaturedImage(mediaId: number): Promise<string | null> 
  * Nota: WordPress no expone los menús por defecto en la API REST.
  * Necesitas el plugin "WP REST API Menus" o agregar un endpoint personalizado.
  */
-export async function getMenu(menuSlug: string = 'primary'): Promise<WPMenuItem[]> {
+export async function getMenu(menuSlug: string = 'primary', lang: Lang = DEFAULT_LANG): Promise<WPMenuItem[]> {
   try {
-    // Intenta primero con el endpoint del plugin WP REST API Menus
-    const response = await fetch(`${WORDPRESS_BASE_URL}/wp-json/wp-api-menus/v2/menus/${menuSlug}`);
-    
-    if (!response.ok) {
-      throw new Error(`Error fetching menu: ${response.status}`);
+    // Endpoint headless con soporte WPML completo
+    const response = await fetch(`${WORDPRESS_BASE_URL}/wp-json/headless/v1/menu/${menuSlug}?lang=${lang}`);
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.items || [];
     }
-    
-    const data = await response.json();
-    return data.items || [];
+
+    // Fallback: probar con la ubicación real del tema (menu-1 en Underscores)
+    if (menuSlug !== 'menu-1') {
+      const fallback1 = await fetch(`${WORDPRESS_BASE_URL}/wp-json/headless/v1/menu/menu-1?lang=${lang}`);
+      if (fallback1.ok) {
+        const data = await fallback1.json();
+        return data.items || [];
+      }
+    }
+
+    // Último fallback: endpoint antiguo sin WPML
+    const legacy = await fetch(`${WORDPRESS_BASE_URL}/wp-json/wp-api-menus/v2/menus/${menuSlug}`);
+    if (legacy.ok) {
+      const data = await legacy.json();
+      return data.items || [];
+    }
+
+    return [];
   } catch (error) {
     console.error('Error al obtener menú:', error);
     return [];
