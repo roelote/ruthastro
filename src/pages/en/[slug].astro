@@ -8,17 +8,33 @@ import heroImage from '../../assets/pacayasamiria.png';
 import { getTripAdvisorReviews } from '../../utils/testimonials';
 
 export async function getStaticPaths() {
-  const pages = await getPages('en');
-  const posts = await getPosts('en');
+  const [pages, posts, esPages, esPosts] = await Promise.all([
+    getPages('en'),
+    getPosts('en'),
+    getPages(),
+    getPosts(),
+  ]);
+
+  // Mapas ID → slug para encontrar el slug ES a partir del ID de traducción
+  const esPageSlugById = new Map(esPages.map(p => [p.id, p.slug]));
+  const esPostSlugById = new Map(esPosts.map(p => [p.id, p.slug]));
 
   const allPaths = [
     ...pages.map(page => ({
       params: { slug: page.slug },
-      props: { content: page, type: 'page' as const }
+      props: {
+        content: page,
+        type: 'page' as const,
+        esSlug: page.translations?.es ? (esPageSlugById.get(page.translations.es) ?? null) : null
+      }
     })),
     ...posts.map(post => ({
       params: { slug: post.slug },
-      props: { content: post, type: 'post' as const }
+      props: {
+        content: post,
+        type: 'post' as const,
+        esSlug: post.translations?.es ? (esPostSlugById.get(post.translations.es) ?? null) : null
+      }
     }))
   ];
 
@@ -28,9 +44,10 @@ export async function getStaticPaths() {
 interface Props {
   content: WPPage | WPPost;
   type: 'page' | 'post';
+  esSlug?: string | null;
 }
 
-const { content, type } = Astro.props;
+const { content, type, esSlug } = Astro.props;
 
 const yoastSEO = await getYoastSEO(content.slug, type === 'post' ? 'posts' : 'pages');
 const siteInfo = await getSiteInfo();
@@ -74,7 +91,7 @@ import TourContent from '../../components/TourContent.astro';
   yoastSEO={yoastSEO}
   favicon={favicon}
 >
-  <Header lang="en" />
+  <Header lang="en" translationUrls={{ es: esSlug ? `/${esSlug}/` : undefined }} />
 
   {type === 'post' ? (
     <TourContent

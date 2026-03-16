@@ -6,9 +6,27 @@ import logo from '../assets/logoruth.png';
 interface Props {
   lang?: Lang;
   currentPath?: string;
+  translationUrls?: Partial<Record<string, string>>;
 }
 
-const { lang = 'es', currentPath = '/' } = Astro.props;
+const { lang = 'es', currentPath = '/', translationUrls = {} } = Astro.props;
+
+const pathname = Astro.url.pathname;
+
+// Calcular la URL equivalente para cada idioma a partir del pathname actual
+// Si la página pasa translationUrls explícitos (con slugs WPML reales), se usan esos
+const getLangUrl = (targetLang: string): string => {
+  if (translationUrls[targetLang]) return translationUrls[targetLang]!;
+  const isCurrentlyEn = pathname.startsWith('/en/') || pathname === '/en';
+  if (targetLang === 'es') {
+    const stripped = pathname.replace(/^\/en\/?/, '/');
+    return stripped || '/';
+  } else {
+    if (isCurrentlyEn) return pathname;
+    const withoutTrailing = pathname.replace(/\/$/, '');
+    return `/en${withoutTrailing}/`;
+  }
+};
 
 const menuItems = await getMenu('menu-1', lang);
 const languages = await getLanguages();
@@ -121,11 +139,11 @@ const rightMenu = organizedMenu.slice(middleIndex);
         </a>
 
         <!-- Conmutador de idioma -->
-        {languages.filter(l => l.flag_url).length > 0 && (
+            {languages.filter(l => l.flag_url).length > 0 && (
           <div class="flex items-center gap-x-2">
             {languages.filter(l => l.flag_url).map((l) => (
               <a
-                href={l.code === 'es' ? '/' : `/${l.code}/`}
+                href={getLangUrl(l.code)}
                 title={l.name}
                 aria-label={l.name}
                 class={`block rounded transition-opacity duration-200 ${l.code === lang ? 'opacity-100 ring-2 ring-yellow-300 ring-offset-1 ring-offset-[#15803d]' : ' hover:opacity-100'}`}

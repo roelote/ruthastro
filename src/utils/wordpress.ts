@@ -20,6 +20,7 @@ export interface WPPage {
   date: string;
   modified: string;
   link: string;
+  translations?: Record<string, number>;
 }
 
 export interface WPPost {
@@ -47,6 +48,7 @@ export interface WPPost {
     grupo_maximo?: number;
     [key: string]: any; // Para otros campos ACF personalizados
   };
+  translations?: Record<string, number>;
 }
 
 export interface WPMenuItem {

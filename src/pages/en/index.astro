@@ -28,6 +28,9 @@ import pacayaSamiriaSelvaVirgen1 from '../../assets/pacaya-samiria-selva-virgen-
 import pacayaSamiriaSelvaVirgen3 from '../../assets/pacaya-samiria-selva-virgen-3.jpeg';
 import pacayaSamiriaSelvaVirgen4 from '../../assets/pacaya-samiria-selva-virgen-4.jpeg';
 import pacayaSamiriaSelvaVirgen5 from '../../assets/pacaya-samiria-selva-virgen-5.jpeg';
+import imgTransporte from '../../assets/transporte.jpeg';
+import imgComida from '../../assets/comida.jpeg';
+import imgCabanias from '../../assets/cabanias.jpeg';
 
 // Get tours in English from WordPress (WPML ?lang=en)
 const tours = await getPosts('en');
@@ -505,6 +508,173 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
           <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
           Talk to a Local Expert
         </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- What's Included in the Tour -->
+  <section class="py-12 md:py-16 lg:py-20 bg-white">
+    <div class="container px-4">
+      <!-- Header -->
+      <div class="text-center mb-10 md:mb-14">
+        <div class="inline-block mb-4">
+          <span class="text-[#15803d] font-semibold text-xs md:text-sm tracking-wider uppercase">Tour Pacaya Samiria</span>
+          <div class="h-0.5 w-16 bg-yellow-400 mt-2 mx-auto"></div>
+        </div>
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+          What's <span class="text-[#15803d]">Included in the Tour?</span>
+        </h2>
+        <p class="text-base md:text-lg text-gray-600 max-w-3xl mx-auto">
+          Everything you need to experience Pacaya Samiria is included
+        </p>
+      </div>
+
+      <!-- Grid What's Included -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-12">
+        <!-- Transportation -->
+        <div class="group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500">
+          <div class="relative h-64 overflow-hidden">
+            <img
+              src={imgTransporte.src}
+              alt="River boat transport in Pacaya Samiria"
+              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+              loading="lazy"
+              width="800"
+              height="600"
+            />
+            <div class="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent"></div>
+            <div class="absolute bottom-0 left-0 right-0 p-6">
+              <h3 class="text-white font-bold text-xl md:text-2xl mb-2">Transportation</h3>
+              <p class="text-white/90 text-sm">Getting around</p>
+            </div>
+          </div>
+          <div class="p-6">
+            <ul class="space-y-2">
+              <li class="flex items-start gap-2 text-sm text-gray-700">
+                <svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+                <span>River motorboat</span>
+              </li>
+              <li class="flex items-start gap-2 text-sm text-gray-700">
+                <svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+                <span>Transfers from Iquitos included</span>
+              </li>
+              <li class="flex items-start gap-2 text-sm text-gray-700">
+                <svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+                <span>Canoes for internal tours</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Food -->
+        <div class="group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500">
+          <div class="relative h-64 overflow-hidden">
+            <img
+              src={imgComida.src}
+              alt="Authentic Amazon food on the tour"
+              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+              loading="lazy"
+              width="800"
+              height="600"
+            />
+            <div class="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent"></div>
+            <div class="absolute bottom-0 left-0 right-0 p-6">
+              <h3 class="text-white font-bold text-xl md:text-2xl mb-2">Meals</h3>
+              <p class="text-white/90 text-sm">Authentic Amazonian cuisine</p>
+            </div>
+          </div>
+          <div class="p-6">
+            <ul class="space-y-2">
+              <li class="flex items-start gap-2 text-sm text-gray-700">
+                <svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+                <span>Traditional Amazon dishes</span>
+              </li>
+              <li class="flex items-start gap-2 text-sm text-gray-700">
+                <svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+                <span>Filtered water available</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Cabins -->
+        <div class="group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500">
+          <div class="relative h-64 overflow-hidden">
+            <img
+              src={imgCabanias.src}
+              alt="Cabins in Pacaya Samiria"
+              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+              loading="lazy"
+              width="800"
+              height="600"
+            />
+            <div class="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent"></div>
+            <div class="absolute bottom-0 left-0 right-0 p-6">
+              <h3 class="text-white font-bold text-xl md:text-2xl mb-2">Cabins</h3>
+              <p class="text-white/90 text-sm">Lodging deep in the Amazon jungle</p>
+            </div>
+          </div>
+          <div class="p-6">
+            <ul class="space-y-2">
+              <li class="flex items-start gap-2 text-sm text-gray-700">
+                <svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+                <span>Traditional Amazonian construction</span>
+              </li>
+              <li class="flex items-start gap-2 text-sm text-gray-700">
+                <svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+                <span>Mosquito nets</span>
+              </li>
+              <li class="flex items-start gap-2 text-sm text-gray-700">
+                <svg class="w-5 h-5 text-[#15803d] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+                <span>River views and jungle sounds</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info banner -->
+      <div class="bg-linear-to-r from-[#15803d] to-green-700 rounded-2xl p-8 md:p-10 text-white text-center">
+        <h3 class="text-2xl md:text-3xl font-bold mb-4">Sustainability & Respect for Nature</h3>
+        <p class="text-base md:text-lg max-w-3xl mx-auto mb-6">
+          All our facilities are designed with local materials and traditional techniques, minimizing environmental impact and supporting local communities.
+        </p>
+        <div class="flex flex-wrap justify-center gap-6 md:gap-8">
+          <div class="flex items-center gap-2">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            </svg>
+            <span class="text-sm md:text-base">Solar energy</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            </svg>
+            <span class="text-sm md:text-base">Zero plastics</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            </svg>
+            <span class="text-sm md:text-base">Total recycling</span>
+          </div>
+        </div>
       </div>
     </div>
   </section>

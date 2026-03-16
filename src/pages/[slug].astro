@@ -8,30 +8,47 @@ import heroImage from '../assets/pacayasamiria.png';
 import { getTripAdvisorReviews } from '../utils/testimonials';
 
 export async function getStaticPaths() {
-  const pages = await getPages();
-  const posts = await getPosts();
-  
+  const [pages, posts, enPages, enPosts] = await Promise.all([
+    getPages(),
+    getPosts(),
+    getPages('en'),
+    getPosts('en'),
+  ]);
+
+  // Mapas ID → slug para encontrar el slug EN a partir del ID de traducción
+  const enPageSlugById = new Map(enPages.map(p => [p.id, p.slug]));
+  const enPostSlugById = new Map(enPosts.map(p => [p.id, p.slug]));
+
   // Todas las rutas en la raíz (igual que WordPress)
   const allPaths = [
     ...pages.map(page => ({
       params: { slug: page.slug },
-      props: { content: page, type: 'page' as const }
+      props: {
+        content: page,
+        type: 'page' as const,
+        enSlug: page.translations?.en ? (enPageSlugById.get(page.translations.en) ?? null) : null
+      }
     })),
     ...posts.map(post => ({
       params: { slug: post.slug },
-      props: { content: post, type: 'post' as const }
+      props: {
+        content: post,
+        type: 'post' as const,
+        enSlug: post.translations?.en ? (enPostSlugById.get(post.translations.en) ?? null) : null
+      }
     }))
   ];
-  
+
   return allPaths;
 }
 
 interface Props {
   content: WPPage | WPPost;
   type: 'page' | 'post';
+  enSlug?: string | null;
 }
 
-const { content, type } = Astro.props;
+const { content, type, enSlug } = Astro.props;
 
 // Obtener Yoast SEO y favicon
 const yoastSEO = await getYoastSEO(content.slug, type === 'post' ? 'posts' : 'pages');
@@ -78,7 +95,7 @@ import TourContent from '../components/TourContent.astro';
   yoastSEO={yoastSEO}
   favicon={favicon}
 >
-  <Header lang="es" />
+  <Header lang="es" translationUrls={{ en: enSlug ? `/en/${enSlug}/` : undefined }} />
   
   {type === 'post' ? (
     <!-- Diseño para Tours (Posts) -->
