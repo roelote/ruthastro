@@ -8,6 +8,7 @@ import { getTripAdvisorReviews } from '../../utils/testimonials';
 
 // Local images
 import pacayaPortada from '../../assets/pacaya-samiria-portada.webp';
+import tourFallback from '../../assets/tour-fallback.jpg';
 import delfinesRosados from '../../assets/delfines-rosados-ruth.webp';
 import pacayaBoat from '../../assets/pacaya-samiria-boat.webp';
 import pacaya31 from '../../assets/pacaya3-1.jpg';
@@ -36,19 +37,19 @@ import imgCabanias from '../../assets/cabanias.jpeg';
 const tours = await getPosts('en');
 
 const excludedSlugs = [
-  'pacaya-samiria-mistico-3-dias-2-noches',
-  'pacaya-samiria-selva-autentica-4-dias-3-noches',
-  'selva-pacaya-samiria-5-dias',
-  'pacaya-samiria-selva-virgen-10-dias-9-noches'
+  'mystical-pacaya-samiria-3-days-tour',
+  'pacaya-samiria-authentic-jungle-4-days-tour',
+  'pacaya-samiria-5-days-tour',
+  'pacaya-samiria-10-days-tour'
 ];
 
 const filteredTours = tours.filter(tour => !excludedSlugs.includes(tour.slug));
 const featuredTours = filteredTours.slice(0, 9);
 
-const pacaya3dias = tours.find(tour => tour.slug === 'pacaya-samiria-mistico-3-dias-2-noches');
-const pacaya4dias = tours.find(tour => tour.slug === 'pacaya-samiria-selva-autentica-4-dias-3-noches');
-const pacaya5dias = tours.find(tour => tour.slug === 'selva-pacaya-samiria-5-dias');
-const pacaya10dias = tours.find(tour => tour.slug === 'pacaya-samiria-selva-virgen-10-dias-9-noches');
+const pacaya3dias = tours.find(tour => tour.slug === 'mystical-pacaya-samiria-3-days-tour');
+const pacaya4dias = tours.find(tour => tour.slug === 'pacaya-samiria-authentic-jungle-4-days-tour');
+const pacaya5dias = tours.find(tour => tour.slug === 'pacaya-samiria-5-days-tour');
+const pacaya10dias = tours.find(tour => tour.slug === 'pacaya-samiria-10-days-tour');
 
 const procesarPrecio = (precio: any) => {
   if (!precio) return { monto: 'Contact us', porPersona: null };
@@ -65,7 +66,7 @@ const toursWithImages = await Promise.all(
   featuredTours.map(async (tour) => {
     const imageUrl = tour.featured_media
       ? await getFeaturedImage(tour.featured_media)
-      : 'https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=2068';
+      : tourFallback.src;
     return { ...tour, imageUrl };
   })
 );

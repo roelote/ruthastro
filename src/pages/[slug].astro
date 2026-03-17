@@ -5,6 +5,7 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../layouts/Header.astro';
 import Footer from '../layouts/Footer.astro';
 import heroImage from '../assets/pacayasamiria.png';
+import tourFallback from '../assets/tour-fallback.jpg';
 import { getTripAdvisorReviews } from '../utils/testimonials';
 
 export async function getStaticPaths() {
@@ -64,7 +65,7 @@ if (type === 'post') {
   const post = content as WPPost;
   featuredImageUrl = post.featured_media 
     ? await getFeaturedImage(post.featured_media)
-    : 'https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=2068';
+    : tourFallback.src;
   
   allPosts = await getPosts();
   
@@ -73,7 +74,7 @@ if (type === 'post') {
     allPosts.map(async (tour) => {
       const imageUrl = tour.featured_media
         ? await getFeaturedImage(tour.featured_media)
-        : 'https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=2068';
+        : tourFallback.src;
       return { ...tour, imageUrl };
     })
   );

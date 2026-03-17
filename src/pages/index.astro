@@ -8,6 +8,7 @@ import { getTripAdvisorReviews } from '../utils/testimonials';
 
 // Importar imágenes locales
 import pacayaPortada from '../assets/pacaya-samiria-portada.webp';
+import tourFallback from '../assets/tour-fallback.jpg';
 import delfinesRosados from '../assets/delfines-rosados-ruth.webp';
 import pacayaBoat from '../assets/pacaya-samiria-boat.webp';
 import pacaya31 from '../assets/pacaya3-1.jpg';
@@ -75,7 +76,7 @@ const toursWithImages = await Promise.all(
   featuredTours.map(async (tour) => {
     const imageUrl = tour.featured_media 
       ? await getFeaturedImage(tour.featured_media)
-      : 'https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=2068';
+      : tourFallback.src;
     return { ...tour, imageUrl };
   })
 );
