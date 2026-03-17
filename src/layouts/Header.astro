@@ -146,7 +146,7 @@ const rightMenu = organizedMenu.slice(middleIndex);
                 href={getLangUrl(l.code)}
                 title={l.name}
                 aria-label={l.name}
-                class={`block rounded transition-opacity duration-200 ${l.code === lang ? 'opacity-100 ring-2 ring-yellow-300 ring-offset-1 ring-offset-[#15803d]' : ' hover:opacity-100'}`}
+                class={`block rounded transition-opacity duration-200 ${l.code === lang ? 'opacity-100 ring-2 ring-yellow-300 ring-offset-1 ring-offset-[#15803d]' : 'opacity-50 hover:opacity-100'}`}
               >
                 <img src={l.flag_url} alt={l.name} class="w-6 h-4 object-cover rounded-sm" loading="lazy" />
               </a>

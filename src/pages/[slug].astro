@@ -87,6 +87,13 @@ if (type === 'post') {
   testimonials = await getTripAdvisorReviews(2);
 }
 import TourContent from '../components/TourContent.astro';
+
+const siteBaseUrl = (Astro.site?.toString() || '').replace(/\/$/, '');
+const hreflangForLayout = [
+  { lang: 'es', url: `${siteBaseUrl}/${content.slug}/` },
+  { lang: 'x-default', url: `${siteBaseUrl}/${content.slug}/` },
+  ...(enSlug ? [{ lang: 'en', url: `${siteBaseUrl}/en/${enSlug}/` }] : []),
+];
 ---
 
 <Layout 
@@ -94,6 +101,7 @@ import TourContent from '../components/TourContent.astro';
   description={content.excerpt.rendered.replace(/<[^>]*>/g, '').substring(0, 160)}
   yoastSEO={yoastSEO}
   favicon={favicon}
+  hreflangLinks={hreflangForLayout}
 >
   <Header lang="es" translationUrls={{ en: enSlug ? `/en/${enSlug}/` : undefined }} />
   

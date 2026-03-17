@@ -83,6 +83,18 @@ if (type === 'post') {
 }
 
 import TourContent from '../../components/TourContent.astro';
+
+const siteBaseUrl = (Astro.site?.toString() || '').replace(/\/$/, '');
+const hreflangForLayout = [
+  { lang: 'en', url: `${siteBaseUrl}/en/${content.slug}/` },
+  ...(esSlug
+    ? [
+        { lang: 'es', url: `${siteBaseUrl}/${esSlug}/` },
+        { lang: 'x-default', url: `${siteBaseUrl}/${esSlug}/` },
+      ]
+    : [{ lang: 'x-default', url: `${siteBaseUrl}/en/${content.slug}/` }]
+  ),
+];
 ---
 
 <Layout
@@ -90,6 +102,8 @@ import TourContent from '../../components/TourContent.astro';
   description={content.excerpt.rendered.replace(/<[^>]*>/g, '').substring(0, 160)}
   yoastSEO={yoastSEO}
   favicon={favicon}
+  lang="en"
+  hreflangLinks={hreflangForLayout}
 >
   <Header lang="en" translationUrls={{ es: esSlug ? `/${esSlug}/` : undefined }} />
 

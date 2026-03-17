@@ -87,7 +87,7 @@ const robotsFollow = yoastSEO?.robots?.follow || 'follow';
 		<meta property="og:title" content={ogTitle} />
 		<meta property="og:description" content={ogDescription} />
 		{ogImage && <meta property="og:image" content={ogImage} />}
-		<meta property="og:locale" content="es_ES" />
+		<meta property="og:locale" content={lang === 'en' ? 'en_US' : 'es_ES'} />
 		<meta property="og:site_name" content="Ruth Amazon Expeditions" />
 		
 		<!-- Twitter -->
