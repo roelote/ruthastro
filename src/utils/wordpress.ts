@@ -4,6 +4,12 @@ const WORDPRESS_BASE_URL = import.meta.env.PUBLIC_WORDPRESS_BASE_URL || 'http://
 export type Lang = 'es' | 'en';
 export const DEFAULT_LANG: Lang = 'es';
 
+export interface WPTranslation {
+  id: number;
+  slug: string;
+  url: string;
+}
+
 export interface WPPage {
   id: number;
   title: {
@@ -20,7 +26,8 @@ export interface WPPage {
   date: string;
   modified: string;
   link: string;
-  translations?: Record<string, number>;
+  /** Campo expuesto por el endpoint headless/v1 con soporte WPML */
+  wpml_translations?: Record<string, WPTranslation>;
 }
 
 export interface WPPost {
@@ -48,7 +55,8 @@ export interface WPPost {
     grupo_maximo?: number;
     [key: string]: any; // Para otros campos ACF personalizados
   };
-  translations?: Record<string, number>;
+  /** Campo expuesto por el endpoint headless/v1 con soporte WPML */
+  wpml_translations?: Record<string, WPTranslation>;
 }
 
 export interface WPMenuItem {

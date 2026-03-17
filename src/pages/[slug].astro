@@ -8,25 +8,19 @@ import heroImage from '../assets/pacayasamiria.png';
 import { getTripAdvisorReviews } from '../utils/testimonials';
 
 export async function getStaticPaths() {
-  const [pages, posts, enPages, enPosts] = await Promise.all([
+  const [pages, posts] = await Promise.all([
     getPages(),
     getPosts(),
-    getPages('en'),
-    getPosts('en'),
   ]);
 
-  // Mapas ID → slug para encontrar el slug EN a partir del ID de traducción
-  const enPageSlugById = new Map(enPages.map(p => [p.id, p.slug]));
-  const enPostSlugById = new Map(enPosts.map(p => [p.id, p.slug]));
-
-  // Todas las rutas en la raíz (igual que WordPress)
+  // wpml_translations ya contiene { id, slug, url } para cada idioma directamente
   const allPaths = [
     ...pages.map(page => ({
       params: { slug: page.slug },
       props: {
         content: page,
         type: 'page' as const,
-        enSlug: page.translations?.en ? (enPageSlugById.get(page.translations.en) ?? null) : null
+        enSlug: page.wpml_translations?.en?.slug ?? null,
       }
     })),
     ...posts.map(post => ({
@@ -34,7 +28,7 @@ export async function getStaticPaths() {
       props: {
         content: post,
         type: 'post' as const,
-        enSlug: post.translations?.en ? (enPostSlugById.get(post.translations.en) ?? null) : null
+        enSlug: post.wpml_translations?.en?.slug ?? null,
       }
     }))
   ];
