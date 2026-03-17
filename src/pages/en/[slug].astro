@@ -142,3 +142,267 @@ const hreflangForLayout = [
 
   <Footer />
 </Layout>
+
+<style>
+  .prose {
+    color: #374151;
+  }
+  
+  .prose :global(h2) {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
+    color: #1f2937;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e5e7eb;
+  }
+  
+  .prose :global(h3) {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: #1f2937;
+  }
+  
+  .prose :global(h4) {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: #374151;
+  }
+  
+  .prose :global(p) {
+    margin-bottom: 1.5rem;
+    line-height: 1.8;
+    font-size: 1.125rem;
+  }
+  
+  .prose :global(img) {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.75rem;
+    margin: 2.5rem auto;
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  }
+  
+  .prose :global(a) {
+    color: #2563eb;
+    text-decoration: none;
+    border-bottom: 2px solid #93c5fd;
+    transition: all 0.2s;
+  }
+  
+  .prose :global(a:hover) {
+    color: #1d4ed8;
+    border-bottom-color: #1d4ed8;
+  }
+  
+  .prose :global(ul),
+  .prose :global(ol) {
+    margin-bottom: 1.5rem;
+    padding-left: 2rem;
+  }
+  
+  .prose :global(li) {
+    margin-bottom: 0.75rem;
+    line-height: 1.75;
+  }
+  
+  .prose :global(blockquote) {
+    border-left: 4px solid #3b82f6;
+    padding-left: 1.5rem;
+    margin: 2rem 0;
+    font-style: italic;
+    color: #6b7280;
+    background-color: #f9fafb;
+    padding: 1rem 1.5rem;
+    border-radius: 0.5rem;
+  }
+  
+  .prose :global(.advgb-list.advgb-list-admin-post) {
+    list-style: none;
+    padding-left: 0;
+    margin-left: 1.5rem;
+  }
+
+  .prose :global(.advgb-list.advgb-list-admin-post li) {
+    position: relative;
+    padding-left: 5px;
+    margin-bottom: 0.65rem;
+    line-height: 1.75;
+    color: #374151;
+  }
+
+  .prose :global(.advgb-list.advgb-list-admin-post li::before) {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.45em;
+    width: 1rem;
+    height: 1rem;
+    background-color: #16a34a;
+    border-radius: 50%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='2 6 5 9 10 3'/%3E%3C/svg%3E");
+    background-size: 70%;
+    background-repeat: no-repeat;
+    background-position: center;
+    flex-shrink: 0;
+  }
+
+  .prose :global(iframe) {
+    max-width: 100%;
+    margin: 2.5rem 0;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  }
+  
+  .prose :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2rem 0;
+  }
+  
+  .prose :global(th),
+  .prose :global(td) {
+    border: 1px solid #e5e7eb;
+    padding: 0.75rem 1rem;
+    text-align: left;
+  }
+  
+  .prose :global(th) {
+    background-color: #f3f4f6;
+    font-weight: 600;
+    color: #1f2937;
+  }
+
+  /* WordPress Columns */
+  .prose :global(.wp-block-columns) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin: 2rem 0;
+  }
+
+  .prose :global(.wp-block-column) {
+    flex: 1;
+    min-width: 0;
+  }
+
+  @media (max-width: 768px) {
+    .prose :global(.wp-block-columns) {
+      flex-direction: column;
+    }
+    
+    .prose :global(.wp-block-column) {
+      width: 100%;
+    }
+  }
+
+  @media (min-width: 769px) {
+    .prose :global(.wp-block-column) {
+      flex-basis: calc(50% - 1rem);
+    }
+  }
+
+  /* WordPress Gallery con Fancybox */
+  .prose :global(.wp-block-gallery) {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 2.5rem 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .prose :global(.wp-block-gallery figure),
+  .prose :global(.wp-block-gallery li) {
+    margin: 0;
+    position: relative;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    aspect-ratio: 1;
+  }
+
+  .prose :global(.wp-block-gallery img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+    margin: 0;
+  }
+
+  .prose :global(.wp-block-gallery a) {
+    display: block;
+    height: 100%;
+    border: none;
+  }
+
+  .prose :global(.wp-block-gallery img:hover) {
+    transform: scale(1.05);
+  }
+
+  @media (max-width: 640px) {
+    .prose :global(.wp-block-gallery) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 641px) and (max-width: 1024px) {
+    .prose :global(.wp-block-gallery) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (min-width: 1025px) {
+    .prose :global(.wp-block-gallery) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>
+
+<script>
+  import { Fancybox } from '@fancyapps/ui';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const galleries = document.querySelectorAll('.wp-block-gallery');
+    
+    galleries.forEach((gallery) => {
+      const images = gallery.querySelectorAll('img');
+      
+      images.forEach((img) => {
+        const link = img.closest('a');
+        const figure = img.closest('figure') || img.closest('li');
+        
+        if (link) {
+          link.setAttribute('data-fancybox', 'gallery');
+          link.setAttribute('data-caption', img.alt || '');
+        } else if (figure) {
+          const newLink = document.createElement('a');
+          newLink.href = img.src;
+          newLink.setAttribute('data-fancybox', 'gallery');
+          newLink.setAttribute('data-caption', img.alt || '');
+          
+          img.parentNode?.insertBefore(newLink, img);
+          newLink.appendChild(img);
+        }
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+      Thumbs: {
+        autoStart: true,
+      },
+      Toolbar: {
+        display: {
+          left: [],
+          middle: [],
+          right: ["close"],
+        },
+      },
+    });
+  });
+</script>
