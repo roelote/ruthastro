@@ -1,0 +1,104 @@
+---
+import '../styles/global.css';
+import Layout from '../layouts/Layout.astro';
+import Header from '../layouts/Header.astro';
+import Footer from '../layouts/Footer.astro';
+import selvaImg from '../assets/pacaya-samiria-boat.webp';
+---
+
+<Layout
+  title="Página no encontrada — Ruth Amazon Expeditions"
+  description="La página que buscas no existe. Explora nuestros tours en la Reserva Nacional Pacaya Samiria."
+>
+  <Header />
+
+  <main>
+    <!-- Hero con imagen de fondo -->
+    <section class="relative min-h-[60vh] flex items-center justify-center overflow-hidden">
+      <img
+        src={selvaImg.src}
+        alt="Selva amazónica"
+        class="absolute inset-0 w-full h-full object-cover"
+        loading="eager"
+      />
+      <div class="absolute inset-0 bg-black/55"></div>
+
+      <div class="relative z-10 text-center text-white px-6 max-w-2xl mx-auto">
+        <p class="text-8xl font-bold text-[#22c55e] mb-2 leading-none">404</p>
+        <h1 class="text-3xl md:text-4xl font-bold mb-4">
+          ¡Ups! Esta página se perdió en la selva
+        </h1>
+        <p class="text-lg text-gray-200 mb-8">
+          La página que buscas no existe o fue movida. No te preocupes, hay mucho más por explorar.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a
+            href="/"
+            class="inline-flex items-center gap-2 bg-[#22c55e] hover:bg-[#16a34a] text-white font-semibold px-8 py-3 rounded-full transition-colors duration-200"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            Ir al inicio
+          </a>
+          <a
+            href="/#tours"
+            class="inline-flex items-center gap-2 border-2 border-white hover:bg-white hover:text-gray-900 text-white font-semibold px-8 py-3 rounded-full transition-colors duration-200"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+            </svg>
+            Ver nuestros tours
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sugerencias -->
+    <section class="py-16 bg-gray-50">
+      <div class="container px-4 mx-auto max-w-4xl text-center">
+        <h2 class="text-2xl font-bold text-gray-800 mb-8">¿Qué deseas encontrar?</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+
+          <a href="/" class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow group border border-gray-100">
+            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-green-200 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+              </svg>
+            </div>
+            <h3 class="font-semibold text-gray-800 mb-1">Inicio</h3>
+            <p class="text-sm text-gray-500">Vuelve a la página principal</p>
+          </a>
+
+          <a href="/#tours" class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow group border border-gray-100">
+            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-green-200 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 17l9-13 9 13H3z"/><line x1="12" y1="17" x2="12" y2="21"/>
+              </svg>
+            </div>
+            <h3 class="font-semibold text-gray-800 mb-1">Tours</h3>
+            <p class="text-sm text-gray-500">Explora nuestros paquetes</p>
+          </a>
+
+          <a
+            href="https://wa.me/51965001929?text=Hola,%20necesito%20ayuda%20para%20encontrar%20información"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow group border border-gray-100"
+          >
+            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-green-200 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-600" viewBox="0 0 32 32" fill="currentColor">
+                <path d="M16 0c-8.837 0-16 7.163-16 16 0 2.825 0.737 5.607 2.137 8.048l-2.137 7.952 7.933-2.127c2.42 1.37 5.173 2.127 8.067 2.127 8.837 0 16-7.163 16-16s-7.163-16-16-16zM16 29.467c-2.482 0-4.908-0.646-7.07-1.87l-0.507-0.292-4.713 1.262 1.262-4.669-0.292-0.508c-1.207-2.1-1.847-4.507-1.847-6.973 0-7.51 6.11-13.62 13.62-13.62s13.62 6.11 13.62 13.62-6.11 13.62-13.62 13.62z"/>
+              </svg>
+            </div>
+            <h3 class="font-semibold text-gray-800 mb-1">WhatsApp</h3>
+            <p class="text-sm text-gray-500">Contáctanos directamente</p>
+          </a>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>

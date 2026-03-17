@@ -47,15 +47,18 @@ const pageDescription = yoastSEO?.description || description;
 const pageCanonical = yoastSEO?.canonical || canonical || Astro.url.href;
 const ogTitle = yoastSEO?.og_title || pageTitle;
 const ogDescription = yoastSEO?.og_description || pageDescription;
-const ogImage = yoastSEO?.og_image;
+const ogImageFallback = `${(Astro.site?.toString() || '').replace(/\/$/, '')}/og-image.jpg`;
+const ogImage = yoastSEO?.og_image || ogImageFallback;
 const ogType = yoastSEO?.og_type || 'website';
 const ogUrl = yoastSEO?.og_url || Astro.url.href;
 const twitterCard = yoastSEO?.twitter_card || 'summary_large_image';
 const twitterTitle = yoastSEO?.twitter_title || ogTitle;
 const twitterDescription = yoastSEO?.twitter_description || ogDescription;
 const twitterImage = yoastSEO?.twitter_image || ogImage;
-const robotsIndex = yoastSEO?.robots?.index || 'index';
-const robotsFollow = yoastSEO?.robots?.follow || 'follow';
+// El backend WordPress puede tener noindex activado (es headless/privado).
+// El frontend Astro siempre debe ser indexable por buscadores.
+const robotsIndex = 'index';
+const robotsFollow = 'follow';
 ---
 
 <!doctype html>
@@ -86,7 +89,7 @@ const robotsFollow = yoastSEO?.robots?.follow || 'follow';
 		<meta property="og:url" content={ogUrl} />
 		<meta property="og:title" content={ogTitle} />
 		<meta property="og:description" content={ogDescription} />
-		{ogImage && <meta property="og:image" content={ogImage} />}
+		<meta property="og:image" content={ogImage} />
 		<meta property="og:locale" content={lang === 'en' ? 'en_US' : 'es_ES'} />
 		<meta property="og:site_name" content="Ruth Amazon Expeditions" />
 		
@@ -95,8 +98,20 @@ const robotsFollow = yoastSEO?.robots?.follow || 'follow';
 		<meta name="twitter:url" content={ogUrl} />
 		<meta name="twitter:title" content={twitterTitle} />
 		<meta name="twitter:description" content={twitterDescription} />
-		{twitterImage && <meta name="twitter:image" content={twitterImage} />}
+		<meta name="twitter:image" content={twitterImage || ogImage} />
 	</head>
+
+	<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q7ZMPRW52B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-Q7ZMPRW52B');
+</script>
+
+
 	<body class="antialiased">
 		<slot />
 	</body>
