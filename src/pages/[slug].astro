@@ -120,7 +120,7 @@ const hreflangForLayout = [
         />
         <div class="absolute inset-0 bg-linear-to-r from-black/70 via-black/50 to-black/30"></div>
         <div class="absolute inset-0 flex items-center">
-          <div class="container">
+          <div class="container xl:px-0 px-4">
             <div class="max-w-4xl">
               <h1 class="text-4xl md:text-6xl font-bold text-white mb-4" set:html={content.title.rendered} />
               <div class="w-24 h-1 bg-[#fbbf24]"></div>
@@ -147,6 +147,7 @@ const hreflangForLayout = [
     color: #374151;
   }
   
+ 
   .prose :global(h2) {
     font-size: 2rem;
     font-weight: 700;
@@ -221,6 +222,40 @@ const hreflangForLayout = [
     border-radius: 0.5rem;
   }
   
+  .prose :global(.advgb-list.advgb-list-admin-post) {
+    list-style: none;
+    padding-left: 0;
+    margin-left: 1.5rem;
+  }
+ .prose :global(.contacts)
+  
+{
+  border:1px solid #d8d8d8 !important;
+  gap:0.75rem !important;
+}
+  .prose :global(.advgb-list.advgb-list-admin-post li) {
+    position: relative;
+    padding-left: 5px;
+    margin-bottom: 0.65rem;
+    line-height: 1.75;
+    color: #374151;
+  }
+
+  .prose :global(.advgb-list.advgb-list-admin-post li::before) {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.45em;
+    width: 1rem;
+    height: 1rem;
+    background-color: #16a34a;
+    border-radius: 50%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='2 6 5 9 10 3'/%3E%3C/svg%3E");
+    background-size: 70%;
+    background-repeat: no-repeat;
+    background-position: center;
+    flex-shrink: 0;
+  }
   .prose :global(iframe) {
     max-width: 100%;
     margin: 2.5rem 0;

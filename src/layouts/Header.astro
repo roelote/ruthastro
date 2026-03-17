@@ -105,7 +105,7 @@ const rightMenu = organizedMenu.slice(middleIndex);
 
 <!-- Top Header Verde -->
 <div class="bg-[#15803d] text-white py-2">
-  <div class="container">
+  <div class="container px-3 mx-auto">
     <div class="flex justify-between items-center text-sm">
       <div class="flex gap-6">
         <a href="tel:+51965001929" class="flex items-center gap-2 hover:text-yellow-300 transition-colors">
@@ -249,11 +249,11 @@ const rightMenu = organizedMenu.slice(middleIndex);
       
       <!-- Botón de menú móvil -->
       <button 
-        class="lg:hidden text-[#15803d] ml-4 -mt-14 z-50 relative"
+        class="lg:hidden text-[#15803d] ml-4 -mt-14  z-50 relative"
         id="mobile-menu-button"
         aria-label="Abrir menú"
       >
-        <svg id="hamburger-icon" class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg id="hamburger-icon" class="w-7 h-7 " fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
         </svg>
         <svg id="close-icon" class="w-7 h-7 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -551,6 +551,11 @@ const rightMenu = organizedMenu.slice(middleIndex);
   body.menu-open {
     overflow: hidden;
   }
+   #mobile-menu-button
+   {
+    position: absolute;
+    right: 16px;
+   }
   
   /* Responsive */
   @media (max-width: 1024px) {
