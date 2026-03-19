@@ -44,13 +44,17 @@ const computedHreflang = hreflangLinks ?? (() => {
 // Usar datos de Yoast SEO si están disponibles
 const pageTitle = yoastSEO?.title || title;
 const pageDescription = yoastSEO?.description || description;
-const pageCanonical = yoastSEO?.canonical || canonical || Astro.url.href;
+// Canonical siempre desde Astro para evitar que apunte al CMS de WordPress
+const pageCanonical = canonical || Astro.url.href;
 const ogTitle = yoastSEO?.og_title || pageTitle;
 const ogDescription = yoastSEO?.og_description || pageDescription;
 const ogImageFallback = `${(Astro.site?.toString() || '').replace(/\/$/, '')}/og-image.jpg`;
 const ogImage = yoastSEO?.og_image || ogImageFallback;
-const ogType = yoastSEO?.og_type || 'website';
-const ogUrl = yoastSEO?.og_url || Astro.url.href;
+// Siempre usar la URL de Astro para evitar que Yoast exponga la URL del CMS (WordPress local)
+const ogUrl = Astro.url.href;
+// Forzar "website" en la home; para el resto respetar Yoast (o 'website' por defecto)
+const isHomePage = currentPath === '/' || currentPath === '/en' || currentPath === '/en/';
+const ogType = isHomePage ? 'website' : (yoastSEO?.og_type || 'website');
 const twitterCard = yoastSEO?.twitter_card || 'summary_large_image';
 const twitterTitle = yoastSEO?.twitter_title || ogTitle;
 const twitterDescription = yoastSEO?.twitter_description || ogDescription;
