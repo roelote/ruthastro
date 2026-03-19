@@ -175,6 +175,8 @@ const t = lang === 'en' ? {
               <input type="hidden" name="_wpcf7" value="93" />
               <input type="hidden" name="_wpcf7_unit_tag" value="wpcf7-f93-o1" />
               <input type="hidden" name="_wpcf7_container_post" value="0" />
+              <!-- Nombre del tour -->
+              <input type="hidden" name="tour-name" value={post.title.rendered.replace(/<[^>]*>/g, '')} />
 
               <!-- Nombres -->
               <div>
