@@ -9,6 +9,11 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: 'https://ruthamazonexpeditions.com',
 
+  redirects: {
+    '/inicio/': { status: 301, destination: '/' },
+    '/en/home/': { status: 301, destination: '/en/' },
+  },
+
   vite: {
     plugins: [tailwindcss()]
   },
