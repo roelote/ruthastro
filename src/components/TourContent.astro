@@ -316,7 +316,7 @@ const t = lang === 'en' ? {
                   ))}
                 </div>
                 
-                <!-- Indicadores de navegaciÃ³n -->
+                <!-- Indicadores de navegación -->
                 {testimonials.length > 1 && (
                   <div class="flex justify-center gap-2 mt-4">
                     {testimonials.slice(0, 5).map((_, index) => (
@@ -374,7 +374,7 @@ const t = lang === 'en' ? {
                     {tour.acf?.precio || t.contactUsBtn}
                   </div>
                   
-                  <!-- TÃ­tulo sobre la imagen -->
+                  <!-- Título sobre la imagen -->
                   <div class="absolute bottom-0 left-0 right-0 p-4 md:p-6">
                     <h3 class="text-white font-bold text-lg md:text-xl mb-2 line-clamp-2" set:html={tour.title.rendered}>
                     </h3>
@@ -407,7 +407,7 @@ const t = lang === 'en' ? {
         ))}
       </div>
       
-      <!-- NavegaciÃ³n -->
+      <!-- Navegación -->
       <div class="swiper-button-next !text-[#15803d]"></div>
       <div class="swiper-button-prev !text-[#15803d]"></div>
       <div class="swiper-pagination !bottom-0"></div>
@@ -495,7 +495,7 @@ const t = lang === 'en' ? {
   }
 
   .tour-content :global(.advgb-list-no li::before) {
-    content: "âœ—" !important;
+    content: "✗" !important;
     color: #dc2626 !important;
     font-weight: bold !important;
     position: absolute;
@@ -564,7 +564,7 @@ const t = lang === 'en' ? {
   }
 
   .tour-content :global(ul li::before) {
-    content: "âœ“";
+    content: "✓";
     color: #15803d;
     font-weight: bold;
     position: absolute;
@@ -586,7 +586,7 @@ const t = lang === 'en' ? {
     color: #166534;
   }
 
-  /* Estilos para galerÃ­as de WordPress */
+  /* Estilos para galerías de WordPress */
   .tour-content :global(.wp-block-gallery) {
     display: grid;
     gap: 0.75rem;
@@ -1063,14 +1063,14 @@ const t = lang === 'en' ? {
             item.classList.remove('active');
           });
           
-          // Abrir el acordeÃ³n clickeado si estaba cerrado
+          // Abrir el acordeón clickeado si estaba cerrado
           if (!isActive) {
             accordionItem.classList.add('active');
           }
         });
       });
       
-      // Expandir el primer acordeÃ³n por defecto
+      // Expandir el primer acordeón por defecto
       const firstAccordion = document.querySelector('.advgb-accordion-item');
       if (firstAccordion) {
         firstAccordion.classList.add('active');
