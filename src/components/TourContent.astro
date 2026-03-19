@@ -1,4 +1,4 @@
----
+﻿---
 interface Props {
   post: any;
   featuredImageUrl: string;
@@ -32,27 +32,27 @@ const t = lang === 'en' ? {
   whatsappCTA: 'Hello,%20I%20want%20information',
   contactUsBtn: 'Contact us',
 } : {
-  amazonTour: 'Tour Amazónico',
+  amazonTour: 'Tour AmazÃ³nico',
   people: 'personas',
-  contactUs: 'Contáctanos',
+  contactUs: 'ContÃ¡ctanos',
   from: 'Desde',
   pricePerPerson: 'Precio por Persona',
-  requestInfo: 'Solicitar Información',
+  requestInfo: 'Solicitar InformaciÃ³n',
   fullName: 'Nombre Completo',
-  phone: 'Teléfono',
+  phone: 'TelÃ©fono',
   date: 'Fecha',
   message: 'Mensaje',
   sendRequest: 'Enviar Solicitud',
   whatClientsSay: 'Lo que dicen nuestros clientes',
   otherTours: 'Otros',
   recommendedTours: 'Tours Recomendados',
-  discoverMore: 'Descubre más experiencias increíbles en la Amazonía peruana',
+  discoverMore: 'Descubre mÃ¡s experiencias increÃ­bles en la AmazonÃ­a peruana',
   viewDetails: 'Ver detalles',
-  readyTitle: '¿Listo para tu aventura?',
-  readyDesc: 'Contáctanos ahora y reserva tu lugar en este increíble tour amazónico',
-  whatsappMsg: 'Hola, quisiera información sobre ',
+  readyTitle: 'Â¿Listo para tu aventura?',
+  readyDesc: 'ContÃ¡ctanos ahora y reserva tu lugar en este increÃ­ble tour amazÃ³nico',
+  whatsappMsg: 'Hola, quisiera informaciÃ³n sobre ',
   whatsappCTA: 'Hola,%20quiero%20informaci%C3%B3n',
-  contactUsBtn: 'Contáctanos',
+  contactUsBtn: 'ContÃ¡ctanos',
 };
 ---
 
@@ -182,7 +182,7 @@ const t = lang === 'en' ? {
                   name="nombres" 
                   required
                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#15803d] focus:border-transparent transition-colors"
-                  placeholder={lang === 'en' ? 'John Smith' : 'Juan Pérez'}
+                  placeholder={lang === 'en' ? 'John Smith' : 'Juan PÃ©rez'}
                 />
               </div>
 
@@ -201,7 +201,7 @@ const t = lang === 'en' ? {
                 />
               </div>
 
-              <!-- Teléfono -->
+              <!-- TelÃ©fono -->
               <div>
                 <label for="telefono" class="block text-sm font-medium text-gray-700 mb-1">
                   {t.phone} <span class="text-red-500">*</span>
@@ -239,11 +239,11 @@ const t = lang === 'en' ? {
                   name="mensaje" 
                   rows="3"
                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#15803d] focus:border-transparent transition-colors resize-none"
-                  placeholder={lang === 'en' ? 'Tell us about your trip...' : 'Cuéntanos sobre tu viaje...'}
+                  placeholder={lang === 'en' ? 'Tell us about your trip...' : 'CuÃ©ntanos sobre tu viaje...'}
                 ></textarea>
               </div>
 
-              <!-- Botón de envío -->
+              <!-- BotÃ³n de envÃ­o -->
               <button 
                 type="submit"
                 class="w-full bg-[#15803d] hover:bg-[#166534] text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2"
@@ -311,7 +311,7 @@ const t = lang === 'en' ? {
                   ))}
                 </div>
                 
-                <!-- Indicadores de navegación -->
+                <!-- Indicadores de navegaciÃ³n -->
                 {testimonials.length > 1 && (
                   <div class="flex justify-center gap-2 mt-4">
                     {testimonials.slice(0, 5).map((_, index) => (
@@ -369,7 +369,7 @@ const t = lang === 'en' ? {
                     {tour.acf?.precio || t.contactUsBtn}
                   </div>
                   
-                  <!-- Título sobre la imagen -->
+                  <!-- TÃ­tulo sobre la imagen -->
                   <div class="absolute bottom-0 left-0 right-0 p-4 md:p-6">
                     <h3 class="text-white font-bold text-lg md:text-xl mb-2 line-clamp-2" set:html={tour.title.rendered}>
                     </h3>
@@ -402,7 +402,7 @@ const t = lang === 'en' ? {
         ))}
       </div>
       
-      <!-- Navegación -->
+      <!-- NavegaciÃ³n -->
       <div class="swiper-button-next !text-[#15803d]"></div>
       <div class="swiper-button-prev !text-[#15803d]"></div>
       <div class="swiper-pagination !bottom-0"></div>
@@ -490,7 +490,7 @@ const t = lang === 'en' ? {
   }
 
   .tour-content :global(.advgb-list-no li::before) {
-    content: "✗" !important;
+    content: "âœ—" !important;
     color: #dc2626 !important;
     font-weight: bold !important;
     position: absolute;
@@ -559,7 +559,7 @@ const t = lang === 'en' ? {
   }
 
   .tour-content :global(ul li::before) {
-    content: "✓";
+    content: "âœ“";
     color: #15803d;
     font-weight: bold;
     position: absolute;
@@ -581,7 +581,7 @@ const t = lang === 'en' ? {
     color: #166534;
   }
 
-  /* Estilos para galerías de WordPress */
+  /* Estilos para galerÃ­as de WordPress */
   .tour-content :global(.wp-block-gallery) {
     display: grid;
     gap: 0.75rem;
@@ -1058,14 +1058,14 @@ const t = lang === 'en' ? {
             item.classList.remove('active');
           });
           
-          // Abrir el acordeón clickeado si estaba cerrado
+          // Abrir el acordeÃ³n clickeado si estaba cerrado
           if (!isActive) {
             accordionItem.classList.add('active');
           }
         });
       });
       
-      // Expandir el primer acordeón por defecto
+      // Expandir el primer acordeÃ³n por defecto
       const firstAccordion = document.querySelector('.advgb-accordion-item');
       if (firstAccordion) {
         firstAccordion.classList.add('active');
@@ -1090,7 +1090,7 @@ const t = lang === 'en' ? {
         const formData = new FormData(contactForm);
         
         try {
-          const CF7_FORM_ID = 'b32fc06';
+          const CF7_FORM_ID = '93';
           const wpBaseUrl = import.meta.env.PUBLIC_WORDPRESS_BASE_URL;
           const response = await fetch(`${wpBaseUrl}/wp-json/contact-form-7/v1/contact-forms/${CF7_FORM_ID}/feedback`, {
             method: 'POST',
@@ -1182,3 +1182,4 @@ const t = lang === 'en' ? {
     }
   });
 </script>
+
