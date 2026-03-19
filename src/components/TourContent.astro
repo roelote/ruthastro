@@ -171,6 +171,11 @@ const t = lang === 'en' ? {
             
             <!-- Formulario personalizado -->
             <form id="contact-form" class="space-y-4">
+              <!-- Campos ocultos requeridos por CF7 REST API -->
+              <input type="hidden" name="_wpcf7" value="93" />
+              <input type="hidden" name="_wpcf7_unit_tag" value="wpcf7-f93-o1" />
+              <input type="hidden" name="_wpcf7_container_post" value="0" />
+
               <!-- Nombres -->
               <div>
                 <label for="nombres" class="block text-sm font-medium text-gray-700 mb-1">
@@ -182,7 +187,7 @@ const t = lang === 'en' ? {
                   name="nombres" 
                   required
                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#15803d] focus:border-transparent transition-colors"
-                  placeholder={lang === 'en' ? 'John Smith' : 'Juan PÃ©rez'}
+                  placeholder={lang === 'en' ? 'John Smith' : 'Juan Pérez'}
                 />
               </div>
 
@@ -201,7 +206,7 @@ const t = lang === 'en' ? {
                 />
               </div>
 
-              <!-- TelÃ©fono -->
+              <!-- Teléfono -->
               <div>
                 <label for="telefono" class="block text-sm font-medium text-gray-700 mb-1">
                   {t.phone} <span class="text-red-500">*</span>
@@ -239,11 +244,11 @@ const t = lang === 'en' ? {
                   name="mensaje" 
                   rows="3"
                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#15803d] focus:border-transparent transition-colors resize-none"
-                  placeholder={lang === 'en' ? 'Tell us about your trip...' : 'CuÃ©ntanos sobre tu viaje...'}
+                  placeholder={lang === 'en' ? 'Tell us about your trip...' : 'Cuéntanos sobre tu viaje...'}
                 ></textarea>
               </div>
 
-              <!-- BotÃ³n de envÃ­o -->
+              <!-- Botón de envío -->
               <button 
                 type="submit"
                 class="w-full bg-[#15803d] hover:bg-[#166534] text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2"
