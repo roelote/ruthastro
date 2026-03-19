@@ -82,6 +82,14 @@ if (type === 'post') {
   testimonials = await getTripAdvisorReviews(2);
 }
 import TourContent from '../components/TourContent.astro';
+import ContactForm from '../components/ContactForm.astro';
+
+// Detectar si la página contiene un shortcode de CF7 y separar el texto alrededor
+const cf7Regex = /\[contact-form-7[^\]]*\]/gi;
+const hasContactForm = type === 'page' && cf7Regex.test(content.content.rendered);
+const pageContentCleaned = hasContactForm
+  ? content.content.rendered.replace(/\[contact-form-7[^\]]*\]/gi, '')
+  : content.content.rendered;
 
 const siteBaseUrl = (Astro.site?.toString() || '').replace(/\/$/, '');
 const hreflangForLayout = [
@@ -132,7 +140,8 @@ const hreflangForLayout = [
       <main class="py-12 bg-gray-50">
         <article class="container">
           <div class="mx-auto bg-white rounded-lg shadow-md p-8 md:p-12">
-            <div class="prose prose-lg max-w-none" set:html={content.content.rendered} />
+            <div class="prose prose-lg max-w-none" set:html={pageContentCleaned} />
+            {hasContactForm && <ContactForm lang="es" />}
           </div>
         </article>
       </main>

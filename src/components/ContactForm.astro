@@ -1,0 +1,183 @@
+---
+// ContactForm.astro
+// Formulario de contacto conectado a CF7 form ID 261 vía REST API
+interface Props {
+  lang?: 'es' | 'en';
+}
+const { lang = 'es' } = Astro.props;
+const WP_BASE = import.meta.env.PUBLIC_WORDPRESS_BASE_URL || 'https://cms.ruthamazonexpeditions.com';
+const CF7_ENDPOINT = `${WP_BASE}/wp-json/contact-form-7/v1/contact-forms/261/feedback`;
+
+const t = lang === 'en' ? {
+  nombres: 'Full Name',
+  email: 'Email',
+  telefono: 'Phone',
+  asunto: 'Subject',
+  mensaje: 'Message',
+  enviar: 'Send Message',
+  success: 'Your message has been sent successfully. We will contact you soon!',
+  error: 'An error occurred. Please try again or contact us directly.',
+  sending: 'Sending...',
+} : {
+  nombres: 'Nombres',
+  email: 'Email',
+  telefono: 'Teléfono',
+  asunto: 'Asunto',
+  mensaje: 'Mensaje',
+  enviar: 'Enviar Mensaje',
+  success: '¡Tu mensaje fue enviado correctamente. Nos comunicaremos contigo pronto!',
+  error: 'Ocurrió un error. Por favor inténtalo de nuevo o contáctanos directamente.',
+  sending: 'Enviando...',
+};
+---
+
+<div class="contacts border border-gray-200 p-6 md:p-8 rounded-xl bg-white shadow-sm max-w-2xl mx-auto">
+  <form id="ruth-contact-form" novalidate>
+    <div class="space-y-4">
+      <div>
+        <label for="cf7-nombres" class="block text-sm font-semibold text-gray-700 mb-1">
+          {t.nombres} <span class="text-red-500">*</span>
+        </label>
+        <input
+          id="cf7-nombres"
+          name="nombres"
+          type="text"
+          required
+          class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent transition"
+          placeholder={t.nombres}
+        />
+      </div>
+
+      <div>
+        <label for="cf7-emails" class="block text-sm font-semibold text-gray-700 mb-1">
+          {t.email} <span class="text-red-500">*</span>
+        </label>
+        <input
+          id="cf7-emails"
+          name="emails"
+          type="email"
+          required
+          class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent transition"
+          placeholder="correo@ejemplo.com"
+        />
+      </div>
+
+      <div>
+        <label for="cf7-telefono" class="block text-sm font-semibold text-gray-700 mb-1">
+          {t.telefono}
+        </label>
+        <input
+          id="cf7-telefono"
+          name="telefono"
+          type="text"
+          class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent transition"
+          placeholder="+51 999 999 999"
+        />
+      </div>
+
+      <div>
+        <label for="cf7-asunto" class="block text-sm font-semibold text-gray-700 mb-1">
+          {t.asunto} <span class="text-red-500">*</span>
+        </label>
+        <input
+          id="cf7-asunto"
+          name="asunto"
+          type="text"
+          required
+          class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent transition"
+          placeholder={t.asunto}
+        />
+      </div>
+
+      <div>
+        <label for="cf7-mensaje" class="block text-sm font-semibold text-gray-700 mb-1">
+          {t.mensaje}
+        </label>
+        <textarea
+          id="cf7-mensaje"
+          name="mensaje"
+          rows="5"
+          class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent transition resize-y"
+          placeholder={t.mensaje}
+        ></textarea>
+      </div>
+
+      <!-- Feedback messages -->
+      <div id="cf7-success" class="hidden bg-green-50 border border-green-200 text-green-800 text-sm rounded-lg px-4 py-3">
+        {t.success}
+      </div>
+      <div id="cf7-error" class="hidden bg-red-50 border border-red-200 text-red-800 text-sm rounded-lg px-4 py-3">
+        {t.error}
+      </div>
+
+      <button
+        type="submit"
+        id="cf7-submit"
+        class="send-ruth w-full bg-green-700 hover:bg-green-800 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-colors text-sm"
+      >
+        {t.enviar}
+      </button>
+    </div>
+  </form>
+</div>
+
+<script define:vars={{ CF7_ENDPOINT, sendingText: t.sending, submitText: t.enviar }}>
+  const form = document.getElementById('ruth-contact-form');
+  const submitBtn = document.getElementById('cf7-submit');
+  const successMsg = document.getElementById('cf7-success');
+  const errorMsg = document.getElementById('cf7-error');
+
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Client-side validation
+      const requiredFields = form.querySelectorAll('[required]');
+      let valid = true;
+      requiredFields.forEach((field) => {
+        const input = field;
+        if (!input.value.trim()) {
+          input.classList.add('border-red-400');
+          valid = false;
+        } else {
+          input.classList.remove('border-red-400');
+        }
+      });
+      if (!valid) return;
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = sendingText;
+      successMsg.classList.add('hidden');
+      errorMsg.classList.add('hidden');
+
+      const data = new FormData(form);
+
+      try {
+        const res = await fetch(CF7_ENDPOINT, {
+          method: 'POST',
+          body: data,
+        });
+
+        const json = await res.json();
+
+        // CF7 returns status "mail_sent" on success
+        if (json.status === 'mail_sent') {
+          successMsg.classList.remove('hidden');
+          form.reset();
+        } else {
+          errorMsg.classList.remove('hidden');
+        }
+      } catch {
+        errorMsg.classList.remove('hidden');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = submitText;
+      }
+    });
+
+    // Remove red border on input
+    form.querySelectorAll('input, textarea').forEach((field) => {
+      field.addEventListener('input', () => field.classList.remove('border-red-400'));
+    });
+  }
+</script>
