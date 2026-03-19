@@ -213,14 +213,15 @@ const t = lang === 'en' ? {
                 <label for="telefono" class="block text-sm font-medium text-gray-700 mb-1">
                   {t.phone} <span class="text-red-500">*</span>
                 </label>
-                <input 
-                  type="text" 
-                  id="telefono"
-                  name="telefono" 
-                  required
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#15803d] focus:border-transparent transition-colors"
-                  placeholder="+51 999 999 999"
-                />
+                <div class="iti-wrapper">
+                  <input 
+                    type="tel" 
+                    id="telefono"
+                    name="telefono" 
+                    required
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#15803d] focus:border-transparent transition-colors"
+                  />
+                </div>
               </div>
 
               <!-- Fecha -->
@@ -857,6 +858,24 @@ const t = lang === 'en' ? {
     outline: none;
   }
 
+  /* intl-tel-input */
+  .iti-wrapper {
+    position: relative;
+    width: 100%;
+  }
+
+  :global(.iti),
+  :global(.iti--allow-dropdown),
+  :global(.iti--show-flags),
+  :global(.iti--inline-dropdown) {
+    width: 100% !important;
+    display: block !important;
+  }
+
+  :global(.iti__tel-input) {
+    width: 100% !important;
+  }
+
   #contact-form button:disabled {
     opacity: 0.7;
     cursor: not-allowed;
@@ -886,6 +905,11 @@ const t = lang === 'en' ? {
     overflow: hidden;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
+
+  .iti.iti--allow-dropdown.iti--show-flags.iti--inline-dropdown {
+  width: 100%;
+}
+
 
   .tour-content :global(.advgb-accordion-header) {
     background-color: #ffffff !important;
@@ -972,6 +996,8 @@ const t = lang === 'en' ? {
   import { Fancybox } from '@fancyapps/ui';
   import Swiper from 'swiper';
   import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+  import intlTelInput from 'intl-tel-input';
+  import 'intl-tel-input/styles';
 
   document.addEventListener('DOMContentLoaded', function() {
 
@@ -1081,6 +1107,17 @@ const t = lang === 'en' ? {
 
     initAccordions();
 
+    // intl-tel-input para el campo teléfono
+    const telefonoInput = document.getElementById('telefono') as HTMLInputElement;
+    let itiInstance: ReturnType<typeof intlTelInput> | null = null;
+    if (telefonoInput) {
+      itiInstance = intlTelInput(telefonoInput, {
+        initialCountry: 'pe',
+        loadUtils: () => import('intl-tel-input/utils'),
+        strictMode: false,
+      });
+    }
+
     // Formulario de contacto
     const contactForm = document.getElementById('contact-form');
     const formResponse = document.getElementById('form-response');
@@ -1094,7 +1131,10 @@ const t = lang === 'en' ? {
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<svg class="animate-spin h-5 w-5 mx-auto" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
         
+        // Sobrescribir el campo teléfono con el número completo (código de país incluido)
+        const fullPhone = itiInstance ? itiInstance.getNumber() : '';
         const formData = new FormData(contactForm);
+        if (fullPhone) formData.set('telefono', fullPhone);
         
         try {
           const CF7_FORM_ID = '93';
@@ -1115,7 +1155,6 @@ const t = lang === 'en' ? {
                   <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                 </svg>
                 <div>
-                  <div class="font-semibold">Message sent!</div>
                   <div class="text-sm">${result.message}</div>
                 </div>
               </div>
