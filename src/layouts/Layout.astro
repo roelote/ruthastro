@@ -9,116 +9,130 @@ import 'swiper/css/effect-fade';
 import type { YoastSEO } from '../utils/wordpress';
 
 interface Props {
-	title?: string;
-	description?: string;
-	yoastSEO?: YoastSEO | null;
-	favicon?: string;
-	canonical?: string;
-	lang?: string;
-	hreflangLinks?: Array<{ lang: string; url: string }>;
+  title?: string;
+  description?: string;
+  yoastSEO?: YoastSEO | null;
+  favicon?: string;
+  canonical?: string;
+  lang?: string;
+  hreflangLinks?: Array<{ lang: string; url: string }>;
 }
 
 const { 
-	title = 'Ruth Amazon Expeditions', 
-	description = 'Explora la selva amazónica con los mejores guías',
-	yoastSEO = null,
-	favicon = '/favicon.svg',
-	canonical,
-	lang = 'es',
-	hreflangLinks,
+  title = 'Ruth Amazon Expeditions', 
+  description = 'Explora la selva amazónica con los mejores guías',
+  yoastSEO = null,
+  favicon = '/favicon.svg',
+  canonical,
+  lang = 'es',
+  hreflangLinks,
 } = Astro.props;
 
-// ── hreflang (multiidioma) ──
 const siteUrl = (Astro.site?.toString() || '').replace(/\/$/, '');
 const currentPath = Astro.url.pathname;
+
+// ── hreflang (fix: evitar /en/en/) ──
 const computedHreflang = hreflangLinks ?? (() => {
-	const esPath = lang === 'en' ? (currentPath.replace(/^\/en/, '') || '/') : currentPath;
-	const enPath = lang === 'en' ? currentPath : '/en' + currentPath;
-	return [
-		{ lang: 'es', url: `${siteUrl}${esPath}` },
-		{ lang: 'en', url: `${siteUrl}${enPath}` },
-		{ lang: 'x-default', url: `${siteUrl}${esPath}` },
-	];
+  const cleanPath = currentPath.replace(/\/$/, '') || '/';
+  const esPath = lang === 'en' 
+    ? (currentPath.replace(/^\/en/, '') || '/') 
+    : currentPath;
+  const enPath = lang === 'en' 
+    ? currentPath 
+    : '/en' + (cleanPath === '/' ? '' : cleanPath);
+  return [
+    { lang: 'es',        url: `${siteUrl}${esPath}` },
+    { lang: 'en',        url: `${siteUrl}${enPath}` },
+    { lang: 'x-default', url: `${siteUrl}${esPath}` },
+  ];
 })();
 
-// Usar datos de Yoast SEO si están disponibles
-const pageTitle = yoastSEO?.title || title;
+const pageTitle       = yoastSEO?.title       || title;
 const pageDescription = yoastSEO?.description || description;
-// Canonical siempre desde Astro para evitar que apunte al CMS de WordPress
-const pageCanonical = canonical || Astro.url.href;
-const ogTitle = yoastSEO?.og_title || pageTitle;
-const ogDescription = yoastSEO?.og_description || pageDescription;
-const ogImageFallback = `${(Astro.site?.toString() || '').replace(/\/$/, '')}/og-image.jpg`;
-const ogImage = yoastSEO?.og_image || ogImageFallback;
-// Siempre usar la URL de Astro para evitar que Yoast exponga la URL del CMS (WordPress local)
-const ogUrl = Astro.url.href;
-// Forzar "website" en la home; para el resto respetar Yoast (o 'website' por defecto)
-const isHomePage = currentPath === '/' || currentPath === '/en' || currentPath === '/en/';
-const ogType = isHomePage ? 'website' : (yoastSEO?.og_type || 'website');
-const twitterCard = yoastSEO?.twitter_card || 'summary_large_image';
-const twitterTitle = yoastSEO?.twitter_title || ogTitle;
+const pageCanonical   = canonical             || Astro.url.href;
+const ogTitle         = yoastSEO?.og_title    || pageTitle;
+const ogDescription   = yoastSEO?.og_description || pageDescription;
+const ogImageFallback = `${siteUrl}/og-image.jpg`;
+const ogImage         = yoastSEO?.og_image    || ogImageFallback;
+const ogUrl           = Astro.url.href;
+const isHomePage      = currentPath === '/' || currentPath === '/en' || currentPath === '/en/';
+const ogType          = isHomePage ? 'website' : (yoastSEO?.og_type || 'website');
+const twitterCard     = yoastSEO?.twitter_card        || 'summary_large_image';
+const twitterTitle    = yoastSEO?.twitter_title       || ogTitle;
 const twitterDescription = yoastSEO?.twitter_description || ogDescription;
-const twitterImage = yoastSEO?.twitter_image || ogImage;
-// El backend WordPress puede tener noindex activado (es headless/privado).
-// El frontend Astro siempre debe ser indexable por buscadores.
-const robotsIndex = 'index';
-const robotsFollow = 'follow';
+const twitterImage    = yoastSEO?.twitter_image       || ogImage;
+
+// Schema.org
+const schemaOrg = {
+  "@context": "https://schema.org",
+  "@type": "TravelAgency",
+  "name": "Ruth Amazon Expeditions",
+  "url": `${siteUrl}/`,
+  "description": pageDescription,
+  "image": ogImage,
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Iquitos",
+    "addressCountry": "PE"
+  },
+  "areaServed": ["Pacaya Samiria", "Iquitos", "Amazonas"]
+};
 ---
 
 <!doctype html>
 <html lang={lang}>
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta name="google-site-verification" content="1WBhC35twhTrG0zfzYT6POQJketKOcgze6KS0KlNwls" />
-		<!-- Favicon -->
-		<link rel="icon" type="image/x-icon" href={favicon} />
-		<link rel="shortcut icon" type="image/x-icon" href={favicon} />
-		
-		<meta name="generator" content={Astro.generator} />
-		
-		<!-- SEO Meta Tags -->
-		<title>{pageTitle}</title>
-		<meta name="description" content={pageDescription} />
-		<meta name="robots" content={`${robotsIndex}, ${robotsFollow}`} />
-		<link rel="canonical" href={pageCanonical} />
-		
-		<!-- hreflang multiidioma -->
-		{computedHreflang.map(h => (
-			<link rel="alternate" hreflang={h.lang} href={h.url} />
-		))}
-		
-		<!-- Open Graph / Facebook -->
-		<meta property="og:type" content={ogType} />
-		<meta property="og:url" content={ogUrl} />
-		<meta property="og:title" content={ogTitle} />
-		<meta property="og:description" content={ogDescription} />
-		<meta property="og:image" content={ogImage} />
-		<meta property="og:locale" content={lang === 'en' ? 'en_US' : 'es_ES'} />
-		<meta property="og:site_name" content="Ruth Amazon Expeditions" />
-		
-		<!-- Twitter -->
-		<meta name="twitter:card" content={twitterCard} />
-		<meta name="twitter:url" content={ogUrl} />
-		<meta name="twitter:title" content={twitterTitle} />
-		<meta name="twitter:description" content={twitterDescription} />
-		<meta name="twitter:image" content={twitterImage || ogImage} />
-	</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="google-site-verification" 
+      content="1WBhC35twhTrG0zfzYT6POQJketKOcgze6KS0KlNwls" />
 
-	<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q7ZMPRW52B"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href={favicon} />
 
-  gtag('config', 'G-Q7ZMPRW52B');
-</script>
+    <!-- SEO -->
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+    <link rel="canonical" href={pageCanonical} />
 
+    <!-- hreflang -->
+    {computedHreflang.map(h => (
+      <link rel="alternate" hreflang={h.lang} href={h.url} />
+    ))}
 
-	<body class="antialiased">
-		<slot />
-	</body>
+    <!-- Open Graph -->
+    <meta property="og:type"        content={ogType} />
+    <meta property="og:url"         content={ogUrl} />
+    <meta property="og:title"       content={ogTitle} />
+    <meta property="og:description" content={ogDescription} />
+    <meta property="og:image"       content={ogImage} />
+    <meta property="og:image:width"  content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale"      content={lang === 'en' ? 'en_US' : 'es_ES'} />
+    <meta property="og:site_name"   content="Ruth Amazon Expeditions" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card"        content={twitterCard} />
+    <meta name="twitter:url"         content={ogUrl} />
+    <meta name="twitter:title"       content={twitterTitle} />
+    <meta name="twitter:description" content={twitterDescription} />
+    <meta name="twitter:image"       content={twitterImage || ogImage} />
+
+    <!-- Schema.org -->
+    <script type="application/ld+json" set:html={JSON.stringify(schemaOrg)} />
+
+    <!-- GA4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q7ZMPRW52B"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-Q7ZMPRW52B');
+    </script>
+  </head>
+
+  <body class="antialiased">
+    <slot />
+  </body>
 </html>
-
-
