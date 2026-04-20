@@ -1,0 +1,54 @@
+---
+// FacebookFeed.astro
+// Incrusta la página de Facebook de Ruth Amazon Expeditions
+---
+
+<section class="py-12 md:py-16 lg:py-20 bg-gray-50">
+  <div class="container px-4">
+
+    <!-- Encabezado -->
+    <div class="text-center mb-8 md:mb-12">
+      <div class="inline-block mb-4">
+        <span class="text-[#15803d] font-semibold text-xs md:text-sm tracking-wider uppercase">Follow us on Facebook</span>
+        <div class="h-0.5 w-16 bg-yellow-400 mt-2 mx-auto"></div>
+      </div>
+      <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+        Our <span class="text-[#15803d]">Facebook</span>
+      </h2>
+      <a
+        href="https://www.facebook.com/ruthamazonexpedition/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 text-gray-500 hover:text-[#1877F2] transition-colors text-sm md:text-base"
+      >
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+        </svg>
+        Ruth Amazon Expeditions
+      </a>
+    </div>
+
+    <!-- Embed Facebook Page -->
+    <div class="flex justify-center">
+      <div id="fb-root"></div>
+      <div
+        class="fb-page"
+        data-href="https://www.facebook.com/ruthamazonexpedition/"
+        data-tabs="timeline"
+        data-width=""
+        data-height=""
+        data-small-header="false"
+        data-adapt-container-width="true"
+        data-hide-cover="false"
+        data-show-facepile="true"
+      >
+        <blockquote cite="https://www.facebook.com/ruthamazonexpedition/" class="fb-xfbml-parse-ignore">
+          <a href="https://www.facebook.com/ruthamazonexpedition/">Ruth Amazon Expeditions</a>
+        </blockquote>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/es_LA/sdk.js#xfbml=1&version=v25.0&appId=4298878673774243"></script>
