@@ -3,6 +3,7 @@ import '../styles/global.css';
 import Layout from '../layouts/Layout.astro';
 import Header from '../layouts/Header.astro';
 import Footer from '../layouts/Footer.astro';
+import InstagramFeed from '../components/InstagramFeed.astro';
 import { getPosts, getFeaturedImage, getYoastSEO, getSiteInfo } from '../utils/wordpress';
 import { getTripAdvisorReviews } from '../utils/testimonials';
 
@@ -1356,6 +1357,7 @@ const favicon = siteInfo?.icon?.favicon || '/favicon.svg';
 		</div>
 	</section>
 
+	<InstagramFeed />
 	<Footer />
 </Layout>
 
