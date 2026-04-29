@@ -3,6 +3,8 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
+    "fetch:instagram": "node scripts/fetch-instagram.mjs",
+    "prebuild": "node scripts/fetch-instagram.mjs",
     "dev": "astro dev",
     "build": "astro build",
     "build:prod": "astro build --mode production",
