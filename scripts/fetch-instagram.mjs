@@ -36,11 +36,51 @@ function loadEnv() {
 
 loadEnv();
 
-const TOKEN = process.env.INSTAGRAM_ACCESS_TOKEN;
+const ENV_FILES = [join(ROOT, '.env'), join(ROOT, '.env.production')];
+
+// ── Reemplaza INSTAGRAM_ACCESS_TOKEN en los .env locales que existan ────────
+function persistToken(newToken) {
+  for (const envPath of ENV_FILES) {
+    if (!existsSync(envPath)) continue;
+    const content = readFileSync(envPath, 'utf-8');
+    const updated = content.match(/^INSTAGRAM_ACCESS_TOKEN=.*$/m)
+      ? content.replace(/^INSTAGRAM_ACCESS_TOKEN=.*$/m, `INSTAGRAM_ACCESS_TOKEN=${newToken}`)
+      : content.trimEnd() + `\nINSTAGRAM_ACCESS_TOKEN=${newToken}\n`;
+    writeFileSync(envPath, updated, 'utf-8');
+  }
+}
+
+// ── Renueva el token de larga duración (válido ~60 días) ────────────────────
+// Debe hacerse ANTES de que expire; un token ya vencido no se puede refrescar,
+// hay que generar uno nuevo manualmente en Meta for Developers.
+async function refreshToken(token) {
+  const url = `https://graph.instagram.com/refresh_access_token?grant_type=ig_refresh_token&access_token=${token}`;
+  const res = await fetch(url);
+  const json = await res.json();
+  if (!res.ok || json.error) {
+    throw new Error(json.error?.message || `HTTP ${res.status}`);
+  }
+  return json.access_token;
+}
+
+let TOKEN = process.env.INSTAGRAM_ACCESS_TOKEN;
 
 if (!TOKEN) {
   console.warn('[Instagram] ⚠  No se encontró INSTAGRAM_ACCESS_TOKEN. Se omite la descarga.');
   process.exit(0);
+}
+
+try {
+  const refreshed = await refreshToken(TOKEN);
+  if (refreshed && refreshed !== TOKEN) {
+    TOKEN = refreshed;
+    process.env.INSTAGRAM_ACCESS_TOKEN = refreshed;
+    persistToken(refreshed);
+    console.log('[Instagram] ✔  Token renovado automáticamente (válido ~60 días más).');
+  }
+} catch (e) {
+  console.warn(`[Instagram] ⚠  No se pudo renovar el token automáticamente: ${e.message}`);
+  console.warn('[Instagram] ⚠  Si el token ya expiró, genera uno nuevo en Meta for Developers y actualiza .env / .env.production (y las variables de entorno en Vercel).');
 }
 
 // ── Directorios destino ──────────────────────────────────────────────────────
@@ -74,7 +114,8 @@ async function main() {
 
   if (json.error) {
     console.error('[Instagram] ✗ Error de API:', json.error.message);
-    process.exit(1);
+    console.error('[Instagram] ⚠  Se omite la descarga para no bloquear el build. El sitio seguirá compilando sin fotos nuevas de Instagram.');
+    process.exit(0);
   }
 
   const posts = json.data ?? [];
